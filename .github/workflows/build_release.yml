@@ -1,0 +1,65 @@
+name: Build and Release RoboBackup Studio
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+  
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (Node 22 LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Web Frontend & Server
+        run: npm run build
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build C# WPF Application & Package
+        run: |
+          dotnet restore RoboBackupStudio.csproj
+          dotnet publish RoboBackupStudio.csproj -c Release -o publish/app /p:UseAppHost=true
+
+      - name: Download & Setup Inno Setup (If not pre-installed)
+        run: |
+          choco install innosetup -y --no-progress
+
+      - name: Compile Inno Setup Installer
+        run: |
+          iscc installer.iss
+
+      - name: Verify Release Artifacts
+        run: |
+          dir publish
+
+      - name: Create GitHub Release and Upload Installer Asset
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          files: |
+            publish/RoboBackupStudio_*_Setup.exe
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,6 @@
+{
+  "name": "RoboBackup Studio",
+  "description": "Visual Robocopy GUI backup manager, real-time log monitor, scheduler, and C# WPF MVVM project generator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
