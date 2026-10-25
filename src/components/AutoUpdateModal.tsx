@@ -10,7 +10,7 @@ interface GitHubReleaseInfo {
 }
 
 export const AutoUpdateModal: React.FC = () => {
-  const currentVersion = 'v2.16.2';
+  const currentVersion = 'v2.16.5';
   const [isOpen, setIsOpen] = useState(false);
   const [checking, setChecking] = useState(false);
   const [latestRelease, setLatestRelease] = useState<GitHubReleaseInfo | null>(null);
@@ -119,7 +119,7 @@ export const AutoUpdateModal: React.FC = () => {
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">최신 릴리즈 버전:</span>
                 <span className="text-blue-400 font-bold px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20">
-                  {latestRelease ? latestRelease.tag_name : 'v2.16.2 (최신 상태)'}
+                  {latestRelease ? latestRelease.tag_name : 'v2.16.4 (최신 상태)'}
                 </span>
               </div>
               <div className="flex justify-between items-center">
@@ -169,7 +169,7 @@ export const AutoUpdateModal: React.FC = () => {
             </div>
 
             <div className="text-[10px] text-slate-500 text-center border-t border-slate-800/80 pt-3">
-              공식 블로그: <a href="https://ahbivibelog.blogspot.com/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">ahbivibelog.blogspot.com</a> | 소속: CISNET (<a href="https://www.cisnet.co.kr" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">cisnet.co.kr</a>)
+              공식 블로그: <a href="https://ahbiyoutvibe.blogspot.com/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">ahbiyoutvibe.blogspot.com</a> | 소속: CISNET (<a href="https://www.cisnet.co.kr" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">cisnet.co.kr</a>)
             </div>
 
           </div>

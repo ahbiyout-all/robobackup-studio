@@ -12,7 +12,7 @@ echo.
 cd /d "%~dp0"
 
 REM 1. Parse latest version from docs\PATCH_NOTES.md
-set "VERSION=v2.16.0"
+set "VERSION=v2.16.5"
 set "PATCH_FILE=docs\PATCH_NOTES.md"
 if exist "%PATCH_FILE%" (
     for /f "tokens=2 delims=[]" %%A in ('findstr /r /c:"^##.*\[v[0-9]" "%PATCH_FILE%"') do (

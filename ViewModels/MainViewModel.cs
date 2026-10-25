@@ -25,8 +25,8 @@ using RoboBackupStudio.Core;
 namespace RoboBackupStudio.ViewModels
 {
     /// <summary>
-    /// RoboBackup Studio MainViewModel (v2.16.0 - High Performance Robocopy GUI & C# WPF Suite)
-    /// Developer: AhBiYout (ahbivibelog.blogspot.com)
+    /// RoboBackup Studio MainViewModel (v2.16.6 - High Performance Robocopy GUI & C# WPF Suite)
+    /// Developer: AhBiYout (ahbiyoutvibe.blogspot.com)
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
@@ -1626,7 +1626,7 @@ namespace RoboBackupStudio.ViewModels
                 }
             }
             catch { }
-            return "v2.16.3";
+            return "v2.16.4";
         }
 
         public static string CurrentAppVersion => ResolveAppVersion();

@@ -1,5 +1,45 @@
 # RoboBackup Studio 패치 & 릴리즈 노트 (Patch Notes)
 
+## 📌 [v2.16.6] - 2026-10-25
+### 📝 구글 블로거(Blogger/Blogspot) 공식 포스팅 문서 듀얼 모드 생성
+1. **[작성 모드 (서식 있는 텍스트)] 전용 문서 생성 (`docs/GOOGLE_BLOGGER_COMPOSE_MODE.md`)**:
+   - 구글 블로거 비주얼 위지윅 에디터(서식 있는 텍스트 모드)에 바로 복사하여 붙여넣을 수 있는 체계적인 마크다운 포스트 생성.
+   - 제품 핵심 특장점 7가지, 윈도우 기본 복사 및 상용툴 대비 성능 비교표, 초간단 3단계 사용법, 공식 다운로드 및 채널 링크 완비.
+2. **[HTML 편집 모드] 전용 인라인 스타일 문서 생성 (`docs/GOOGLE_BLOGGER_HTML_MODE.html`)**:
+   - 구글 블로거 `< > HTML 보기` 모드에 바로 붙여넣어 사용하는 자체 완결형 인라인 CSS 템플릿 제작.
+   - 블로거 기본 스킨 충돌 방지(인라인 스타일 격리), 반응형 모바일/PC 대응, 모던 다크 히어로 카드, 기능 그리드, 비교 테이블, CTA 버튼 완벽 탑재.
+3. **문서 색인 인덱스 동기화 (`docs/README.md`)**:
+   - `docs/README.md` 목차에 10번, 11번 구글 블로거 포스팅 가이드 항목 추가 및 최신 버전(`v2.16.6`) 동기화.
+4. **버전 메타데이터 일괄 동기화 (v2.16.6)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `src/App.tsx`, `package.json`, `README.md` 일괄 동기화.
+
+---
+
+## 📌 [v2.16.5] - 2026-10-25
+### 🛠️ GitHub 개인정보 보호 및 보안 강화: .aistudio 디렉터리 제외 설정
+1. **Git 추적 제외 설정 (`.gitignore`)**:
+   - AI Studio 내부 설정 및 캐시 데이터가 포함된 `.aistudio/` 디렉터리를 `.gitignore`에 추가하여 GitHub 푸시 시 민감 정보 유출 방지 및 리포지토리 경량화.
+2. **기존 추적 파일 제거 (Untrack)**:
+   - 이미 Git 인덱스에 포함된 `.aistudio/` 하위 파일들을 `git rm --cached` 명령을 통해 추적 해제 처리.
+3. **버전 메타데이터 일괄 동기화 (v2.16.5)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `src/App.tsx`, `package.json`, `README.md`, `push_github.bat` 일괄 동기화.
+
+---
+
+## 📌 [v2.16.4] - 2026-10-25
+### 🚀 제작자 정보 및 공식 채널 브랜딩 메타데이터 최신화
+1. **공식 채널 및 블로그 주소 일괄 업데이트**:
+   - **공식 구글 블로그**: 기존 `ahbivibelog.blogspot.com`에서 `ahbiyoutvibe.blogspot.com`으로 전면 교체.
+   - **GitHub 저장소**: `https://github.com/AhBiYout-all` 프로필 및 관련 리포지토리 링크 최신 상태 반영.
+   - **소속 및 협력사**: `https://www.cisnet.co.kr` 공식 홈페이지 링크 검증 및 적용.
+2. **애플리케이션 전반의 브랜딩 동기화**:
+   - `MainWindow.xaml`, `App.tsx`, `HelpAndLicense.tsx`, `AutoUpdateModal.tsx` 등 UI 요소 내 링크 및 텍스트 수정.
+   - `ViewModels/MainViewModel.cs` 및 `src/utils/robocopy.ts` (C# 템플릿) 내 개발자 메타데이터 갱신.
+3. **버전 메타데이터 일괄 동기화 (v2.16.4)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `src/App.tsx`, `package.json` 일괄 동기화.
+
+---
+
 ## 📌 [v2.16.3] - 2026-10-25
 ### 🛠️ 라이브 동기화(Live Sync) 탭 세로 스크롤바 누락 결함 해결 및 UI 가독성 개선
 1. **라이브 동기화 탭 세로 스크롤 환경 완벽 지원 (`MainWindow.xaml` & `App.tsx`)**:

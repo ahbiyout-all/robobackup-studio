@@ -167,16 +167,16 @@ export default function App() {
             </a>
             <span className="text-slate-600 hidden sm:inline">•</span>
             <a 
-              href="https://ahbivibelog.blogspot.com/" 
+              href="https://ahbiyoutvibe.blogspot.com/" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center gap-1 hover:underline"
             >
-              <span>구글블로그</span>
+              <span>공식블로그</span>
             </a>
           </div>
           <div className="flex items-center space-x-3 shrink-0">
-            <span className="font-mono text-xs text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700/60 font-semibold">v2.16.3</span>
+            <span className="font-mono text-xs text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700/60 font-semibold">v2.16.6</span>
           </div>
         </div>
       </footer>

@@ -2,11 +2,11 @@
 ; RoboBackup Studio - Inno Setup 6 Installation Script
 ; High Performance Robocopy GUI & C# WPF Generator
 ; Developer: AhBiYout
-; Blog: https://ahbivibelog.blogspot.com/
+; Blog: https://ahbiyoutvibe.blogspot.com/
 ; ====================================================================
 
 #define MyAppName "RoboBackup Studio"
-#define MyAppVersion "v2.16.3"
+#define MyAppVersion "v2.16.6"
 #define MyAppPublisher "AhBiYout"
 #define MyAppURL "http://www.cisnet.co.kr/"
 #define MyAppExeName "RoboBackupStudio.exe"

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:RoboBackupStudio.ViewModels"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle, FallbackValue='RoboBackup Studio v2.16.3 - High Performance Robocopy Studio'}" Height="880" Width="1160"
+        Title="{Binding WindowTitle, FallbackValue='RoboBackup Studio v2.16.6 - High Performance Robocopy Studio'}" Height="880" Width="1160"
         Icon="robocopy.png"
         WindowStartupLocation="CenterScreen" Background="{Binding ThemeWindowBackground}">
 
@@ -141,7 +141,7 @@
                             <TextBlock Text="RoboBackup" Foreground="{Binding ThemeHeaderForeground}" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"/>
                             <TextBlock Text="Studio" Foreground="#60a5fa" FontSize="20" FontWeight="Bold" Margin="4,0,0,0"/>
                             <Border Background="#10b981" CornerRadius="10" Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.16.3 (Dual)'}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.16.6 (Dual)'}" Foreground="White" FontSize="11" FontWeight="Bold"/>
                             </Border>
                             <!-- GitHub Update Check Button (v2.16.0) -->
                             <Button Command="{Binding CheckUpdateCommand}" Height="24" Padding="8,1" Margin="8,0,0,0" Background="#1e293b" Foreground="#38bdf8" BorderBrush="#0284c7" BorderThickness="1.2" VerticalAlignment="Center" Cursor="Hand" ToolTip="GitHub Releases 실시간 업데이트 확인">
@@ -2244,15 +2244,15 @@
 
                                             <StackPanel Grid.Column="1" Margin="3,0,3,0">
                                                 <TextBlock Text="구글 블로그 (Tech Blog)" Foreground="#94a3b8" FontSize="10"/>
-                                                <Button Command="{Binding OpenUrlCommand}" CommandParameter="https://ahbivibelog.blogspot.com/" Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand" HorizontalAlignment="Left" Margin="0,2,0,0" ToolTip="구글 블로그 (https://ahbivibelog.blogspot.com/) 열기">
-                                                    <TextBlock Text="https://ahbivibelog.blogspot.com/" Foreground="#fbbf24" FontWeight="SemiBold" FontSize="11" TextDecorations="Underline"/>
+                                                <Button Command="{Binding OpenUrlCommand}" CommandParameter="https://ahbiyoutvibe.blogspot.com/" Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand" HorizontalAlignment="Left" Margin="0,2,0,0" ToolTip="공식 구글 블로그 (https://ahbiyoutvibe.blogspot.com/) 열기">
+                                                    <TextBlock Text="https://ahbiyoutvibe.blogspot.com/" Foreground="#fbbf24" FontWeight="SemiBold" FontSize="11" TextDecorations="Underline"/>
                                                 </Button>
                                             </StackPanel>
 
                                             <StackPanel Grid.Column="2" Margin="6,0,0,0">
                                                 <TextBlock Text="회사 홈페이지 (CISNET)" Foreground="#94a3b8" FontSize="10"/>
-                                                <Button Command="{Binding OpenUrlCommand}" CommandParameter="http://www.cisnet.co.kr/" Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand" HorizontalAlignment="Left" Margin="0,2,0,0" ToolTip="회사 홈페이지 (http://www.cisnet.co.kr/) 열기">
-                                                    <TextBlock Text="http://www.cisnet.co.kr/" Foreground="#38bdf8" FontWeight="SemiBold" FontSize="11" TextDecorations="Underline"/>
+                                                <Button Command="{Binding OpenUrlCommand}" CommandParameter="https://www.cisnet.co.kr/" Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand" HorizontalAlignment="Left" Margin="0,2,0,0" ToolTip="공식 홈페이지 (https://www.cisnet.co.kr/) 열기">
+                                                    <TextBlock Text="https://www.cisnet.co.kr/" Foreground="#38bdf8" FontWeight="SemiBold" FontSize="11" TextDecorations="Underline"/>
                                                 </Button>
                                             </StackPanel>
                                         </Grid>
@@ -2275,17 +2275,17 @@
                 <TextBlock Text="개발자: " Foreground="#64748b" FontSize="11" VerticalAlignment="Center"/>
                 <TextBlock Text="AhBiYout" Foreground="#94a3b8" FontWeight="SemiBold" FontSize="11" VerticalAlignment="Center"/>
                 <TextBlock Text=" • " Foreground="#475569" FontSize="11" VerticalAlignment="Center"/>
-                <Button Command="{Binding OpenUrlCommand}" CommandParameter="http://www.cisnet.co.kr/"
+                <Button Command="{Binding OpenUrlCommand}" CommandParameter="https://www.cisnet.co.kr/"
                         Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand" VerticalAlignment="Center">
-                    <TextBlock Text="회사홈페이지 (CISNET)" Foreground="#60a5fa" FontSize="11" TextDecorations="Underline"/>
+                    <TextBlock Text="공식홈페이지 (CISNET)" Foreground="#60a5fa" FontSize="11" TextDecorations="Underline"/>
                 </Button>
                 <TextBlock Text=" • " Foreground="#475569" FontSize="11" VerticalAlignment="Center"/>
-                <Button Command="{Binding OpenUrlCommand}" CommandParameter="https://ahbivibelog.blogspot.com/"
+                <Button Command="{Binding OpenUrlCommand}" CommandParameter="https://ahbiyoutvibe.blogspot.com/"
                         Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand" VerticalAlignment="Center">
-                    <TextBlock Text="구글블로그" Foreground="#60a5fa" FontSize="11" TextDecorations="Underline"/>
+                    <TextBlock Text="공식블로그" Foreground="#60a5fa" FontSize="11" TextDecorations="Underline"/>
                 </Button>
             </StackPanel>
-            <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.16.3 (Dual)'}" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.16.4 (Dual)'}" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         </DockPanel>
 
         <!-- Easy Backup Wizard Modal Overlay (v2.12.0) -->
@@ -2736,7 +2736,7 @@
                             <Border Grid.Column="0" Background="#0f172a" CornerRadius="8" Padding="12,10" BorderThickness="1" BorderBrush="#334155">
                                 <StackPanel HorizontalAlignment="Center">
                                     <TextBlock Text="현재 실행 중인 버전" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{Binding CurrentAppVersion, FallbackValue='v2.16.3'}" Foreground="#34d399" FontSize="16" FontWeight="Bold" Margin="0,4,0,0" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding CurrentAppVersion, FallbackValue='v2.16.4'}" Foreground="#34d399" FontSize="16" FontWeight="Bold" Margin="0,4,0,0" HorizontalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
 
@@ -2745,7 +2745,7 @@
                             <Border Grid.Column="2" Background="#0f172a" CornerRadius="8" Padding="12,10" BorderThickness="1" BorderBrush="#0284c7">
                                 <StackPanel HorizontalAlignment="Center">
                                     <TextBlock Text="GitHub 최신 릴리스" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{Binding LatestReleaseVersion, FallbackValue='v2.16.3'}" Foreground="#38bdf8" FontSize="16" FontWeight="Bold" Margin="0,4,0,0" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding LatestReleaseVersion, FallbackValue='v2.16.4'}" Foreground="#38bdf8" FontSize="16" FontWeight="Bold" Margin="0,4,0,0" HorizontalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
