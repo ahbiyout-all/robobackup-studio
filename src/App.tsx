@@ -69,6 +69,8 @@ export default function App() {
     status: 'idle',
     totalFiles: 0,
     copiedFiles: 0,
+    totalDirs: 0,
+    copiedDirs: 0,
     totalBytes: 0,
     copiedBytes: 0,
     currentSpeedMbps: 0,

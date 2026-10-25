@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:RoboBackupStudio.ViewModels"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle, FallbackValue='RoboBackup Studio v2.13.0 - High Performance Robocopy Studio'}" Height="880" Width="1160"
+        Title="{Binding WindowTitle, FallbackValue='RoboBackup Studio v2.15.0 - High Performance Robocopy Studio'}" Height="880" Width="1160"
         Icon="robocopy.png"
         WindowStartupLocation="CenterScreen" Background="{Binding ThemeWindowBackground}">
 
@@ -141,7 +141,7 @@
                             <TextBlock Text="RoboBackup" Foreground="{Binding ThemeHeaderForeground}" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"/>
                             <TextBlock Text="Studio" Foreground="#60a5fa" FontSize="20" FontWeight="Bold" Margin="4,0,0,0"/>
                             <Border Background="#10b981" CornerRadius="10" Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.13.0 (Dual)'}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.15.0 (Dual)'}" Foreground="White" FontSize="11" FontWeight="Bold"/>
                             </Border>
                         </StackPanel>
                         <TextBlock Text="초고속 파일 백업 &amp; 동기화 관리 시스템" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
@@ -779,6 +779,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
                         <Border Grid.Column="0" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
@@ -800,21 +801,34 @@
                             </StackPanel>
                         </Border>
 
-                        <Border Grid.Column="2" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="0,14,8,14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
+                        <Border Grid.Column="2" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
+                            <StackPanel>
+                                <TextBlock Text="복사된 디렉터리 수" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,2,0,4">
+                                    <TextBlock Text="{Binding CopiedDirs}" Foreground="#a855f7" FontSize="22" FontWeight="Bold"/>
+                                    <TextBlock Text="/" Foreground="{Binding ThemeTextSecondary}" FontSize="16" Margin="4,4,4,0"/>
+                                    <TextBlock Text="{Binding TotalDirs}" Foreground="{Binding ThemeTextSecondary}" FontSize="16" Margin="0,4,0,0"/>
+                                </StackPanel>
+                                <ProgressBar Value="{Binding DirsProgressPercent}" Height="4" Background="{Binding ThemeInnerBackground}" Foreground="#a855f7" BorderThickness="0" Margin="0,2,0,4"/>
+                                <TextBlock Text="{Binding DirsProgressText, FallbackValue='0% 완료'}" Foreground="{Binding ThemeTextSecondary}" FontSize="10"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="3" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="0,14,8,14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
                             <StackPanel Margin="14,0,0,0">
                                 <TextBlock Text="전송 데이터 용량" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
                                 <TextBlock Text="{Binding CopiedBytesText}" Foreground="#f59e0b" FontSize="16" FontWeight="Bold" Margin="0,4,0,0"/>
                             </StackPanel>
                         </Border>
 
-                        <Border Grid.Column="3" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
+                        <Border Grid.Column="4" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
                             <StackPanel>
                                 <TextBlock Text="현재 전송 속도" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
                                 <TextBlock Text="{Binding CurrentSpeedText}" Foreground="#6366f1" FontSize="22" FontWeight="Bold" Margin="0,2,0,0"/>
                             </StackPanel>
                         </Border>
 
-                        <Border Grid.Column="4" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
+                        <Border Grid.Column="5" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
                             <StackPanel>
                                 <TextBlock Text="남은 예상 시간 (ETA)" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
                                 <TextBlock Text="{Binding EstimatedRemainingTimeText, FallbackValue='-'}" Foreground="#38bdf8" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
@@ -1193,7 +1207,7 @@
                                                         <TextBlock Text="버전 정보 포함 앱 이름 자동 등록" Foreground="#a7f3d0" FontSize="10" FontWeight="Bold"/>
                                                     </Border>
                                                 </StackPanel>
-                                                <TextBlock Text="NAS(SMB 포트 445/139), 원격 공유 폴더 및 백그라운드 서비스의 원활한 네트워크 통신을 위해 방화벽에 버전 정보가 명시된 앱 이름(예: 'RoboBackup Studio v2.13.0')으로 인바운드/아웃바운드 허용 규칙을 등록합니다." Foreground="#94a3b8" FontSize="11" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                                <TextBlock Text="NAS(SMB 포트 445/139), 원격 공유 폴더 및 백그라운드 서비스의 원활한 네트워크 통신을 위해 방화벽에 버전 정보가 명시된 앱 이름(예: 'RoboBackup Studio v2.15.0')으로 인바운드/아웃바운드 허용 규칙을 등록합니다." Foreground="#94a3b8" FontSize="11" Margin="0,4,0,0" TextWrapping="Wrap"/>
                                                 <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
                                                     <TextBlock Text="등록 대상 규칙 명칭: " Foreground="#64748b" FontSize="11"/>
                                                     <TextBlock Text="{Binding FirewallRuleBaseName}" Foreground="#60a5fa" FontSize="11" FontWeight="Bold"/>
@@ -1689,7 +1703,7 @@
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <TextBlock Text="🧩 엔터프라이즈 전용 코어 DLL 모듈 스위트" Foreground="#f8fafc" FontSize="16" FontWeight="Bold"/>
                                         <Border Background="#10b981" CornerRadius="6" Padding="6,2" Margin="8,0,0,0">
-                                            <TextBlock Text="v2.13.0 Core Suite &amp; Wizard Studio" Foreground="White" FontSize="10" FontWeight="Bold"/>
+                                            <TextBlock Text="v2.15.0 Core Suite &amp; Wizard Studio" Foreground="White" FontSize="10" FontWeight="Bold"/>
                                         </Border>
                                     </StackPanel>
                                     <TextBlock Text="Robocopy 실행 전후의 안전성과 성능을 극대화하는 5대 고성능 순수 C# 네이티브 코어 엔진 모듈입니다. 모듈별 단계별 마법사로 안전하게 설정하세요." Foreground="#94a3b8" FontSize="12" Margin="0,4,0,0"/>
@@ -2104,7 +2118,7 @@
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="🧩 순수 창작 5대 코어 DLL 아키텍처 &amp; 세부 동작 원리 명세서" Foreground="#c084fc" FontSize="14" FontWeight="Bold"/>
                                         <Border Background="#581c87" CornerRadius="6" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
-                                            <TextBlock Text="v2.13.0 Core Suite" Foreground="#e9d5ff" FontSize="10" FontWeight="Bold"/>
+                                            <TextBlock Text="v2.15.0 Core Suite" Foreground="#e9d5ff" FontSize="10" FontWeight="Bold"/>
                                         </Border>
                                     </StackPanel>
                                     <Button Command="{Binding OpenUrlCommand}" CommandParameter="docs/CORE_DLL_ARCHITECTURE.md" Background="#6b21a8" Foreground="White" Padding="10,4" BorderThickness="0" Cursor="Hand" HorizontalAlignment="Right" VerticalAlignment="Center">
@@ -2262,7 +2276,7 @@
                     <TextBlock Text="구글블로그" Foreground="#60a5fa" FontSize="11" TextDecorations="Underline"/>
                 </Button>
             </StackPanel>
-            <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.13.0 (Dual)'}" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.15.0 (Dual)'}" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         </DockPanel>
 
         <!-- Easy Backup Wizard Modal Overlay (v2.12.0) -->

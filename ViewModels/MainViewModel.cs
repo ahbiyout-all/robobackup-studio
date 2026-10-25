@@ -22,7 +22,7 @@ using RoboBackupStudio.Core;
 namespace RoboBackupStudio.ViewModels
 {
     /// <summary>
-    /// RoboBackup Studio MainViewModel (v2.13.0 - High Performance Robocopy GUI & C# WPF Suite)
+    /// RoboBackup Studio MainViewModel (v2.15.0 - High Performance Robocopy GUI & C# WPF Suite)
     /// Developer: AhBiYout (ahbivibelog.blogspot.com)
     /// </summary>
     public class MainViewModel : ViewModelBase
@@ -98,6 +98,7 @@ namespace RoboBackupStudio.ViewModels
         private int _liveFilesExtras = 0;
         private int _liveFilesMismatch = 0;
         private int _liveDirsCopied = 0;
+        private int _liveSequenceNum = 0;
         private long _liveBytesCopied = 0;
 
         // Realtime Console Stream & Live HUD Options (New v2.7.3)
@@ -971,6 +972,37 @@ namespace RoboBackupStudio.ViewModels
             set { _totalFiles = value; OnPropertyChanged(); }
         }
 
+        private int _copiedDirs = 0;
+        public int CopiedDirs
+        {
+            get => _copiedDirs;
+            set
+            {
+                _copiedDirs = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DirsProgressPercent));
+                OnPropertyChanged(nameof(DirsProgressText));
+            }
+        }
+
+        private int _totalDirs = 1;
+        public int TotalDirs
+        {
+            get => _totalDirs;
+            set
+            {
+                _totalDirs = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DirsProgressPercent));
+                OnPropertyChanged(nameof(DirsProgressText));
+            }
+        }
+
+        public int DirsProgressPercent => TotalDirs > 0 ? Math.Min(100, (int)((double)CopiedDirs / TotalDirs * 100)) : 0;
+        public string DirsProgressText => TotalDirs > 0 
+            ? $"{DirsProgressPercent}% ({CopiedDirs:N0} / {TotalDirs:N0} 디렉터리)" 
+            : $"{CopiedDirs:N0}개 디렉터리";
+
         public string CopiedBytesText
         {
             get => _copiedBytesText;
@@ -1555,7 +1587,7 @@ namespace RoboBackupStudio.ViewModels
                 }
             }
             catch { }
-            return "v2.13.0";
+            return "v2.15.0";
         }
 
         public static string CurrentAppVersion => ResolveAppVersion();
@@ -3428,11 +3460,55 @@ namespace RoboBackupStudio.ViewModels
             _liveFilesExtras = 0;
             _liveFilesMismatch = 0;
             _liveDirsCopied = 0;
+            _liveSequenceNum = 0;
+            _copiedDirs = 0;
             _liveBytesCopied = 0;
             CopiedFiles = 0;
+            CopiedDirs = 0;
             CopiedBytesText = "0 MB / 집계 중";
             CurrentSpeedText = "0.0 MB/s";
             EstimatedRemainingTimeText = "계산 중...";
+
+            // [RoboDirectoryCrawler] 원본 디렉터리 트리 안전 재귀 크롤러 실행 (/XD, /XJ, 권한보호 완벽 처리)
+            if (!string.IsNullOrWhiteSpace(SourcePath) && Directory.Exists(SourcePath))
+            {
+                var crawler = new RoboDirectoryCrawler();
+                var crawlOptions = new RoboDirectoryCrawler.CrawlOptions
+                {
+                    IncludeSubdirectories = IsCopySubdirectoriesWithEmpty || IsCopySubdirectoriesNoEmpty,
+                    ExcludeEmptyDirectories = IsCopySubdirectoriesNoEmpty,
+                    ExcludeJunctions = IsExcludeJunctions,
+                    ExcludeDirPatterns = !string.IsNullOrWhiteSpace(ExcludedDirs)
+                        ? ExcludedDirs.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList()
+                        : new List<string>(),
+                    ExcludeFilePatterns = !string.IsNullOrWhiteSpace(ExcludedFiles)
+                        ? ExcludedFiles.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList()
+                        : new List<string>()
+                };
+
+                var progress = new Progress<RoboDirectoryCrawler.CrawlProgressInfo>(info =>
+                {
+                    Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
+                    {
+                        if (info.DiscoveredDirs > 0 && TotalDirs < info.DiscoveredDirs) TotalDirs = info.DiscoveredDirs;
+                        if (info.DiscoveredFiles > 0 && TotalFiles < info.DiscoveredFiles) TotalFiles = info.DiscoveredFiles;
+                    }));
+                });
+
+                _ = crawler.CrawlAsync(SourcePath, crawlOptions, CancellationToken.None, progress)
+                    .ContinueWith(t =>
+                    {
+                        if (t.IsCompletedSuccessfully && t.Result != null)
+                        {
+                            Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
+                            {
+                                if (t.Result.TotalDirectories > 0) TotalDirs = t.Result.TotalDirectories;
+                                if (t.Result.TotalFiles > 0) TotalFiles = t.Result.TotalFiles;
+                                Logs.Add($"[{DateTime.Now:HH:mm:ss}] [디렉터리 크롤러] 사전 분석 완료: 총 {t.Result.TotalDirectories:N0}개 하위 디렉터리, {t.Result.TotalFiles:N0}개 파일 식별 ({t.Result.Elapsed.TotalMilliseconds:F0}ms 소요)");
+                            }));
+                        }
+                    });
+            }
 
             Logs.Add($"[{DateTime.Now:HH:mm:ss}] === Robocopy 백업 작업 시작 ===");
             Logs.Add($"[{DateTime.Now:HH:mm:ss}] 실행 명령어: {RobocopyCommand}");
@@ -3532,9 +3608,9 @@ namespace RoboBackupStudio.ViewModels
                                 {
                                     Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                                     {
-                                        Logs.Add(e.Data);
-                                        LatestLogLine = e.Data;
-                                        ParseLogLine(e.Data);
+                                        string formattedLine = ParseLogLine(e.Data);
+                                        Logs.Add(formattedLine);
+                                        LatestLogLine = formattedLine;
                                         if (IsAutoScrollEnabled)
                                         {
                                             RequestScrollToBottom?.Invoke();
@@ -3614,6 +3690,8 @@ namespace RoboBackupStudio.ViewModels
                                 // 상단 메트릭 요약 보정
                                 if (int.TryParse(report.FilesCopied, out int fc)) CopiedFiles = fc;
                                 if (int.TryParse(report.FilesTotal, out int ft) && ft > 0) TotalFiles = ft;
+                                if (int.TryParse(report.DirsCopied, out int dc)) CopiedDirs = dc;
+                                if (int.TryParse(report.DirsTotal, out int dt) && dt > 0) TotalDirs = dt;
                                 if (!string.IsNullOrEmpty(report.BytesCopied) && report.BytesCopied != "0")
                                     CopiedBytesText = $"{report.BytesCopied} / {report.BytesTotal}";
                                 if (!string.IsNullOrEmpty(report.SpeedBytesPerSec) && report.SpeedBytesPerSec != "-")
@@ -3678,134 +3756,165 @@ namespace RoboBackupStudio.ViewModels
             }
         }
 
-        private void ParseLogLine(string line)
+        private string ParseLogLine(string line)
         {
-            if (string.IsNullOrWhiteSpace(line)) return;
-
-            // 1. Check percentage
-            if (line.Contains("%"))
+            try
             {
-                var match = System.Text.RegularExpressions.Regex.Match(line, @"(\d{1,3}(?:\.\d+)?)\s*\%");
-                if (match.Success && double.TryParse(match.Groups[1].Value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double percentVal))
+                if (string.IsNullOrWhiteSpace(line)) return line;
+
+                // 1. Check percentage
+                if (line.Contains("%"))
                 {
-                    ProgressPercent = Math.Min(100, Math.Max(ProgressPercent, (int)percentVal));
-                }
-            }
-
-            // 2. Check directory change
-            if (line.Contains("New Dir") || line.Contains("새 디렉터리") || line.Contains("*EXTRA Dir") || line.Contains("*추가 디렉터리") ||
-                System.Text.RegularExpressions.Regex.IsMatch(line, @"^\s*\d+\s+[a-zA-Z]:\\"))
-            {
-                _liveDirsCopied++;
-            }
-
-            // 3. Check file activity & size (지원: 영문/한글 Robocopy 및 /NC, 100% 완료 패턴)
-            bool isFileActivity = line.Contains("New File") || line.Contains("새 파일") ||
-                                  line.Contains("Newer") || line.Contains("최신") ||
-                                  line.Contains("Older") || line.Contains("이전") ||
-                                  line.Contains("Modified") || line.Contains("변경됨") ||
-                                  line.Contains("Tweaked") || line.Contains("조정됨") ||
-                                  line.Contains("100%") || line.Contains("100.0%");
-
-            if (!isFileActivity && !line.Contains("*EXTRA") && !line.Contains("*EXCLUDE") && !line.Contains("Same") && !line.Contains("동일함") && !line.Contains("*FAIL") && !line.Contains("ERROR"))
-            {
-                // 정규식으로 크기와 파일명이 나열된 파일 복사 라인인지 판별 (클래스 표시 생략 시 대응)
-                if (System.Text.RegularExpressions.Regex.IsMatch(line, @"^\s*(?:\d+(?:\.\d+)?\s*[kmgtbKMGTB]?|\d+)\s+[\w\.\-\_\(\)\\\/:]+"))
-                {
-                    isFileActivity = true;
-                }
-            }
-
-            if (isFileActivity)
-            {
-                _liveFilesCopied++;
-                CopiedFiles = _liveFilesCopied;
-
-                // Try extract file size from tokens
-                long extractedBytes = ExtractFileSizeFromRobocopyLine(line);
-                if (extractedBytes > 0)
-                {
-                    _liveBytesCopied += extractedBytes;
-                }
-                else
-                {
-                    _liveBytesCopied += 1024 * 512; // Fallback ~512KB if size was not listed
-                }
-
-                string formattedCopied = FormatByteSize(_liveBytesCopied);
-                CopiedBytesText = $"{formattedCopied} 전송 완료";
-
-                double elapsedSec = Math.Max(0.5, (DateTime.Now - _syncStartTime).TotalSeconds);
-                double liveSpeedMb = (_liveBytesCopied / (1024.0 * 1024.0)) / elapsedSec;
-                CurrentSpeedText = $"{liveSpeedMb:F1} MB/s";
-
-                // 실시간 전송 속도 및 잔여 데이터 기반 예상 남은 시간(ETA) 계산
-                double speedBytesPerSec = (double)_liveBytesCopied / elapsedSec;
-                if (speedBytesPerSec > 0)
-                {
-                    if (TotalFiles > 0 && CopiedFiles > 0)
+                    var match = System.Text.RegularExpressions.Regex.Match(line, @"(\d{1,3}(?:\.\d+)?)\s*\%");
+                    if (match.Success && double.TryParse(match.Groups[1].Value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double percentVal))
                     {
-                        double avgBytesPerFile = (double)_liveBytesCopied / Math.Max(1, CopiedFiles);
-                        long remainingFiles = Math.Max(0, TotalFiles - CopiedFiles);
-                        long estimatedRemainingBytes = (long)(remainingFiles * avgBytesPerFile);
-                        if (estimatedRemainingBytes > 0)
+                        ProgressPercent = Math.Min(100, Math.Max(ProgressPercent, (int)percentVal));
+                    }
+                }
+
+                // 2. Check directory change
+                bool isDirActivity = line.Contains("New Dir") || line.Contains("새 디렉터리") ||
+                                     line.Contains("*EXTRA Dir") || line.Contains("*추가 디렉터리") ||
+                                     System.Text.RegularExpressions.Regex.IsMatch(line, @"^\s*\d+\s+(?:[a-zA-Z]:\\|\\\\)");
+
+                if (isDirActivity)
+                {
+                    _liveDirsCopied++;
+                    CopiedDirs = _liveDirsCopied;
+                    _liveSequenceNum++;
+                    string trimmedDir = line.Trim();
+                    CurrentActiveFile = "디렉터리 동기화";
+                    CurrentActiveFileDetail = $"[#{_liveSequenceNum}] [디렉터리] {trimmedDir}";
+                    return $"[#{_liveSequenceNum}] {line.TrimStart()}";
+                }
+
+                // 3. Check file activity & size (지원: 영문/한글 Robocopy 및 /NC, 100% 완료 패턴)
+                bool isFileActivity = line.Contains("New File") || line.Contains("새 파일") ||
+                                      line.Contains("Newer") || line.Contains("최신") ||
+                                      line.Contains("Older") || line.Contains("이전") ||
+                                      line.Contains("Modified") || line.Contains("변경됨") ||
+                                      line.Contains("Tweaked") || line.Contains("조정됨") ||
+                                      line.Contains("100%") || line.Contains("100.0%");
+
+                if (!isFileActivity && !line.Contains("*EXTRA") && !line.Contains("*EXCLUDE") && !line.Contains("Same") && !line.Contains("동일함") && !line.Contains("*FAIL") && !line.Contains("ERROR"))
+                {
+                    try
+                    {
+                        // 정규식으로 크기와 파일명이 나열된 파일 복사 라인인지 판별 (클래스 표시 생략 시 대응)
+                        if (System.Text.RegularExpressions.Regex.IsMatch(line, @"^\s*(?:\d+(?:\.\d+)?\s*[kmgtbKMGTB]?|\d+)\s+[^\s]+"))
                         {
-                            double remSec = (double)estimatedRemainingBytes / speedBytesPerSec;
-                            EstimatedRemainingTimeText = FormatEstimatedRemainingTime(remSec);
+                            isFileActivity = true;
                         }
-                        else
-                        {
-                            EstimatedRemainingTimeText = "0초 (완료)";
-                        }
+                    }
+                    catch { }
+                }
+
+                if (isFileActivity)
+                {
+                    _liveFilesCopied++;
+                    CopiedFiles = _liveFilesCopied;
+                    _liveSequenceNum++;
+
+                    // Try extract file size from tokens
+                    long extractedBytes = ExtractFileSizeFromRobocopyLine(line);
+                    if (extractedBytes > 0)
+                    {
+                        _liveBytesCopied += extractedBytes;
                     }
                     else
                     {
-                        EstimatedRemainingTimeText = "계산 중...";
+                        _liveBytesCopied += 1024 * 512; // Fallback ~512KB if size was not listed
                     }
+
+                    string formattedCopied = FormatByteSize(_liveBytesCopied);
+                    CopiedBytesText = $"{formattedCopied} 전송 완료";
+
+                    double elapsedSec = Math.Max(0.5, (DateTime.Now - _syncStartTime).TotalSeconds);
+                    double liveSpeedMb = (_liveBytesCopied / (1024.0 * 1024.0)) / elapsedSec;
+                    CurrentSpeedText = $"{liveSpeedMb:F1} MB/s";
+
+                    // 실시간 전송 속도 및 잔여 데이터 기반 예상 남은 시간(ETA) 계산
+                    double speedBytesPerSec = (double)_liveBytesCopied / elapsedSec;
+                    if (speedBytesPerSec > 0)
+                    {
+                        if (TotalFiles > 0 && CopiedFiles > 0)
+                        {
+                            double avgBytesPerFile = (double)_liveBytesCopied / Math.Max(1, CopiedFiles);
+                            long remainingFiles = Math.Max(0, TotalFiles - CopiedFiles);
+                            long estimatedRemainingBytes = (long)(remainingFiles * avgBytesPerFile);
+                            if (estimatedRemainingBytes > 0)
+                            {
+                                double remSec = (double)estimatedRemainingBytes / speedBytesPerSec;
+                                EstimatedRemainingTimeText = FormatEstimatedRemainingTime(remSec);
+                            }
+                            else
+                            {
+                                EstimatedRemainingTimeText = "0초 (완료)";
+                            }
+                        }
+                        else
+                        {
+                            EstimatedRemainingTimeText = "계산 중...";
+                        }
+                    }
+
+                    string trimmed = line.Trim();
+                    string tag = "전송 중";
+                    if (trimmed.Contains("New File") || trimmed.Contains("새 파일")) tag = "신규 파일 (New File)";
+                    else if (trimmed.Contains("Modified") || trimmed.Contains("변경됨")) tag = "수정 갱신 (Modified)";
+                    else if (trimmed.Contains("Newer") || trimmed.Contains("최신")) tag = "최신 덮어쓰기 (Newer)";
+                    else if (trimmed.Contains("Older") || trimmed.Contains("이전")) tag = "구버전 (Older)";
+                    else if (trimmed.Contains("Tweaked") || trimmed.Contains("조정됨")) tag = "속성 조정 (Tweaked)";
+
+                    string[] tokens = trimmed.Split(new[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    string fileName = tokens.Length > 0 ? tokens[tokens.Length - 1] : trimmed;
+                    string fileSize = tokens.Length >= 3 ? tokens[tokens.Length - 2] : "";
+
+                    CurrentActiveFile = fileName;
+                    CurrentActiveFileDetail = $"[#{_liveSequenceNum}] [{tag}] {fileSize} - {fileName}".Trim();
+
+                    return $"[#{_liveSequenceNum}] {line.TrimStart()}";
+                }
+                else if (line.Contains("*EXTRA File") || line.Contains("*EXTRA") || line.Contains("*추가"))
+                {
+                    _liveFilesExtras++;
+                    CurrentActiveFile = "대상 정리 (*EXTRA)";
+                    CurrentActiveFileDetail = line.Trim();
+                    return line;
+                }
+                else if (line.Contains("*EXCLUDE File") || line.Contains("*EXCLUDE") || line.Contains("*EXCLUDED") || line.Contains("Same") || line.Contains("동일함") || line.Contains("*제외"))
+                {
+                    _liveFilesSkipped++;
+                    CurrentActiveFile = "제외/동일 건너뜀 (Skip)";
+                    CurrentActiveFileDetail = line.Trim();
+                    return line;
+                }
+                else if (line.Contains("*MISMATCH") || line.Contains("*불일치"))
+                {
+                    _liveFilesMismatch++;
+                    return line;
+                }
+                else if (line.Contains("*FAIL") || line.Contains("ERROR ") || line.Contains(" 오류 ") || line.Contains("오류:"))
+                {
+                    _liveFilesFailed++;
+                    CurrentActiveFile = "전송 실패/오류";
+                    CurrentActiveFileDetail = line.Trim();
+                    return line;
+                }
+                else if (line.Trim().StartsWith("Total") || line.Trim().StartsWith("Dirs :") || line.Trim().StartsWith("Files :") || line.Trim().StartsWith("Bytes :") ||
+                         line.Trim().StartsWith("디렉터리 :") || line.Trim().StartsWith("파일 :") || line.Trim().StartsWith("바이트 :"))
+                {
+                    CurrentActiveFile = "동기화 요약 통계 집계 중...";
+                    CurrentActiveFileDetail = line.Trim();
+                    return line;
                 }
 
-                string trimmed = line.Trim();
-                string tag = "전송 중";
-                if (trimmed.Contains("New File") || trimmed.Contains("새 파일")) tag = "신규 파일 (New File)";
-                else if (trimmed.Contains("Modified") || trimmed.Contains("변경됨")) tag = "수정 갱신 (Modified)";
-                else if (trimmed.Contains("Newer") || trimmed.Contains("최신")) tag = "최신 덮어쓰기 (Newer)";
-                else if (trimmed.Contains("Older") || trimmed.Contains("이전")) tag = "구버전 (Older)";
-                else if (trimmed.Contains("Tweaked") || trimmed.Contains("조정됨")) tag = "속성 조정 (Tweaked)";
-
-                string[] tokens = trimmed.Split(new[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                string fileName = tokens.Length > 0 ? tokens[tokens.Length - 1] : trimmed;
-                string fileSize = tokens.Length >= 3 ? tokens[tokens.Length - 2] : "";
-
-                CurrentActiveFile = fileName;
-                CurrentActiveFileDetail = $"[{tag}] {fileSize} - {fileName}".Trim();
+                return line;
             }
-            else if (line.Contains("*EXTRA File") || line.Contains("*EXTRA") || line.Contains("*추가"))
+            catch (Exception ex)
             {
-                _liveFilesExtras++;
-                CurrentActiveFile = "대상 정리 (*EXTRA)";
-                CurrentActiveFileDetail = line.Trim();
-            }
-            else if (line.Contains("*EXCLUDE File") || line.Contains("*EXCLUDE") || line.Contains("*EXCLUDED") || line.Contains("Same") || line.Contains("동일함") || line.Contains("*제외"))
-            {
-                _liveFilesSkipped++;
-                CurrentActiveFile = "제외/동일 건너뜀 (Skip)";
-                CurrentActiveFileDetail = line.Trim();
-            }
-            else if (line.Contains("*MISMATCH") || line.Contains("*불일치"))
-            {
-                _liveFilesMismatch++;
-            }
-            else if (line.Contains("*FAIL") || line.Contains("ERROR ") || line.Contains(" 오류 ") || line.Contains("오류:"))
-            {
-                _liveFilesFailed++;
-                CurrentActiveFile = "전송 실패/오류";
-                CurrentActiveFileDetail = line.Trim();
-            }
-            else if (line.Trim().StartsWith("Total") || line.Trim().StartsWith("Dirs :") || line.Trim().StartsWith("Files :") || line.Trim().StartsWith("Bytes :") ||
-                     line.Trim().StartsWith("디렉터리 :") || line.Trim().StartsWith("파일 :") || line.Trim().StartsWith("바이트 :"))
-            {
-                CurrentActiveFile = "동기화 요약 통계 집계 중...";
-                CurrentActiveFileDetail = line.Trim();
+                App.LogServiceEvent($"ParseLogLine error: {ex.Message}");
+                return line;
             }
         }
 
@@ -3827,7 +3936,7 @@ namespace RoboBackupStudio.ViewModels
         {
             try
             {
-                var match = System.Text.RegularExpressions.Regex.Match(line, @"\b(\d+(?:\.\d+)?)\s*([kmgtbKMGTB]?)\b(?=\s+[\w\.\-\_\(\)\\\/:]+)");
+                var match = System.Text.RegularExpressions.Regex.Match(line, @"\b(\d+(?:\.\d+)?)\s*([kmgtbKMGTB]?)\b(?=\s+[^\s]+)");
                 if (match.Success)
                 {
                     string numStr = match.Groups[1].Value;

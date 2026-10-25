@@ -72,7 +72,7 @@ namespace RoboBackupStudio.Core
                             info.ShadowCopyVolume = matchVolume.Groups[1].Value.Trim().TrimEnd('\\');
                         }
 
-                        var matchId = Regex.Match(output, @"(?:Shadow Copy ID|섀도 복사본 ID)\s*:\s*\{?([a-fA-F0-9\-]+)\}?", RegexOptions.IgnoreCase);
+                        var matchId = Regex.Match(output, @"(?:Shadow Copy ID|섀도 복사본 ID)\s*:\s*\{?([a-fA-F0-9-]+)\}?", RegexOptions.IgnoreCase);
                         if (matchId.Success)
                         {
                             info.ShadowId = matchId.Groups[1].Value.Trim();

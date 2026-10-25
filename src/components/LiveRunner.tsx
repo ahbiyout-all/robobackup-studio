@@ -130,6 +130,56 @@ export interface RobocopySummaryReportState {
   exitCodeBadgeColor: string;
 }
 
+/**
+ * Recursive Directory Crawler
+ * Safely analyzes the hierarchical directory tree structure of backup targets,
+ * respecting excluded directories (/XD) and empty directory filtering (/S).
+ */
+export interface CrawlDirectoryResult {
+  totalDirs: number;
+  totalFiles: number;
+  totalBytes: number;
+  subdirectories: string[];
+}
+
+export const crawlDirectoryStructure = (
+  files: ScannedFileInfo[],
+  excludeDirPatterns: string[] = []
+): CrawlDirectoryResult => {
+  const dirSet = new Set<string>();
+
+  for (const file of files) {
+    const rawParts = file.relativePath.split(/\\|\//);
+    const dirParts = rawParts.slice(0, rawParts.length - 1);
+
+    // Check if any segment is excluded by /XD
+    const isExcluded = dirParts.some((part) =>
+      excludeDirPatterns.some((pat) => {
+        const clean = pat.replace(/\*/g, '').trim().toLowerCase();
+        return clean && part.toLowerCase().includes(clean);
+      })
+    );
+
+    if (isExcluded) continue;
+
+    // Traverse every directory ancestor recursively
+    let accumulated = '';
+    for (const part of dirParts) {
+      if (!part) continue;
+      accumulated = accumulated ? `${accumulated}\\${part}` : part;
+      dirSet.add(accumulated);
+    }
+  }
+
+  const subdirectories = Array.from(dirSet);
+  return {
+    totalDirs: subdirectories.length,
+    totalFiles: files.length,
+    totalBytes: files.reduce((sum, f) => sum + f.sizeBytes, 0),
+    subdirectories,
+  };
+};
+
 interface LiveRunnerProps {
   currentJob: BackupJob;
   setCurrentJob: React.Dispatch<React.SetStateAction<BackupJob>>;
@@ -163,6 +213,9 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
   const excludedFilesRef = useRef<{ file: ScannedFileInfo; exclusionReason: string; relativePath: string }[]>([]);
   const effectiveTotalBytesRef = useRef<number>(0);
   const uniqueDirsRef = useRef<number>(1);
+  const sequenceNumRef = useRef<number>(0);
+  const copiedDirsRef = useRef<number>(0);
+  const visitedDirsRef = useRef<Set<string>>(new Set());
 
   const command = buildRobocopyCommand(currentJob.sourcePath, currentJob.targetPath, currentJob.flags);
 
@@ -236,11 +289,14 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
     }
 
     const inferredSource = sampleFolderName ? `C:\\Users\\${sampleFolderName}` : (currentJob.sourcePath || 'C:\\Source');
+    const crawled = crawlDirectoryStructure(realList, currentJob.flags.excludeDirs);
 
     setCurrentJob(prev => ({
       ...prev,
       sourcePath: inferredSource,
       totalFiles: realList.length,
+      totalDirs: Math.max(1, crawled.totalDirs),
+      copiedDirs: 0,
       totalBytes: totalBytes,
       realFiles: realList,
       scannedAt: new Date().toLocaleTimeString(),
@@ -253,7 +309,7 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
           id: `log-load-${Date.now()}`,
           timestamp: new Date().toLocaleTimeString(),
           level: 'INFO',
-          message: `[FOLDER LOADED] 실제 로컬 폴더 '${sampleFolderName || '선택 폴더'}' 로드 완료 (${realList.length}개 파일, ${(totalBytes / (1024 * 1024)).toFixed(2)} MB)`,
+          message: `[FOLDER LOADED] 실제 로컬 폴더 '${sampleFolderName || '선택 폴더'}' 로드 완료 (${realList.length}개 파일, ${crawled.totalDirs}개 하위 디렉터리 식별, ${(totalBytes / (1024 * 1024)).toFixed(2)} MB)`,
         }
       ]
     }));
@@ -343,6 +399,8 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
           progressPercent: 100,
           copiedBytes: effectiveTotalBytes,
           copiedFiles: effectiveTotalFiles,
+          copiedDirs: uniqueDirs,
+          totalDirs: uniqueDirs,
           currentSpeedMbps: speedMbPerSec,
           remainingBytes: 0,
           estimatedRemainingSeconds: 0,
@@ -363,14 +421,31 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
         accumulatedBytesRef.current += file.sizeBytes;
         fileIndexRef.current++;
 
+        // Track Directory transitions
+        const dirPart = file.relativePath.split(/\\|\//).slice(0, -1).join('\\');
+        if (dirPart && !visitedDirsRef.current.has(dirPart)) {
+          visitedDirsRef.current.add(dirPart);
+          copiedDirsRef.current++;
+          sequenceNumRef.current++;
+          const dirMsg = `[#${sequenceNumRef.current}]            New Dir          0    ${currentJob.sourcePath || 'C:\\SourcePath'}\\${dirPart}\\`;
+          newEntries.push({
+            id: `log-dir-${Date.now()}-${sequenceNumRef.current}`,
+            timestamp: new Date().toLocaleTimeString(),
+            level: 'INFO',
+            message: dirMsg,
+            filePath: dirPart,
+          });
+        }
+
+        sequenceNumRef.current++;
         const sizeFormatted = file.sizeBytes >= 1024 * 1024
           ? `${(file.sizeBytes / (1024 * 1024)).toFixed(1)}m`
           : `${Math.ceil(file.sizeBytes / 1024)}k`;
 
-        const logMsg = `            100%\tNew File\t${sizeFormatted}\t${file.relativePath}`;
+        const logMsg = `[#${sequenceNumRef.current}]            100%\tNew File\t${sizeFormatted}\t${file.relativePath}`;
 
         newEntries.push({
-          id: `log-f-${Date.now()}-${fileIndexRef.current}`,
+          id: `log-f-${Date.now()}-${sequenceNumRef.current}`,
           timestamp: new Date().toLocaleTimeString(),
           level: 'PROGRESS',
           message: logMsg,
@@ -379,7 +454,7 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
         });
 
         setCurrentActiveFile(file.name);
-        setCurrentActiveDetail(`[신규 전송] ${file.relativePath} (${sizeFormatted})`);
+        setCurrentActiveDetail(`[#${sequenceNumRef.current}] [신규 전송] ${file.relativePath} (${sizeFormatted})`);
         setLatestLogMessage(logMsg);
       }
 
@@ -403,6 +478,8 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
         ...prev,
         progressPercent: currentPercent,
         copiedFiles: fileIndexRef.current,
+        copiedDirs: copiedDirsRef.current,
+        totalDirs: uniqueDirs,
         copiedBytes: accumulatedBytesRef.current,
         currentSpeedMbps: currentSpeed,
         remainingBytes,
@@ -436,11 +513,9 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
     const effectiveTotalBytes = filesToCopy.reduce((sum, f) => sum + f.sizeBytes, 0);
     const effectiveTotalFiles = filesToCopy.length;
     
-    // Count unique subdirectories
-    const uniqueDirs = new Set(rawFiles.map(f => {
-      const parts = f.relativePath.split(/\\|\//);
-      return parts.slice(0, parts.length - 1).join('\\');
-    })).size || 1;
+    // Recursive directory crawler to accurately count all hierarchical subdirectories
+    const crawledDirs = crawlDirectoryStructure(filesToCopy, currentJob.flags.excludeDirs);
+    const uniqueDirs = Math.max(1, crawledDirs.totalDirs);
 
     filesToCopyRef.current = filesToCopy;
     excludedFilesRef.current = excludedFiles;
@@ -448,6 +523,9 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
     uniqueDirsRef.current = uniqueDirs;
     fileIndexRef.current = 0;
     accumulatedBytesRef.current = 0;
+    sequenceNumRef.current = 0;
+    copiedDirsRef.current = 0;
+    visitedDirsRef.current.clear();
 
     setSummaryReport(null);
     setHasSummaryReport(false);
@@ -499,6 +577,12 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
         message: `   Files : *.*\n   Options : ${command.replace('robocopy', '')}`,
       },
       {
+        id: 'log-crawl',
+        timestamp: startTimestamp.toLocaleTimeString(),
+        level: 'INFO',
+        message: `   [디렉터리 크롤러] 대상 트리 재귀 크롤링 완료: 총 ${uniqueDirs}개 하위 디렉터리, ${effectiveTotalFiles}개 파일 식별`,
+      },
+      {
         id: 'log-8',
         timestamp: startTimestamp.toLocaleTimeString(),
         level: 'HEADER',
@@ -538,6 +622,8 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
       totalBytes: effectiveTotalBytes,
       totalFiles: effectiveTotalFiles,
       copiedFiles: 0,
+      copiedDirs: 0,
+      totalDirs: uniqueDirs,
       currentSpeedMbps: 65.0,
       remainingBytes: effectiveTotalBytes,
       estimatedRemainingSeconds: 0,
@@ -943,14 +1029,34 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
             />
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2 text-center">
+          <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 pt-2 text-center">
             <div 
               title="복사 완료된 파일 수 / 전체 대상 파일 수"
               className="p-3 rounded-xl bg-slate-950/60 border border-slate-800"
             >
-              <span className="text-[11px] text-slate-400 block">복사된 파일</span>
-              <span className="text-sm font-bold text-slate-200 font-mono">
+              <span className="text-[11px] text-slate-400 block">복사된 파일 수</span>
+              <span className="text-sm font-bold text-sky-400 font-mono">
                 {currentJob.copiedFiles} / {currentJob.totalFiles}
+              </span>
+            </div>
+            <div 
+              title="복사 완료된 하위 디렉터리 수 / 전체 대상 디렉터리 수 (재귀 크롤러 집계)"
+              className="p-3 rounded-xl bg-slate-950/60 border border-slate-800"
+            >
+              <span className="text-[11px] text-slate-400 block">복사된 디렉터리 수</span>
+              <span className="text-sm font-bold text-purple-400 font-mono">
+                {currentJob.copiedDirs ?? 0} / {currentJob.totalDirs ?? (uniqueDirsRef.current || 1)}
+              </span>
+              <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden mt-1.5 border border-slate-800">
+                <div 
+                  className="h-full bg-purple-500 rounded-full transition-all duration-200"
+                  style={{
+                    width: `${Math.min(100, Math.round(((currentJob.copiedDirs ?? 0) / Math.max(1, currentJob.totalDirs ?? 1)) * 100))}%`
+                  }}
+                />
+              </div>
+              <span className="text-[10px] text-purple-300 block mt-0.5 font-mono">
+                {Math.min(100, Math.round(((currentJob.copiedDirs ?? 0) / Math.max(1, currentJob.totalDirs ?? 1)) * 100))}% 완료
               </span>
             </div>
             <div 
@@ -958,7 +1064,7 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
               className="p-3 rounded-xl bg-slate-950/60 border border-slate-800"
             >
               <span className="text-[11px] text-slate-400 block">복사 용량 (전체)</span>
-              <span className="text-sm font-bold text-slate-200 font-mono">
+              <span className="text-sm font-bold text-amber-400 font-mono">
                 {formatBytes(currentJob.copiedBytes)} / {formatBytes(currentJob.totalBytes)}
               </span>
               <span className="text-[10px] text-slate-500 block mt-0.5 font-mono">

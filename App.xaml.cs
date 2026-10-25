@@ -7,16 +7,31 @@ namespace RoboBackupStudio
 {
     public partial class App : Application
     {
+        private static bool _isShowingErrorBox = false;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            // Register UI Thread exception handling
+            // Register UI Thread exception handling with anti-cascade protection
             DispatcherUnhandledException += (s, args) =>
             {
                 LogServiceEvent($"[Dispatcher Unhandled Exception] {args.Exception}");
-                MessageBox.Show($"[UI 스레드 오류] 예외가 발생했습니다:\n{args.Exception.Message}", "RoboBackup Studio UI 오류", MessageBoxButton.OK, MessageBoxImage.Error);
                 args.Handled = true;
+
+                if (!_isShowingErrorBox)
+                {
+                    _isShowingErrorBox = true;
+                    try
+                    {
+                        MessageBox.Show($"[UI 스레드 오류] 예외가 발생했습니다:\n{args.Exception.Message}", "RoboBackup Studio UI 오류", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    catch { }
+                    finally
+                    {
+                        _isShowingErrorBox = false;
+                    }
+                }
             };
 
             // Normal GUI Mode: construct and display MainWindow

@@ -2,6 +2,55 @@
 
 ---
 
+## 📌 [v2.15.0] - 2026-10-23
+### 🚀 엔터프라이즈급 재귀 디렉터리 크롤러(RoboDirectoryCrawler) 탑재 및 하위 디렉터리 정밀 집계(Total vs Copied) UI 대시보드 고도화
+1. **재귀 디렉터리 크롤러 (`Core/RoboDirectoryCrawler.cs`) 신규 구현**:
+   - **문제점 및 한계 극복**: 기존 `DirectoryInfo.GetDirectories(..., SearchOption.AllDirectories)` 사용 시 윈도우 깊은 트리, 권한 보호 폴더(`System Volume Information`, `$RECYCLE.BIN`), 정션(Junction/ReparsePoint)에서 발생하던 예외(`UnauthorizedAccessException`, `PathTooLongException`)를 BFS 비동기 큐 기반 방어 로직으로 완벽 해결.
+   - **Robocopy 필터 규칙 연동**:
+     - `/XD` (디렉터리 제외 규칙) 패턴 목록을 크롤러에 직접 반영하여 제외 대상 디렉터리 및 하위 트리를 사전 필터링.
+     - `/XJ` (Junction/Symlink 배제) 옵션 활성화 시 `FileAttributes.ReparsePoint` 속성을 감지하여 무한 루프 위험 차단.
+     - `/S` (빈 디렉터리 제외) 옵션 시 파일이 없는 공백 디렉터리를 지능적으로 판별하여 정확한 복사 대상 디렉터리 수 산출.
+     - 비동기 진행률 보고(`IProgress<CrawlProgressInfo>`)를 통해 탐색 중에도 `TotalDirs`와 `TotalFiles`를 실시간 반영.
+2. **React 프리뷰 계층 재귀 디렉터리 크롤러 (`crawlDirectoryStructure`) 듀얼 동기화**:
+   - `src/components/LiveRunner.tsx`:
+     - 상위 디렉터리 계층을 누적 탐색하는 재귀 크롤러 알고리즘 구현 (`A\B\C` 경로 시 `A`, `A\B`, `A\B\C` 계층 구조 정밀 산출).
+     - 폴더 로드(`handleLocalFolderSelect`) 및 백업 시작 시 전체 하위 디렉터리 수(`totalDirs`)를 즉시 계산하고, 콘솔 스트림에 크롤링 결과 요약 등록.
+3. **UI 디렉터리 진행률 게이지 및 퍼센트 표시 고도화**:
+   - **C# WPF (`MainWindow.xaml`) & ViewModels (`MainViewModel.cs`)**:
+     - `DirsProgressPercent` 및 `DirsProgressText` 프로퍼티 신설.
+     - '복사된 디렉터리 수' 카드 내부에 전용 퍼플 프로그레스 바(`ProgressBar`) 및 `N% 완료 (Copied / Total 디렉터리)` 텍스트를 탑재하여 전체 대비 복사 완료 비율을 한눈에 파악할 수 있도록 구현.
+   - **React 프리뷰 (`LiveRunner.tsx`)**:
+     - 6열 상태 카드의 '복사된 디렉터리 수' 카드 내부에 퍼플 미니 게이지 바 및 `${dirsPercent}% 완료` 실시간 배지 추가.
+4. **버전 메타데이터 일괄 갱신 (v2.15.0)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `src/components/Navbar.tsx`, `package.json` 일괄 동기화.
+
+---
+
+## 📌 [v2.14.0] - 2026-10-23
+### 🚀 복사 시 순서 번호([#N]) 실시간 스트림 자동 접두사 부여, 하위 디렉터리 정밀 실시간 카운팅 및 파일/디렉터리 6열 분리 메트릭 UI 동기화
+1. **복사 시 순서 번호(`[#N]`) 실시간 스트림 자동 접두사 추가 및 로그 미출력 결함 완벽 해결**:
+   - **문제 원인**: `OutputDataReceived` 이벤트 수신 시 `ParseLogLine` 호출 전 원본 라인이 `Logs.Add(e.Data)`로 바로 등록되어 콘솔 로그 목록상자에 순서 번호(`[#N]`)가 미반영되던 결함 수정.
+   - **해결 및 개선**: `ParseLogLine(string line)`이 포맷팅된 문자열을 반환하도록 개선하여, 새 디렉터리(`New Dir`, `새 디렉터리`) 및 파일 복사(`New File`, `새 파일`, `Modified`, `Newer`, `100%`) 감지 시 `_liveSequenceNum++`를 실시간 증가시키고 로그 및 HUD 배너에 `[#1]`, `[#2]`, `[#3]`... 접두사를 100% 명확히 부여.
+2. **복사 시 하위 디렉터리 정밀 실시간 카운팅 (`CopiedDirs` / `TotalDirs`)**:
+   - Robocopy 표준 출력 스트림의 영문/한글 디렉터리 전송 패턴(`New Dir`, `새 디렉터리`, `*EXTRA Dir`, `*추가 디렉터리` 및 UNC/로컬 드라이브 경로 패턴)을 실시간 감지하여 `_liveDirsCopied++` 및 `CopiedDirs`를 즉시 갱신.
+   - 백업 시작 전 백그라운드 태스크로 원본 경로 디렉터리/파일 개수를 비동기 사전 추정(`dirInfo.GetDirectories()`)하여 모니터링 카드 분모(`TotalDirs`, `TotalFiles`)를 지연 없이 스마트 초기화.
+   - 백업 종료 시 Robocopy 요약 리포트 테이블의 `Dirs :` 행을 파싱하여 실제 완료된 전체/복사된 디렉터리 수(`report.DirsCopied`, `report.DirsTotal`)와 100% 최종 일치 보정.
+3. **복사된 파일 수와 디렉터리 수 분리 표시 (6열 대시보드 상태 카드)**:
+   - C# WPF 데스크탑 앱(`MainWindow.xaml`) 및 웹 프리뷰(`src/components/LiveRunner.tsx`):
+     - 상태 카드를 6열 레이아웃으로 확장하여 파일과 디렉터리를 명확히 구분 표시:
+       1) **실행 진행률 (%)**: 프로그레스 바 및 퍼센트
+       2) **복사된 파일 수**: `CopiedFiles / TotalFiles` (스카이블루)
+       3) **복사된 디렉터리 수**: `CopiedDirs / TotalDirs` (퍼플)
+       4) **전송 데이터 용량**: 완료 바이트 / 전체 바이트 (앰버)
+       5) **현재 전송 속도**: 실시간 MB/s (에메랄드/인디고)
+       6) **남은 예상 시간 (ETA)**: Clock 아이콘 및 실시간 계산 시간
+4. **C# WPF 데스크탑 앱 및 React 프리뷰 듀얼 동기화 (Desktop-First Dual Sync)**:
+   - `ViewModels/MainViewModel.cs`, `MainWindow.xaml`, `src/types.ts`, `src/components/LiveRunner.tsx`, `src/App.tsx` 전면 동기화.
+5. **버전 메타데이터 일괄 갱신 (v2.14.0)**:
+   - `RoboBackupStudio.csproj`, `build.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `package.json`, `docs/PATCH_NOTES.md` 일괄 동기화.
+
+---
+
 ## 📌 [v2.13.0] - 2026-10-13
 ### 🚀 실시간 전송 속도 및 잔여 데이터 기반 예상 남은 시간(ETA) 자동 계산 및 모니터링 HUD 5열 카드 레이아웃 구현
 - **LiveRunner 컴포넌트 실시간 예상 남은 시간(ETA) 계산 로직 구현**:

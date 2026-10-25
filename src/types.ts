@@ -139,6 +139,8 @@ export interface BackupJob {
   lastRunStatus?: 'success' | 'failed' | 'partial';
   totalFiles: number;
   copiedFiles: number;
+  totalDirs?: number;
+  copiedDirs?: number;
   totalBytes: number;
   copiedBytes: number;
   currentSpeedMbps: number;

@@ -10,6 +10,12 @@
 
 ## 📌 주요 릴리즈 및 개발 작업 히스토리
 
+### [2026-10-13] - [v2.13.0] 6번째 순수 창작 코어 DLL (`RoboBandwidthThrottler`) 추가 및 기술 명세서 전면 갱신
+- **6대 순수 창작 코어 DLL 모듈 완성 (`RoboBandwidthThrottler.cs`)**:
+  - NAS / SMB 원격 공유 폴더 백업 시 네트워크 대역폭 독점을 방지하고 패킷 간격(`/IPG:ms`)을 동적으로 제어하여 시스템 안정성을 보장하는 고성능 스로틀링 엔진 추가.
+- **기술 명세서 전면 개정 및 등록 (`docs/CORE_DLL_ARCHITECTURE.md`)**:
+  - 5대 코어 DLL에서 6대 코어 DLL (`RoboDiffEngine`, `RoboVssProvider`, `RoboSyncWatch`, `RoboVault`, `RoboTimeMachine`, `RoboBandwidthThrottler`)으로 확장된 아키텍처와 세부 동작 원리, WPF MVVM 바인딩 명세를 v2.13.0 기준으로 문서화 및 등록.
+
 ### [2026-09-27] - 전체 앱 정보 및 버전 메타데이터 정합성 전수 감사 및 교정
 - **검사 대상**: `index.html`, `package.json`, `metadata.json`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/App.tsx`, `src/components/TaskScheduler.tsx`, `src/components/HelpAndLicense.tsx`, `src/utils/robocopy.ts`, `build.ps1`, `docs/` 전반
 - **수정 및 동기화 내역**:
