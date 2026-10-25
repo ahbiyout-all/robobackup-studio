@@ -2,6 +2,9 @@ name: Build and Release RoboBackup Studio
 
 on:
   push:
+    branches:
+      - main
+      - master
     tags:
       - 'v*'
   workflow_dispatch:
@@ -11,18 +14,18 @@ permissions:
 
 jobs:
   build-and-release:
-  
     runs-on: windows-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js (Node 22 LTS)
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
 
       - name: Install Dependencies
         run: npm install
@@ -30,32 +33,61 @@ jobs:
       - name: Build Web Frontend & Server
         run: npm run build
 
-      - name: Setup .NET SDK
+      - name: Setup .NET SDK (8.0.x)
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      - name: Build C# WPF Application & Package
+      - name: Build C# WPF Application & Package (win-x64)
         run: |
           dotnet restore RoboBackupStudio.csproj
-          dotnet publish RoboBackupStudio.csproj -c Release -o publish/app /p:UseAppHost=true
+          dotnet publish RoboBackupStudio.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=false -o publish/app
+          dotnet publish RoboBackupStudio.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true -o publish/portable
 
-      - name: Download & Setup Inno Setup (If not pre-installed)
+      - name: Setup Inno Setup 6
         run: |
           choco install innosetup -y --no-progress
+          echo "C:\Program Files (x86)\Inno Setup 6" >> $env:GITHUB_PATH
 
-      - name: Compile Inno Setup Installer
+      - name: Compile Inno Setup Installer (.exe)
         run: |
-          iscc installer.iss
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
 
       - name: Verify Release Artifacts
         run: |
           dir publish
 
-      - name: Create GitHub Release and Upload Installer Asset
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Upload Build Artifacts (Setup Installer)
+        uses: actions/upload-artifact@v4
         with:
+          name: RoboBackupStudio-Windows-Installer
+          path: publish/RoboBackupStudio_*_Setup.exe
+          if-no-files-found: error
+
+      - name: Get Latest Version From Patch Notes
+        id: get_version
+        shell: pwsh
+        run: |
+          $patchFile = "docs/PATCH_NOTES.md"
+          $version = "v2.16.0"
+          if (Test-Path $patchFile) {
+              $match = Select-String -Path $patchFile -Pattern "^##.*\[(v[0-9]+\.[0-9]+\.[0-9]+)\]" | Select-Object -First 1
+              if ($match -and $match.Matches.Groups.Count -gt 1) {
+                  $version = $match.Matches.Groups[1].Value
+              }
+          }
+          if ($env:GITHUB_REF -like "refs/tags/v*") {
+              $version = $env:GITHUB_REF -replace "refs/tags/", ""
+          }
+          Write-Output "Resolved Version: $version"
+          echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Create GitHub Release and Upload Installer Asset
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          name: RoboBackup Studio ${{ steps.get_version.outputs.VERSION }} Release
           files: |
             publish/RoboBackupStudio_*_Setup.exe
           generate_release_notes: true

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:RoboBackupStudio.ViewModels"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle, FallbackValue='RoboBackup Studio v2.15.0 - High Performance Robocopy Studio'}" Height="880" Width="1160"
+        Title="{Binding WindowTitle, FallbackValue='RoboBackup Studio v2.16.0 - High Performance Robocopy Studio'}" Height="880" Width="1160"
         Icon="robocopy.png"
         WindowStartupLocation="CenterScreen" Background="{Binding ThemeWindowBackground}">
 
@@ -141,8 +141,15 @@
                             <TextBlock Text="RoboBackup" Foreground="{Binding ThemeHeaderForeground}" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"/>
                             <TextBlock Text="Studio" Foreground="#60a5fa" FontSize="20" FontWeight="Bold" Margin="4,0,0,0"/>
                             <Border Background="#10b981" CornerRadius="10" Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.15.0 (Dual)'}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.16.0 (Dual)'}" Foreground="White" FontSize="11" FontWeight="Bold"/>
                             </Border>
+                            <!-- GitHub Update Check Button (v2.16.0) -->
+                            <Button Command="{Binding CheckUpdateCommand}" Height="24" Padding="8,1" Margin="8,0,0,0" Background="#1e293b" Foreground="#38bdf8" BorderBrush="#0284c7" BorderThickness="1.2" VerticalAlignment="Center" Cursor="Hand" ToolTip="GitHub Releases 실시간 업데이트 확인">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="🔄 업데이트 확인" FontSize="11" FontWeight="SemiBold"/>
+                                    <Ellipse Width="7" Height="7" Fill="#10b981" Margin="6,0,0,0" VerticalAlignment="Center" Visibility="{Binding UpdateBadgeVisibility}"/>
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
                         <TextBlock Text="초고속 파일 백업 &amp; 동기화 관리 시스템" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
                     </StackPanel>
@@ -1207,7 +1214,7 @@
                                                         <TextBlock Text="버전 정보 포함 앱 이름 자동 등록" Foreground="#a7f3d0" FontSize="10" FontWeight="Bold"/>
                                                     </Border>
                                                 </StackPanel>
-                                                <TextBlock Text="NAS(SMB 포트 445/139), 원격 공유 폴더 및 백그라운드 서비스의 원활한 네트워크 통신을 위해 방화벽에 버전 정보가 명시된 앱 이름(예: 'RoboBackup Studio v2.15.0')으로 인바운드/아웃바운드 허용 규칙을 등록합니다." Foreground="#94a3b8" FontSize="11" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                                <TextBlock Text="NAS(SMB 포트 445/139), 원격 공유 폴더 및 백그라운드 서비스의 원활한 네트워크 통신을 위해 방화벽에 버전 정보가 명시된 앱 이름(예: 'RoboBackup Studio v2.16.0')으로 인바운드/아웃바운드 허용 규칙을 등록합니다." Foreground="#94a3b8" FontSize="11" Margin="0,4,0,0" TextWrapping="Wrap"/>
                                                 <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
                                                     <TextBlock Text="등록 대상 규칙 명칭: " Foreground="#64748b" FontSize="11"/>
                                                     <TextBlock Text="{Binding FirewallRuleBaseName}" Foreground="#60a5fa" FontSize="11" FontWeight="Bold"/>
@@ -1703,7 +1710,7 @@
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <TextBlock Text="🧩 엔터프라이즈 전용 코어 DLL 모듈 스위트" Foreground="#f8fafc" FontSize="16" FontWeight="Bold"/>
                                         <Border Background="#10b981" CornerRadius="6" Padding="6,2" Margin="8,0,0,0">
-                                            <TextBlock Text="v2.15.0 Core Suite &amp; Wizard Studio" Foreground="White" FontSize="10" FontWeight="Bold"/>
+                                            <TextBlock Text="v2.16.0 Core Suite &amp; Wizard Studio" Foreground="White" FontSize="10" FontWeight="Bold"/>
                                         </Border>
                                     </StackPanel>
                                     <TextBlock Text="Robocopy 실행 전후의 안전성과 성능을 극대화하는 5대 고성능 순수 C# 네이티브 코어 엔진 모듈입니다. 모듈별 단계별 마법사로 안전하게 설정하세요." Foreground="#94a3b8" FontSize="12" Margin="0,4,0,0"/>
@@ -2118,7 +2125,7 @@
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="🧩 순수 창작 5대 코어 DLL 아키텍처 &amp; 세부 동작 원리 명세서" Foreground="#c084fc" FontSize="14" FontWeight="Bold"/>
                                         <Border Background="#581c87" CornerRadius="6" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
-                                            <TextBlock Text="v2.15.0 Core Suite" Foreground="#e9d5ff" FontSize="10" FontWeight="Bold"/>
+                                            <TextBlock Text="v2.16.0 Core Suite" Foreground="#e9d5ff" FontSize="10" FontWeight="Bold"/>
                                         </Border>
                                     </StackPanel>
                                     <Button Command="{Binding OpenUrlCommand}" CommandParameter="docs/CORE_DLL_ARCHITECTURE.md" Background="#6b21a8" Foreground="White" Padding="10,4" BorderThickness="0" Cursor="Hand" HorizontalAlignment="Right" VerticalAlignment="Center">
@@ -2276,7 +2283,7 @@
                     <TextBlock Text="구글블로그" Foreground="#60a5fa" FontSize="11" TextDecorations="Underline"/>
                 </Button>
             </StackPanel>
-            <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.15.0 (Dual)'}" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.16.0 (Dual)'}" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         </DockPanel>
 
         <!-- Easy Backup Wizard Modal Overlay (v2.12.0) -->
@@ -2681,6 +2688,107 @@
                             </Button>
                             <Button Command="{Binding WizardApplyToMainJobCommand}" Background="#16a34a" Foreground="White" FontWeight="Bold" Padding="18,8" BorderThickness="0" Cursor="Hand">
                                 <TextBlock Text="🚀 메인 백업 작업에 100% 즉시 반영"/>
+                            </Button>
+                        </StackPanel>
+                    </DockPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- GitHub Releases Auto-Update Modal Overlay (v2.16.0) -->
+        <Grid Grid.RowSpan="3" Background="#d9000000" Visibility="{Binding IsUpdateModalOpen, Converter={StaticResource BooleanToVisibilityConverter}}" Panel.ZIndex="9998">
+            <Border Background="#0f172a" BorderBrush="#0284c7" BorderThickness="2" CornerRadius="16" Padding="24" HorizontalAlignment="Center" VerticalAlignment="Center" Width="680" MaxHeight="620">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header -->
+                    <DockPanel Grid.Row="0" Margin="0,0,0,16">
+                        <StackPanel DockPanel.Dock="Left">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Background="#0284c7" CornerRadius="6" Padding="8,3" Margin="0,0,10,0">
+                                    <TextBlock Text="GitHub Releases" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                </Border>
+                                <TextBlock Text="🚀 RoboBackup Studio 업데이트 센터" Foreground="#f8fafc" FontSize="18" FontWeight="Bold"/>
+                            </StackPanel>
+                            <TextBlock Text="GitHub 실시간 릴리스 API를 통해 최신 배포 버전 및 릴리스 노트를 확인합니다." Foreground="#94a3b8" FontSize="12" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <Button DockPanel.Dock="Right" Command="{Binding DismissUpdateModalCommand}" Background="#334155" Foreground="#f8fafc" Padding="12,5" BorderThickness="0" Cursor="Hand" VerticalAlignment="Top" HorizontalAlignment="Right">
+                            <TextBlock Text="✕ 닫기" FontWeight="Bold"/>
+                        </Button>
+                    </DockPanel>
+
+                    <!-- Version Status Banner -->
+                    <Border Grid.Row="1" Background="#1e293b" CornerRadius="10" Padding="16,12" Margin="0,0,0,16" BorderThickness="1" BorderBrush="#334155">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Background="#0f172a" CornerRadius="8" Padding="12,10" BorderThickness="1" BorderBrush="#334155">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="현재 실행 중인 버전" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding CurrentAppVersion, FallbackValue='v2.16.0'}" Foreground="#34d399" FontSize="16" FontWeight="Bold" Margin="0,4,0,0" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock Grid.Column="1" Text="➔" Foreground="#60a5fa" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="14,0"/>
+
+                            <Border Grid.Column="2" Background="#0f172a" CornerRadius="8" Padding="12,10" BorderThickness="1" BorderBrush="#0284c7">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="GitHub 최신 릴리스" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding LatestReleaseVersion, FallbackValue='v2.16.0'}" Foreground="#38bdf8" FontSize="16" FontWeight="Bold" Margin="0,4,0,0" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Release Notes & Status Content -->
+                    <Border Grid.Row="2" Background="#0f172a" CornerRadius="10" Padding="16" Margin="0,0,0,16" BorderThickness="1" BorderBrush="#334155" MinHeight="180">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <Border Background="#1e293b" CornerRadius="6" Padding="10,8" Margin="0,0,0,12" BorderThickness="1" BorderBrush="#334155">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="📢 상태: " Foreground="#94a3b8" FontSize="12" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding UpdateStatusMessage}" Foreground="#f8fafc" FontSize="12" FontWeight="Bold"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <TextBlock Text="📝 릴리스 패치 내역 (Release Notes)" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                <TextBox Text="{Binding LatestReleaseNotes, Mode=OneWay}" Background="#020617" Foreground="#e2e8f0" BorderBrush="#334155" BorderThickness="1" Padding="12" FontSize="12" FontFamily="Consolas, Segoe UI" TextWrapping="Wrap" IsReadOnly="True" MaxHeight="220" VerticalScrollBarVisibility="Auto"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- Footer Action Buttons -->
+                    <DockPanel Grid.Row="3">
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                            <Button Command="{Binding CheckUpdateCommand}" Background="#1e293b" Foreground="#38bdf8" BorderBrush="#0284c7" BorderThickness="1" Padding="14,8" Margin="0,0,8,0" Cursor="Hand" ToolTip="GitHub API를 다시 호출하여 최신 버전을 확인합니다">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="🔄 다시 확인" FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Command="{Binding OpenUpdateUrlCommand}" Background="#334155" Foreground="#f8fafc" Padding="14,8" BorderThickness="0" Cursor="Hand">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="🌐 GitHub 릴리스 보기" FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                            <Button Command="{Binding DismissUpdateModalCommand}" Background="#475569" Foreground="#e2e8f0" Padding="16,8" Margin="0,0,8,0" BorderThickness="0" Cursor="Hand">
+                                <TextBlock Text="닫기"/>
+                            </Button>
+                            <Button Command="{Binding DownloadLatestUpdateCommand}" Background="#0284c7" Foreground="White" FontWeight="Bold" Padding="18,8" BorderThickness="0" Cursor="Hand">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="⬇️ 최신 버전 다운로드 (Setup.exe)"/>
+                                </StackPanel>
                             </Button>
                         </StackPanel>
                     </DockPanel>

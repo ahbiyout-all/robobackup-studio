@@ -2,6 +2,38 @@
 
 ---
 
+## 📌 [v2.16.0] - 2026-10-24
+### 🚀 GitHub Actions CI/CD 빌드·릴리즈 워크플로 완전 정상화, push_github.bat 자동 태깅 연동 및 데스크탑 C# WPF·React 듀얼 실시간 자동 업데이트 센터 구축
+1. **GitHub Actions CI/CD 워크플로 완전 정상화 (`.github/workflows/build_release.yml`)**:
+   - **트리거 누락 결함 해결**: 기존 `on: push: tags: ['v*']`로만 한정되어 있어 일반 commit/push 시 GitHub Action이 전혀 실행되지 않던 문제를 `branches: [main, master]`, `tags: ['v*']`, `workflow_dispatch` (수동 실행) 3중 트리거로 전면 개편.
+   - **Inno Setup 인스톨러 빌드 자동화 복구**: Windows Runner에서 Chocolatey(`choco install innosetup`) 설치 후 환경 변수 PATH 미반영으로 인해 `iscc` 실행 실패하던 문제를 `$env:GITHUB_PATH` 추가 및 `C:\Program Files (x86)\Inno Setup 6\ISCC.exe` 절대 경로 명시로 해결.
+   - **WPF 단일 독립 실행 파일 빌드 및 아티팩트 배포**:
+     - `dotnet publish -c Release -r win-x64 --self-contained true`로 Windows x64 전용 독립 실행 파일 빌드.
+     - Inno Setup 컴파일을 통해 `publish/RoboBackupStudio_vX.Y.Z_Setup.exe` 생성.
+     - `actions/upload-artifact@v4`를 통해 매 빌드마다 인스톨러를 다운로드 가능하도록 구성하고, 태그 push 시 `softprops/action-gh-release@v2`로 GitHub Releases에 자동 등록.
+2. **원클릭 GitHub 릴리즈 푸시 자동화 스크립트 (`push_github.bat`) 고도화**:
+   - `docs/PATCH_NOTES.md` 상단에서 최신 버전 번호를 동적으로 자동 파싱.
+   - `git tag -a "%VERSION%" -m "Release %VERSION%" -f`로 버전 태그 자동 생성 및 덮어쓰기.
+   - `git push -u origin main`과 함께 `git push origin "%VERSION%" --force`를 동시 실행하여 GitHub Actions CI/CD가 푸시 즉시 100% 자동 가동되도록 보장.
+   - 푸시 완료 후 GitHub Actions 워크플로 진행 현황 및 Releases 다운로드 링크 터미널 안내.
+3. **데스크탑 C# WPF 앱 및 React 프리뷰 듀얼 동기화 실시간 자동 업데이트 센터 탑재**:
+   - **C# WPF 데스크탑 앱 100% 구현 (Desktop-First Dual Architecture)**:
+     - `ViewModels/MainViewModel.cs`:
+       - `CheckGitHubUpdateAsync(bool isSilent)`: `System.Net.Http.HttpClient` 및 `System.Text.Json` 기반으로 GitHub 최신 릴리스 API(`api.github.com/repos/AhBiYout-all/robobackup-studio/releases/latest`) 비동기 조회.
+       - 필수 `User-Agent: RoboBackupStudio-UpdateClient/2.16.0` 헤더 부여 및 Semver 정밀 버전 비교(`CompareVersions`) 구현.
+       - 최신 릴리스 내 `.exe` 또는 `Setup.exe` 다운로드 에셋 링크 자동 감지.
+       - 앱 구동 3.5초 후 백그라운드에서 무간섭 자동 업데이트 점검 실행.
+     - `MainWindow.xaml`:
+       - 상단 헤더 바에 '🔄 업데이트 확인' 버튼 및 신규 릴리스 감지 시 초록색 알림 핑 배지(`UpdateBadgeVisibility`) 탑재.
+       - 모던 고대비 다크 테마 기반 전용 업데이트 센터 모달(`IsUpdateModalOpen`, `Panel.ZIndex="9998"`): 현재 버전 vs 최신 버전 비교 카드, 릴리스 변경 노트 스크롤 박스, 브라우저 릴리스 페이지 열기 및 원클릭 인스톨러 다운로드 버튼 완벽 연동.
+   - **React 프리뷰 계층 (`AutoUpdateModal.tsx`, `Navbar.tsx`)**:
+     - `currentVersion`을 `v2.16.0`으로 갱신하고 GitHub 릴리스 비교 UI 듀얼 동기화.
+4. **보안 및 메타데이터 무결성 강화**:
+   - 개인 이메일 등 불필요한 민감 정보 전면 제거 및 공식 개발자 브랜드 `AhBiYout` (`AhBiYout-all`, `ahbivibelog.blogspot.com`, `www.cisnet.co.kr`) 일괄 동기화.
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `src/components/Navbar.tsx`, `package.json` 버전 일괄 갱신 (`v2.16.0`).
+
+---
+
 ## 📌 [v2.15.0] - 2026-10-23
 ### 🚀 엔터프라이즈급 재귀 디렉터리 크롤러(RoboDirectoryCrawler) 탑재 및 하위 디렉터리 정밀 집계(Total vs Copied) UI 대시보드 고도화
 1. **재귀 디렉터리 크롤러 (`Core/RoboDirectoryCrawler.cs`) 신규 구현**:

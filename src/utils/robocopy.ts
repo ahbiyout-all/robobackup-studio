@@ -647,7 +647,7 @@ export const CSHARP_MVVM_TEMPLATES: CsharpSnippet[] = [
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:RoboBackupStudio.ViewModels"
         mc:Ignorable="d"
-        Title="RoboBackup Studio v2.15.0 - High Performance Robocopy Studio" Height="880" Width="1160"
+        Title="RoboBackup Studio v2.16.0 - High Performance Robocopy Studio" Height="880" Width="1160"
         Background="#0b0f19" Foreground="#f8fafc">
 
     <Window.DataContext>
@@ -715,7 +715,7 @@ export const CSHARP_MVVM_TEMPLATES: CsharpSnippet[] = [
                             <TextBlock Text="RoboBackup" Foreground="#ffffff" FontSize="20" FontWeight="Bold"/>
                             <TextBlock Text="Studio" Foreground="#60a5fa" FontSize="20" FontWeight="Bold" Margin="4,0,0,0"/>
                             <Border Background="#10b981" CornerRadius="10" Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="v2.15.0" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Text="v2.16.0" Foreground="White" FontSize="11" FontWeight="Bold"/>
                             </Border>
                         </StackPanel>
                         <TextBlock Text="Windows High-Speed Robocopy GUI &amp; C# WPF Generator" Foreground="#94a3b8" FontSize="11"/>
@@ -1504,11 +1504,11 @@ namespace RoboBackupStudio
 ; ====================================================================
 
 #define MyAppName "RoboBackup Studio"
-#define MyAppVersion "v2.15.0"
+#define MyAppVersion "v2.16.0"
 #define MyAppPublisher "AhBiYout"
 #define MyAppURL "http://www.cisnet.co.kr/"
 #define MyAppExeName "RoboBackupStudio.exe"
-#define MyAppOutputName "RoboBackupStudio_v2.15.0_Setup"
+#define MyAppOutputName "RoboBackupStudio_v2.16.0_Setup"
 
 [Setup]
 AppId={{8B237C9F-3F1E-4E2F-A5C0-9A2E12F3D9A1}}
@@ -1577,7 +1577,7 @@ cd /d "%~dp0"
 REM 1. Set Project Name and Default Version
 set "APP_NAME=RoboBackupStudio"
 set "PATCH_FILE=docs\\PATCH_NOTES.md"
-set "VERSION=v2.15.0"
+set "VERSION=v2.16.0"
 
 if exist "%PATCH_FILE%" (
     echo [*] Reading latest patch version from %PATCH_FILE%...
@@ -1716,7 +1716,7 @@ Write-Host "====================================================================
 
 $AppName = "RoboBackupStudio"
 $PatchFile = "docs\\PATCH_NOTES.md"
-$Version = "v2.15.0"
+$Version = "v2.16.0"
 
 if (Test-Path $PatchFile) {
     $lines = Get-Content $PatchFile

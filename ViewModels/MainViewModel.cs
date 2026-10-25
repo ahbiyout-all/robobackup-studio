@@ -5,12 +5,15 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.ServiceProcess;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,7 +25,7 @@ using RoboBackupStudio.Core;
 namespace RoboBackupStudio.ViewModels
 {
     /// <summary>
-    /// RoboBackup Studio MainViewModel (v2.15.0 - High Performance Robocopy GUI & C# WPF Suite)
+    /// RoboBackup Studio MainViewModel (v2.16.0 - High Performance Robocopy GUI & C# WPF Suite)
     /// Developer: AhBiYout (ahbivibelog.blogspot.com)
     /// </summary>
     public class MainViewModel : ViewModelBase
@@ -407,6 +410,12 @@ namespace RoboBackupStudio.ViewModels
             EasyWizardScheduleNowCommand = new RelayCommand(_ => EasyWizardApplyAndSchedule());
             EasyWizardExportBatCommand = new RelayCommand(_ => EasyWizardExportBat());
 
+            // GitHub Releases Auto-Update Commands (v2.16.0)
+            CheckUpdateCommand = new RelayCommand(async _ => await CheckGitHubUpdateAsync(isSilent: false), _ => !IsCheckingUpdate);
+            OpenUpdateUrlCommand = new RelayCommand(_ => OpenUrl(string.IsNullOrWhiteSpace(LatestReleaseUrl) ? "https://github.com/AhBiYout-all/robobackup-studio/releases" : LatestReleaseUrl));
+            DownloadLatestUpdateCommand = new RelayCommand(_ => OpenUrl(string.IsNullOrWhiteSpace(LatestReleaseDownloadUrl) ? "https://github.com/AhBiYout-all/robobackup-studio/releases/latest" : LatestReleaseDownloadUrl));
+            DismissUpdateModalCommand = new RelayCommand(_ => IsUpdateModalOpen = false);
+
             HoursList = Enumerable.Range(0, 24).Select(h => $"{h:D2}시 ({h}시)").ToList();
             MinutesList = Enumerable.Range(0, 60).Where(m => m % 5 == 0).Select(m => $"{m:D2}분").ToList();
 
@@ -414,7 +423,7 @@ namespace RoboBackupStudio.ViewModels
             UpdateCommand();
 
             // Asynchronously run initial background checks to ensure UI renders instantly without blocking
-            Task.Run(() =>
+            Task.Run(async () =>
             {
                 try
                 {
@@ -423,6 +432,8 @@ namespace RoboBackupStudio.ViewModels
                     CheckServiceStatus();
                     CheckFirewallStatus();
                     _ = RefreshNasCredentialsAsync();
+                    await Task.Delay(3500);
+                    await CheckGitHubUpdateAsync(isSilent: true);
                 }
                 catch { }
             });
@@ -1587,7 +1598,7 @@ namespace RoboBackupStudio.ViewModels
                 }
             }
             catch { }
-            return "v2.15.0";
+            return "v2.16.0";
         }
 
         public static string CurrentAppVersion => ResolveAppVersion();
@@ -2739,6 +2750,71 @@ namespace RoboBackupStudio.ViewModels
 
         // Open Web URL Command (v1.7.2)
         public ICommand OpenUrlCommand { get; }
+
+        // GitHub Releases Auto-Update System Commands & Properties (v2.16.0)
+        public ICommand CheckUpdateCommand { get; }
+        public ICommand OpenUpdateUrlCommand { get; }
+        public ICommand DownloadLatestUpdateCommand { get; }
+        public ICommand DismissUpdateModalCommand { get; }
+
+        private bool _isUpdateModalOpen = false;
+        private bool _isCheckingUpdate = false;
+        private bool _hasAvailableUpdate = false;
+        private string _latestReleaseVersion = "";
+        private string _latestReleaseNotes = "";
+        private string _latestReleaseUrl = "https://github.com/AhBiYout-all/robobackup-studio/releases";
+        private string _latestReleaseDownloadUrl = "https://github.com/AhBiYout-all/robobackup-studio/releases/latest";
+        private string _updateStatusMessage = "최신 버전 확인 대기 중...";
+
+        public bool IsUpdateModalOpen
+        {
+            get => _isUpdateModalOpen;
+            set { _isUpdateModalOpen = value; OnPropertyChanged(); }
+        }
+
+        public bool IsCheckingUpdate
+        {
+            get => _isCheckingUpdate;
+            set { _isCheckingUpdate = value; OnPropertyChanged(); }
+        }
+
+        public bool HasAvailableUpdate
+        {
+            get => _hasAvailableUpdate;
+            set { _hasAvailableUpdate = value; OnPropertyChanged(); OnPropertyChanged(nameof(UpdateBadgeVisibility)); }
+        }
+
+        public Visibility UpdateBadgeVisibility => HasAvailableUpdate ? Visibility.Visible : Visibility.Collapsed;
+
+        public string LatestReleaseVersion
+        {
+            get => _latestReleaseVersion;
+            set { _latestReleaseVersion = value; OnPropertyChanged(); }
+        }
+
+        public string LatestReleaseNotes
+        {
+            get => _latestReleaseNotes;
+            set { _latestReleaseNotes = value; OnPropertyChanged(); }
+        }
+
+        public string LatestReleaseUrl
+        {
+            get => _latestReleaseUrl;
+            set { _latestReleaseUrl = value; OnPropertyChanged(); }
+        }
+
+        public string LatestReleaseDownloadUrl
+        {
+            get => _latestReleaseDownloadUrl;
+            set { _latestReleaseDownloadUrl = value; OnPropertyChanged(); }
+        }
+
+        public string UpdateStatusMessage
+        {
+            get => _updateStatusMessage;
+            set { _updateStatusMessage = value; OnPropertyChanged(); }
+        }
 
         private bool CheckIsAdmin()
         {
@@ -6362,6 +6438,117 @@ namespace RoboBackupStudio.ViewModels
                 MessageBox.Show($"웹 브라우저를 열 수 없습니다: {ex.Message}", "알림", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
+
+        #region GitHub Releases Auto-Update Implementation (v2.16.0)
+
+        public async Task CheckGitHubUpdateAsync(bool isSilent = false)
+        {
+            if (IsCheckingUpdate) return;
+            IsCheckingUpdate = true;
+            UpdateStatusMessage = "GitHub 릴리스 정보 확인 중...";
+
+            try
+            {
+                using var client = new HttpClient();
+                client.Timeout = TimeSpan.FromSeconds(8);
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RoboBackupStudio-UpdateClient", "2.16.0"));
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
+
+                string url = "https://api.github.com/repos/AhBiYout-all/robobackup-studio/releases/latest";
+                var response = await client.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync();
+                    using var doc = JsonDocument.Parse(json);
+                    var root = doc.RootElement;
+
+                    string tagName = root.TryGetProperty("tag_name", out var tagElem) ? tagElem.GetString() ?? "" : "";
+                    string releaseName = root.TryGetProperty("name", out var nameElem) ? nameElem.GetString() ?? "" : "";
+                    string body = root.TryGetProperty("body", out var bodyElem) ? bodyElem.GetString() ?? "" : "";
+                    string htmlUrl = root.TryGetProperty("html_url", out var htmlElem) ? htmlElem.GetString() ?? "" : "https://github.com/AhBiYout-all/robobackup-studio/releases";
+
+                    string downloadUrl = htmlUrl;
+                    if (root.TryGetProperty("assets", out var assetsElem) && assetsElem.ValueKind == JsonValueKind.Array)
+                    {
+                        foreach (var asset in assetsElem.EnumerateArray())
+                        {
+                            string assetName = asset.TryGetProperty("name", out var an) ? an.GetString() ?? "" : "";
+                            string browserDownloadUrl = asset.TryGetProperty("browser_download_url", out var bdu) ? bdu.GetString() ?? "" : "";
+
+                            if (assetName.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) || assetName.Contains("Setup", StringComparison.OrdinalIgnoreCase))
+                            {
+                                downloadUrl = browserDownloadUrl;
+                                break;
+                            }
+                        }
+                    }
+
+                    string cleanLatest = tagName.StartsWith("v", StringComparison.OrdinalIgnoreCase) ? tagName : $"v{tagName}";
+                    string cleanCurrent = CurrentAppVersion.StartsWith("v", StringComparison.OrdinalIgnoreCase) ? CurrentAppVersion : $"v{CurrentAppVersion}";
+
+                    LatestReleaseVersion = cleanLatest;
+                    LatestReleaseNotes = string.IsNullOrWhiteSpace(body) ? $"{cleanLatest} 버전이 출시되었습니다." : body;
+                    LatestReleaseUrl = htmlUrl;
+                    LatestReleaseDownloadUrl = downloadUrl;
+
+                    bool isNewer = CompareVersions(cleanLatest, cleanCurrent) > 0;
+                    HasAvailableUpdate = isNewer;
+
+                    if (isNewer)
+                    {
+                        UpdateStatusMessage = $"🎉 새로운 버전({cleanLatest})이 출시되었습니다!";
+                        IsUpdateModalOpen = true;
+                    }
+                    else
+                    {
+                        UpdateStatusMessage = $"현재 최신 버전({cleanCurrent})을 사용 중입니다.";
+                        if (!isSilent)
+                        {
+                            IsUpdateModalOpen = true;
+                        }
+                    }
+                }
+                else
+                {
+                    UpdateStatusMessage = $"GitHub 최신 릴리스 정보 조회 (상태 코드: {response.StatusCode})";
+                    if (!isSilent)
+                    {
+                        IsUpdateModalOpen = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                UpdateStatusMessage = $"업데이트 확인 불가 (오프라인/네트워크): {ex.Message}";
+                if (!isSilent)
+                {
+                    IsUpdateModalOpen = true;
+                }
+            }
+            finally
+            {
+                IsCheckingUpdate = false;
+            }
+        }
+
+        private static int CompareVersions(string v1, string v2)
+        {
+            try
+            {
+                string s1 = v1.TrimStart('v', 'V');
+                string s2 = v2.TrimStart('v', 'V');
+                var ver1 = new Version(s1.Contains('-') ? s1.Split('-')[0] : s1);
+                var ver2 = new Version(s2.Contains('-') ? s2.Split('-')[0] : s2);
+                return ver1.CompareTo(ver2);
+            }
+            catch
+            {
+                return string.Compare(v1, v2, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        #endregion
 
         #region Core DLL Modules Suite (v2.7.0)
 
