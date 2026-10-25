@@ -102,7 +102,7 @@ export default function App() {
       />
 
       {/* Main Content Workspace Container */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 overflow-y-auto">
         {activeTab === 'designer' && (
           <JobDesigner
             currentJob={currentJob}
@@ -176,7 +176,7 @@ export default function App() {
             </a>
           </div>
           <div className="flex items-center space-x-3 shrink-0">
-            <span className="font-mono text-xs text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700/60 font-semibold">v2.13.0</span>
+            <span className="font-mono text-xs text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700/60 font-semibold">v2.16.3</span>
           </div>
         </div>
       </footer>

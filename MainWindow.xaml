@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:RoboBackupStudio.ViewModels"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle, FallbackValue='RoboBackup Studio v2.16.2 - High Performance Robocopy Studio'}" Height="880" Width="1160"
+        Title="{Binding WindowTitle, FallbackValue='RoboBackup Studio v2.16.3 - High Performance Robocopy Studio'}" Height="880" Width="1160"
         Icon="robocopy.png"
         WindowStartupLocation="CenterScreen" Background="{Binding ThemeWindowBackground}">
 
@@ -141,7 +141,7 @@
                             <TextBlock Text="RoboBackup" Foreground="{Binding ThemeHeaderForeground}" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"/>
                             <TextBlock Text="Studio" Foreground="#60a5fa" FontSize="20" FontWeight="Bold" Margin="4,0,0,0"/>
                             <Border Background="#10b981" CornerRadius="10" Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.16.2 (Dual)'}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.16.3 (Dual)'}" Foreground="White" FontSize="11" FontWeight="Bold"/>
                             </Border>
                             <!-- GitHub Update Check Button (v2.16.0) -->
                             <Button Command="{Binding CheckUpdateCommand}" Height="24" Padding="8,1" Margin="8,0,0,0" Background="#1e293b" Foreground="#38bdf8" BorderBrush="#0284c7" BorderThickness="1.2" VerticalAlignment="Center" Cursor="Hand" ToolTip="GitHub Releases 실시간 업데이트 확인">
@@ -741,375 +741,377 @@
                         </Border>
                     </StackPanel>
                 </TabItem.Header>
-                <Grid Margin="0,16,0,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <Grid Margin="0,16,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
 
-                    <!-- Live Backup Control Banner -->
-                    <Border Grid.Row="0" Background="{Binding ThemeCardBackground}" CornerRadius="12" Padding="14,12" Margin="0,0,0,12" BorderThickness="1.5" BorderBrush="{Binding ThemeBorderBrush}">
-                        <DockPanel LastChildFill="True">
-                            <!-- Right: Large Action Buttons (Pause / Stop / Start) -->
-                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                                <!-- When Running / Paused -->
-                                <StackPanel Orientation="Horizontal" Visibility="{Binding IsRobocopyRunning, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <Button Command="{Binding TogglePauseRobocopyCommand}" Content="{Binding PauseResumeButtonText}" Height="38" Padding="16,0" Background="#d97706" Foreground="White" FontSize="13" FontWeight="Bold" BorderThickness="0" Margin="0,0,8,0" Cursor="Hand" ToolTip="Robocopy 프로세스를 일시정지하거나 계속 재개합니다."/>
-                                    <Button Command="{Binding StopCommand}" Content="⏹ 동기화 강제 중지" Height="38" Padding="16,0" Background="#dc2626" Foreground="White" FontSize="13" FontWeight="Bold" BorderThickness="0" Cursor="Hand" ToolTip="현재 진행 중인 Robocopy 백업 프로세스를 즉시 강제 중단합니다."/>
+                        <!-- Live Backup Control Banner -->
+                        <Border Grid.Row="0" Background="{Binding ThemeCardBackground}" CornerRadius="12" Padding="14,12" Margin="0,0,0,12" BorderThickness="1.5" BorderBrush="{Binding ThemeBorderBrush}">
+                            <DockPanel LastChildFill="True">
+                                <!-- Right: Large Action Buttons (Pause / Stop / Start) -->
+                                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <!-- When Running / Paused -->
+                                    <StackPanel Orientation="Horizontal" Visibility="{Binding IsRobocopyRunning, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <Button Command="{Binding TogglePauseRobocopyCommand}" Content="{Binding PauseResumeButtonText}" Height="38" Padding="16,0" Background="#d97706" Foreground="White" FontSize="13" FontWeight="Bold" BorderThickness="0" Margin="0,0,8,0" Cursor="Hand" ToolTip="Robocopy 프로세스를 일시정지하거나 계속 재개합니다."/>
+                                        <Button Command="{Binding StopCommand}" Content="⏹ 동기화 강제 중지" Height="38" Padding="16,0" Background="#dc2626" Foreground="White" FontSize="13" FontWeight="Bold" BorderThickness="0" Cursor="Hand" ToolTip="현재 진행 중인 Robocopy 백업 프로세스를 즉시 강제 중단합니다."/>
+                                    </StackPanel>
+
+                                    <!-- When Idle / Stopped -->
+                                    <StackPanel Orientation="Horizontal" Visibility="{Binding IsNotRobocopyRunning, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <Button Command="{Binding RunCommand}" Content="▶ 백업 실행 시작" Height="38" Padding="18,0" Background="#10b981" Foreground="White" FontSize="13" FontWeight="Bold" BorderThickness="0" Cursor="Hand" ToolTip="설정된 Robocopy 파라미터로 즉시 실시간 동기화를 시작합니다."/>
+                                    </StackPanel>
                                 </StackPanel>
 
-                                <!-- When Idle / Stopped -->
-                                <StackPanel Orientation="Horizontal" Visibility="{Binding IsNotRobocopyRunning, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <Button Command="{Binding RunCommand}" Content="▶ 백업 실행 시작" Height="38" Padding="18,0" Background="#10b981" Foreground="White" FontSize="13" FontWeight="Bold" BorderThickness="0" Cursor="Hand" ToolTip="설정된 Robocopy 파라미터로 즉시 실시간 동기화를 시작합니다."/>
-                                </StackPanel>
-                            </StackPanel>
-
-                            <!-- Left: Status Info & Active File -->
-                            <StackPanel VerticalAlignment="Center">
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,4">
-                                    <TextBlock Text="⚡ 실시간 백업 컨트롤러" Foreground="{Binding ThemeForeground}" FontSize="13" FontWeight="Bold" Margin="0,0,8,0"/>
-                                    <Border Background="{Binding LiveRunnerStatusBadgeColor}" CornerRadius="6" Padding="8,2" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding LiveRunnerStatusText}" Foreground="White" FontSize="11" FontWeight="Bold"/>
-                                    </Border>
-                                </StackPanel>
-                                <TextBlock Text="{Binding CurrentActiveFileDetail, StringFormat={}상태: {0}}" Foreground="{Binding ThemeTextSecondary}" FontSize="11" TextTrimming="CharacterEllipsis"/>
-                            </StackPanel>
-                        </DockPanel>
-                    </Border>
-
-                    <!-- Status Cards -->
-                    <Grid Grid.Row="1" Margin="0,0,0,16">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <Border Grid.Column="0" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
-                            <StackPanel>
-                                <TextBlock Text="실행 진행률" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
-                                <TextBlock Text="{Binding ProgressPercent, StringFormat={}{0}%}" Foreground="#10b981" FontSize="22" FontWeight="Bold" Margin="0,2,0,6"/>
-                                <ProgressBar Value="{Binding ProgressPercent, Mode=OneWay}" Height="6" Background="{Binding ThemeInnerBackground}" Foreground="#10b981" BorderThickness="0"/>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Grid.Column="1" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
-                            <StackPanel>
-                                <TextBlock Text="복사된 파일 수" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
-                                <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                    <TextBlock Text="{Binding CopiedFiles}" Foreground="#38bdf8" FontSize="22" FontWeight="Bold"/>
-                                    <TextBlock Text="/" Foreground="{Binding ThemeTextSecondary}" FontSize="16" Margin="4,4,4,0"/>
-                                    <TextBlock Text="{Binding TotalFiles}" Foreground="{Binding ThemeTextSecondary}" FontSize="16" Margin="0,4,0,0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Grid.Column="2" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
-                            <StackPanel>
-                                <TextBlock Text="복사된 디렉터리 수" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
-                                <StackPanel Orientation="Horizontal" Margin="0,2,0,4">
-                                    <TextBlock Text="{Binding CopiedDirs}" Foreground="#a855f7" FontSize="22" FontWeight="Bold"/>
-                                    <TextBlock Text="/" Foreground="{Binding ThemeTextSecondary}" FontSize="16" Margin="4,4,4,0"/>
-                                    <TextBlock Text="{Binding TotalDirs}" Foreground="{Binding ThemeTextSecondary}" FontSize="16" Margin="0,4,0,0"/>
-                                </StackPanel>
-                                <ProgressBar Value="{Binding DirsProgressPercent, Mode=OneWay}" Height="4" Background="{Binding ThemeInnerBackground}" Foreground="#a855f7" BorderThickness="0" Margin="0,2,0,4"/>
-                                <TextBlock Text="{Binding DirsProgressText, FallbackValue='0% 완료'}" Foreground="{Binding ThemeTextSecondary}" FontSize="10"/>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Grid.Column="3" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="0,14,8,14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
-                            <StackPanel Margin="14,0,0,0">
-                                <TextBlock Text="전송 데이터 용량" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
-                                <TextBlock Text="{Binding CopiedBytesText}" Foreground="#f59e0b" FontSize="16" FontWeight="Bold" Margin="0,4,0,0"/>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Grid.Column="4" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
-                            <StackPanel>
-                                <TextBlock Text="현재 전송 속도" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
-                                <TextBlock Text="{Binding CurrentSpeedText}" Foreground="#6366f1" FontSize="22" FontWeight="Bold" Margin="0,2,0,0"/>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Grid.Column="5" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
-                            <StackPanel>
-                                <TextBlock Text="남은 예상 시간 (ETA)" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
-                                <TextBlock Text="{Binding EstimatedRemainingTimeText, FallbackValue='-'}" Foreground="#38bdf8" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-
-                    <!-- Realtime Output Console Terminal & Live HUD (v2.8.0 Option A) -->
-                    <Border Grid.Row="2" Background="#020617" CornerRadius="12" Padding="16" BorderThickness="1" BorderBrush="#1e293b">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" /> <!-- Row 0: Toolbar -->
-                                <RowDefinition Height="Auto" /> <!-- Row 1: Final Backup Summary Dashboard HUD (v2.8.0) -->
-                                <RowDefinition Height="Auto" /> <!-- Row 2: Live Copy Stream HUD Banner -->
-                                <RowDefinition Height="*" />    <!-- Row 3: Robocopy Log ListBox -->
-                            </Grid.RowDefinitions>
-
-                            <!-- Console Stream Header & Stream Options Toolbar -->
-                            <DockPanel Grid.Row="0" Margin="0,0,0,10">
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock Text="💻 Robocopy 프로세스 실시간 콘솔 스트림" Foreground="#38bdf8" FontSize="13" FontWeight="Bold"/>
-                                    <Border Background="#0369a1" CornerRadius="4" Padding="6,2" Margin="10,0,0,0">
-                                        <TextBlock Text="LIVE STREAM" Foreground="White" FontSize="10" FontWeight="Bold"/>
-                                    </Border>
-                                </StackPanel>
-                                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                    <!-- Realtime Options Checkboxes -->
-                                    <CheckBox IsChecked="{Binding IsAutoScrollEnabled}" Content="⬇ 최신위치(v)" Foreground="#38bdf8" FontWeight="SemiBold" FontSize="11" Margin="0,0,12,0" VerticalAlignment="Center" Cursor="Hand" ToolTip="새 로그가 수신될 때 콘솔 화면을 항상 최신 위치로 자동 유지(실시간 자동 스크롤)합니다."/>
-                                    <CheckBox IsChecked="{Binding IsLiveStreamHudEnabled}" Content="🎯 최신 전송 HUD" Foreground="#94a3b8" FontSize="11" Margin="0,0,12,0" VerticalAlignment="Center" Cursor="Hand" ToolTip="현재 전송 중인 최신 파일 정보 배너를 표시합니다."/>
-                                    <CheckBox IsChecked="{Binding ShowExternalConsole}" Content="🖥️ 별도 CMD 콘솔창" Foreground="#94a3b8" FontSize="11" Margin="0,0,12,0" VerticalAlignment="Center" Cursor="Hand" ToolTip="Windows 기본 명령 프롬프트 창을 별도로 띄워 네이티브 콘솔 스트림을 확인합니다."/>
-
-                                    <Button Command="{Binding OpenSummaryHudCommand}" Content="📊 요약 통계" Width="90" Height="28" Margin="0,0,6,0" Background="#1e1b4b" Foreground="#a5b4fc" BorderThickness="1" BorderBrush="#4338ca" FontSize="11" FontWeight="Bold" Cursor="Hand" ToolTip="최근 완료된 Robocopy 최종 통계 대시보드 HUD를 엽니다."/>
-                                    <Button Command="{Binding SaveLogCommand}" Content="💾 로그 저장" Width="85" Height="28" Margin="0,0,6,0" Background="#334155" Foreground="White" BorderThickness="0" FontSize="11" Cursor="Hand"/>
-                                    <Button Command="{Binding ClearLogCommand}" Content="🧹 지우기" Width="70" Height="28" Margin="0,0,6,0" Background="#334155" Foreground="White" BorderThickness="0" FontSize="11" Cursor="Hand"/>
-                                    <Button Command="{Binding TogglePauseRobocopyCommand}" IsEnabled="{Binding IsRobocopyRunning}" Content="{Binding PauseResumeButtonText}" Height="28" Padding="10,0" Margin="0,0,6,0" Background="#d97706" Foreground="White" BorderThickness="0" FontSize="11" FontWeight="Bold" Cursor="Hand" ToolTip="프로세스 일시정지/재개"/>
-                                    <Button Command="{Binding StopCommand}" IsEnabled="{Binding IsRobocopyRunning}" Content="⏹ 강제 중지" Width="85" Height="28" Background="#dc2626" Foreground="White" BorderThickness="0" FontSize="11" FontWeight="Bold" Cursor="Hand" ToolTip="프로세스 즉시 강제 중지"/>
+                                <!-- Left: Status Info & Active File -->
+                                <StackPanel VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,4">
+                                        <TextBlock Text="⚡ 실시간 백업 컨트롤러" Foreground="{Binding ThemeForeground}" FontSize="13" FontWeight="Bold" Margin="0,0,8,0"/>
+                                        <Border Background="{Binding LiveRunnerStatusBadgeColor}" CornerRadius="6" Padding="8,2" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding LiveRunnerStatusText}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                        </Border>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding CurrentActiveFileDetail, StringFormat={}상태: {0}}" Foreground="{Binding ThemeTextSecondary}" FontSize="11" TextTrimming="CharacterEllipsis"/>
                                 </StackPanel>
                             </DockPanel>
+                        </Border>
 
-                            <!-- Final Backup Statistics Dashboard HUD Card (New v2.8.0 Option A) -->
-                            <Border Grid.Row="1" Visibility="{Binding HasSummaryReport, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    Background="#0b1329" CornerRadius="10" Padding="14" Margin="0,0,0,12" BorderThickness="1.5" BorderBrush="#10b981">
+                        <!-- Status Cards -->
+                        <Grid Grid.Row="1" Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
                                 <StackPanel>
-                                    <!-- Header: Title, Status Badge, Action Controls -->
-                                    <DockPanel LastChildFill="False" Margin="0,0,0,10">
-                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="📊" FontSize="16" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                            <TextBlock Text="최종 백업 통계 대시보드 리포트" Foreground="#f8fafc" FontSize="13" FontWeight="Bold" VerticalAlignment="Center"/>
-                                            
-                                            <!-- Status Badge -->
-                                            <Border Background="#065f46" CornerRadius="6" Padding="8,3" Margin="10,0,0,0" VerticalAlignment="Center">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding SummaryReport.ExitCodeTitle}" Foreground="#34d399" FontSize="11" FontWeight="Bold"/>
-                                                    <TextBlock Text=" (코드: " Foreground="#a7f3d0" FontSize="11"/>
-                                                    <TextBlock Text="{Binding SummaryReport.ExitCode}" Foreground="#ffffff" FontSize="11" FontWeight="Bold"/>
-                                                    <TextBlock Text=")" Foreground="#a7f3d0" FontSize="11"/>
-                                                </StackPanel>
-                                            </Border>
+                                    <TextBlock Text="실행 진행률" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
+                                    <TextBlock Text="{Binding ProgressPercent, StringFormat={}{0}%}" Foreground="#10b981" FontSize="22" FontWeight="Bold" Margin="0,2,0,6"/>
+                                    <ProgressBar Value="{Binding ProgressPercent, Mode=OneWay}" Height="6" Background="{Binding ThemeInnerBackground}" Foreground="#10b981" BorderThickness="0"/>
+                                </StackPanel>
+                            </Border>
 
-                                            <!-- Ended Time -->
-                                            <TextBlock Text="{Binding SummaryReport.EndedTime, StringFormat={}완료 일시: {0}}" Foreground="#94a3b8" FontSize="11" Margin="12,0,0,0" VerticalAlignment="Center"/>
-                                        </StackPanel>
-
-                                        <!-- Action Buttons (Right) -->
-                                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                                            <Button Command="{Binding CopySummaryReportCommand}" Content="📋 리포트 복사" Width="95" Height="26" Margin="0,0,6,0" Background="#1e293b" Foreground="#38bdf8" BorderThickness="1" BorderBrush="#334155" FontSize="11" Cursor="Hand" ToolTip="전체 통계표를 텍스트 형식으로 클립보드에 복사합니다."/>
-                                            <Button Command="{Binding ToggleSummaryReportCommand}" Content="{Binding SummaryToggleText}" Width="75" Height="26" Margin="0,0,6,0" Background="#1e293b" Foreground="#cbd5e1" BorderThickness="1" BorderBrush="#334155" FontSize="11" Cursor="Hand" ToolTip="상세 통계표를 접거나 펼칩니다."/>
-                                            <Button Command="{Binding CloseSummaryReportCommand}" Content="✕ 닫기" Width="60" Height="26" Background="#334155" Foreground="#f1f5f9" BorderThickness="0" FontSize="11" Cursor="Hand" ToolTip="통계 대시보드 HUD 카드를 닫습니다."/>
-                                        </StackPanel>
-                                    </DockPanel>
-
-                                    <!-- Collapsible Content Body (Visible when IsSummaryExpanded == true) -->
-                                    <StackPanel Visibility="{Binding IsSummaryExpanded, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <!-- 4 Key Metric Highlight Cards -->
-                                        <Grid Margin="0,0,0,12">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-
-                                            <!-- Card 1: Dirs -->
-                                            <Border Grid.Column="0" Background="#111c38" CornerRadius="8" Padding="12,10" Margin="0,0,6,0" BorderThickness="1" BorderBrush="#1e293b">
-                                                <StackPanel>
-                                                    <TextBlock Text="📁 디렉터리 (Dirs)" Foreground="#94a3b8" FontSize="11"/>
-                                                    <StackPanel Orientation="Horizontal" Margin="0,4,0,2">
-                                                        <TextBlock Text="{Binding SummaryReport.DirsCopied}" Foreground="#38bdf8" FontSize="18" FontWeight="Bold"/>
-                                                        <TextBlock Text=" / " Foreground="#64748b" FontSize="13" Margin="2,4,2,0"/>
-                                                        <TextBlock Text="{Binding SummaryReport.DirsTotal}" Foreground="#cbd5e1" FontSize="13" Margin="0,4,0,0"/>
-                                                    </StackPanel>
-                                                    <TextBlock Foreground="#64748b" FontSize="10">
-                                                        <Run Text="건너뜀: "/><Run Text="{Binding SummaryReport.DirsSkipped}" Foreground="#f59e0b"/><Run Text=" · 불일치: "/><Run Text="{Binding SummaryReport.DirsMismatch}" Foreground="#cbd5e1"/>
-                                                    </TextBlock>
-                                                </StackPanel>
-                                            </Border>
-
-                                            <!-- Card 2: Files -->
-                                            <Border Grid.Column="1" Background="#111c38" CornerRadius="8" Padding="12,10" Margin="0,0,6,0" BorderThickness="1" BorderBrush="#1e293b">
-                                                <StackPanel>
-                                                    <TextBlock Text="📄 파일 (Files)" Foreground="#94a3b8" FontSize="11"/>
-                                                    <StackPanel Orientation="Horizontal" Margin="0,4,0,2">
-                                                        <TextBlock Text="{Binding SummaryReport.FilesCopied}" Foreground="#10b981" FontSize="18" FontWeight="Bold"/>
-                                                        <TextBlock Text=" / " Foreground="#64748b" FontSize="13" Margin="2,4,2,0"/>
-                                                        <TextBlock Text="{Binding SummaryReport.FilesTotal}" Foreground="#cbd5e1" FontSize="13" Margin="0,4,0,0"/>
-                                                    </StackPanel>
-                                                    <TextBlock Foreground="#64748b" FontSize="10">
-                                                        <Run Text="실패: "/><Run Text="{Binding SummaryReport.FilesFailed}" Foreground="#ef4444" FontWeight="Bold"/><Run Text=" · 추가: "/><Run Text="{Binding SummaryReport.FilesExtras}" Foreground="#38bdf8"/>
-                                                    </TextBlock>
-                                                </StackPanel>
-                                            </Border>
-
-                                            <!-- Card 3: Bytes -->
-                                            <Border Grid.Column="2" Background="#111c38" CornerRadius="8" Padding="12,10" Margin="0,0,6,0" BorderThickness="1" BorderBrush="#1e293b">
-                                                <StackPanel>
-                                                    <TextBlock Text="💾 복사 용량 (Bytes)" Foreground="#94a3b8" FontSize="11"/>
-                                                    <TextBlock Text="{Binding SummaryReport.BytesCopied}" Foreground="#f59e0b" FontSize="18" FontWeight="Bold" Margin="0,4,0,2"/>
-                                                    <TextBlock Foreground="#64748b" FontSize="10">
-                                                        <Run Text="전체: "/><Run Text="{Binding SummaryReport.BytesTotal}" Foreground="#cbd5e1"/><Run Text=" · 건너뜀: "/><Run Text="{Binding SummaryReport.BytesSkipped}"/>
-                                                    </TextBlock>
-                                                </StackPanel>
-                                            </Border>
-
-                                            <!-- Card 4: Speed & Time -->
-                                            <Border Grid.Column="3" Background="#111c38" CornerRadius="8" Padding="12,10" BorderThickness="1" BorderBrush="#1e293b">
-                                                <StackPanel>
-                                                    <TextBlock Text="⏱️ 소요 시간 &amp; 속도" Foreground="#94a3b8" FontSize="11"/>
-                                                    <TextBlock Text="{Binding SummaryReport.TimesCopied}" Foreground="#a855f7" FontSize="18" FontWeight="Bold" Margin="0,4,0,2"/>
-                                                    <TextBlock Foreground="#64748b" FontSize="10" TextTrimming="CharacterEllipsis">
-                                                        <Run Text="속도: "/><Run Text="{Binding SummaryReport.SpeedBytesPerSec}" Foreground="#38bdf8"/>
-                                                    </TextBlock>
-                                                </StackPanel>
-                                            </Border>
-                                        </Grid>
-
-                                        <!-- Detailed 6-Column Formatted Summary Table -->
-                                        <Border Background="#020617" CornerRadius="8" Padding="12,10" BorderThickness="1" BorderBrush="#1e293b">
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/> <!-- Header -->
-                                                    <RowDefinition Height="Auto"/> <!-- Dirs -->
-                                                    <RowDefinition Height="Auto"/> <!-- Files -->
-                                                    <RowDefinition Height="Auto"/> <!-- Bytes -->
-                                                    <RowDefinition Height="Auto"/> <!-- Times -->
-                                                </Grid.RowDefinitions>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="110"/> <!-- 항목 -->
-                                                    <ColumnDefinition Width="*"/>   <!-- 전체 -->
-                                                    <ColumnDefinition Width="*"/>   <!-- 복사됨 -->
-                                                    <ColumnDefinition Width="*"/>   <!-- 건너뜀 -->
-                                                    <ColumnDefinition Width="*"/>   <!-- 불일치 -->
-                                                    <ColumnDefinition Width="*"/>   <!-- 실패 -->
-                                                    <ColumnDefinition Width="*"/>   <!-- 추가 -->
-                                                </Grid.ColumnDefinitions>
-
-                                                <!-- Table Header Row -->
-                                                <Border Grid.Row="0" Grid.ColumnSpan="7" Background="#0f172a" CornerRadius="4" Padding="6,5" Margin="0,0,0,4">
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="110"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <TextBlock Grid.Column="0" Text="구분 항목" Foreground="#94a3b8" FontSize="11" FontWeight="Bold"/>
-                                                        <TextBlock Grid.Column="1" Text="전체 (Total)" Foreground="#cbd5e1" FontSize="11" FontWeight="Bold" TextAlignment="Center"/>
-                                                        <TextBlock Grid.Column="2" Text="복사됨 (Copied) 🟢" Foreground="#34d399" FontSize="11" FontWeight="Bold" TextAlignment="Center"/>
-                                                        <TextBlock Grid.Column="3" Text="건너뜀 (Skipped) 🟡" Foreground="#fbbf24" FontSize="11" FontWeight="Bold" TextAlignment="Center"/>
-                                                        <TextBlock Grid.Column="4" Text="불일치 (Mismatch) 🟠" Foreground="#fb923c" FontSize="11" FontWeight="Bold" TextAlignment="Center"/>
-                                                        <TextBlock Grid.Column="5" Text="실패 (Failed) 🔴" Foreground="#f87171" FontSize="11" FontWeight="Bold" TextAlignment="Center"/>
-                                                        <TextBlock Grid.Column="6" Text="추가 (Extras) 🔵" Foreground="#60a5fa" FontSize="11" FontWeight="Bold" TextAlignment="Center"/>
-                                                    </Grid>
-                                                </Border>
-
-                                                <!-- Row 1: Dirs -->
-                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="📁 디렉터리" Foreground="#38bdf8" FontSize="11" FontWeight="Bold" Margin="4,4"/>
-                                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SummaryReport.DirsTotal}" Foreground="#f1f5f9" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding SummaryReport.DirsCopied}" Foreground="#34d399" FontSize="11" FontWeight="Bold" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding SummaryReport.DirsSkipped}" Foreground="#fbbf24" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding SummaryReport.DirsMismatch}" Foreground="#fb923c" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="1" Grid.Column="5" Text="{Binding SummaryReport.DirsFailed}" Foreground="#f87171" FontSize="11" FontWeight="Bold" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="1" Grid.Column="6" Text="{Binding SummaryReport.DirsExtras}" Foreground="#60a5fa" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-
-                                                <!-- Row 2: Files -->
-                                                <TextBlock Grid.Row="2" Grid.Column="0" Text="📄 파일" Foreground="#38bdf8" FontSize="11" FontWeight="Bold" Margin="4,4"/>
-                                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SummaryReport.FilesTotal}" Foreground="#f1f5f9" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding SummaryReport.FilesCopied}" Foreground="#34d399" FontSize="11" FontWeight="Bold" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding SummaryReport.FilesSkipped}" Foreground="#fbbf24" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="2" Grid.Column="4" Text="{Binding SummaryReport.FilesMismatch}" Foreground="#fb923c" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="2" Grid.Column="5" Text="{Binding SummaryReport.FilesFailed}" Foreground="#f87171" FontSize="11" FontWeight="Bold" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="2" Grid.Column="6" Text="{Binding SummaryReport.FilesExtras}" Foreground="#60a5fa" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-
-                                                <!-- Row 3: Bytes -->
-                                                <TextBlock Grid.Row="3" Grid.Column="0" Text="💾 바이트" Foreground="#38bdf8" FontSize="11" FontWeight="Bold" Margin="4,4"/>
-                                                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SummaryReport.BytesTotal}" Foreground="#f1f5f9" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding SummaryReport.BytesCopied}" Foreground="#34d399" FontSize="11" FontWeight="Bold" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="3" Grid.Column="3" Text="{Binding SummaryReport.BytesSkipped}" Foreground="#fbbf24" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="3" Grid.Column="4" Text="{Binding SummaryReport.BytesMismatch}" Foreground="#fb923c" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="3" Grid.Column="5" Text="{Binding SummaryReport.BytesFailed}" Foreground="#f87171" FontSize="11" FontWeight="Bold" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="3" Grid.Column="6" Text="{Binding SummaryReport.BytesExtras}" Foreground="#60a5fa" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-
-                                                <!-- Row 4: Times -->
-                                                <TextBlock Grid.Row="4" Grid.Column="0" Text="⏱️ 시간" Foreground="#38bdf8" FontSize="11" FontWeight="Bold" Margin="4,4"/>
-                                                <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SummaryReport.TimesTotal}" Foreground="#f1f5f9" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding SummaryReport.TimesCopied}" Foreground="#34d399" FontSize="11" FontWeight="Bold" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="4" Grid.Column="3" Text="-" Foreground="#64748b" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="4" Grid.Column="4" Text="-" Foreground="#64748b" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="4" Grid.Column="5" Text="{Binding SummaryReport.TimesFailed}" Foreground="#f87171" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-                                                <TextBlock Grid.Row="4" Grid.Column="6" Text="{Binding SummaryReport.TimesExtras}" Foreground="#60a5fa" FontSize="11" TextAlignment="Center" Margin="0,4"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <!-- Bottom Diagnosis Bar -->
-                                        <Border Background="#0f172a" CornerRadius="6" Padding="10,6" Margin="0,8,0,0">
-                                            <DockPanel>
-                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                    <TextBlock Text="💡 상세 진단: " Foreground="#94a3b8" FontSize="11" FontWeight="Bold"/>
-                                                    <TextBlock Text="{Binding SummaryReport.ExitCodeDescription}" Foreground="#cbd5e1" FontSize="11"/>
-                                                </StackPanel>
-                                                <TextBlock DockPanel.Dock="Right" HorizontalAlignment="Right" Foreground="#64748b" FontSize="10" VerticalAlignment="Center">
-                                                    <Run Text="분당 전송 속도: "/><Run Text="{Binding SummaryReport.SpeedMegaBytesPerMin}" Foreground="#a5b4fc"/>
-                                                </TextBlock>
-                                            </DockPanel>
-                                        </Border>
+                            <Border Grid.Column="1" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
+                                <StackPanel>
+                                    <TextBlock Text="복사된 파일 수" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                        <TextBlock Text="{Binding CopiedFiles}" Foreground="#38bdf8" FontSize="22" FontWeight="Bold"/>
+                                        <TextBlock Text="/" Foreground="{Binding ThemeTextSecondary}" FontSize="16" Margin="4,4,4,0"/>
+                                        <TextBlock Text="{Binding TotalFiles}" Foreground="{Binding ThemeTextSecondary}" FontSize="16" Margin="0,4,0,0"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Border>
 
-                            <!-- Live Copy Stream HUD Banner (Optionally visible) -->
-                            <Border Grid.Row="2" Visibility="{Binding IsLiveStreamHudEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                                    Background="#0f172a" CornerRadius="8" Padding="12,10" Margin="0,0,0,10" BorderThickness="1" BorderBrush="#1e293b">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <!-- Status Radar Icon -->
-                                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
-                                        <Border Background="#10b981" Width="10" Height="10" CornerRadius="5" Margin="0,0,8,0"/>
-                                        <TextBlock Text="현재 전송 파일:" Foreground="#94a3b8" FontSize="11" FontWeight="Bold"/>
+                            <Border Grid.Column="2" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
+                                <StackPanel>
+                                    <TextBlock Text="복사된 디렉터리 수" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,2,0,4">
+                                        <TextBlock Text="{Binding CopiedDirs}" Foreground="#a855f7" FontSize="22" FontWeight="Bold"/>
+                                        <TextBlock Text="/" Foreground="{Binding ThemeTextSecondary}" FontSize="16" Margin="4,4,4,0"/>
+                                        <TextBlock Text="{Binding TotalDirs}" Foreground="{Binding ThemeTextSecondary}" FontSize="16" Margin="0,4,0,0"/>
                                     </StackPanel>
-
-                                    <!-- File Path & Detail -->
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding CurrentActiveFile}" Foreground="#38bdf8" FontSize="12" FontWeight="Bold" FontFamily="Consolas, Courier New" TextTrimming="CharacterEllipsis"/>
-                                        <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                            <TextBlock Text="{Binding CurrentActiveFileDetail}" Foreground="#cbd5e1" FontSize="11" TextTrimming="CharacterEllipsis"/>
-                                            <TextBlock Text="{Binding EstimatedRemainingTimeText, StringFormat=' · ⏱️ ETA: {0}'}" Foreground="#38bdf8" FontSize="11" FontWeight="SemiBold"/>
-                                        </StackPanel>
-                                    </StackPanel>
-
-                                    <!-- Latest raw console ticker -->
-                                    <Border Grid.Column="2" Background="#020617" CornerRadius="6" Padding="8,4" BorderThickness="1" BorderBrush="#334155" Margin="10,0,0,0" MaxWidth="360">
-                                        <TextBlock Text="{Binding LatestLogLine}" Foreground="#64748b" FontSize="10" FontFamily="Consolas, Courier New" TextTrimming="CharacterEllipsis" ToolTip="{Binding LatestLogLine}"/>
-                                    </Border>
-                                </Grid>
+                                    <ProgressBar Value="{Binding DirsProgressPercent, Mode=OneWay}" Height="4" Background="{Binding ThemeInnerBackground}" Foreground="#a855f7" BorderThickness="0" Margin="0,2,0,4"/>
+                                    <TextBlock Text="{Binding DirsProgressText, FallbackValue='0% 완료'}" Foreground="{Binding ThemeTextSecondary}" FontSize="10"/>
+                                </StackPanel>
                             </Border>
 
-                            <!-- Console ListBox with auto-scroll target Name -->
-                            <ListBox x:Name="RobocopyLogListBox" Grid.Row="3" ItemsSource="{Binding Logs}" Background="Transparent" BorderThickness="0" Foreground="#38bdf8" FontFamily="Consolas, Courier New" FontSize="12" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                                <ListBox.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Setter Property="Padding" Value="2"/>
-                                    </Style>
-                                </ListBox.ItemContainerStyle>
-                            </ListBox>
+                            <Border Grid.Column="3" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="0,14,8,14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
+                                <StackPanel Margin="14,0,0,0">
+                                    <TextBlock Text="전송 데이터 용량" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
+                                    <TextBlock Text="{Binding CopiedBytesText}" Foreground="#f59e0b" FontSize="16" FontWeight="Bold" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="4" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" Margin="0,0,8,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
+                                <StackPanel>
+                                    <TextBlock Text="현재 전송 속도" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
+                                    <TextBlock Text="{Binding CurrentSpeedText}" Foreground="#6366f1" FontSize="22" FontWeight="Bold" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="5" Background="{Binding ThemeCardBackground}" CornerRadius="10" Padding="14" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
+                                <StackPanel>
+                                    <TextBlock Text="남은 예상 시간 (ETA)" Foreground="{Binding ThemeTextSecondary}" FontSize="11"/>
+                                    <TextBlock Text="{Binding EstimatedRemainingTimeText, FallbackValue='-'}" Foreground="#38bdf8" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
                         </Grid>
-                    </Border>
-                </Grid>
+
+                        <!-- Realtime Output Console Terminal & Live HUD (v2.8.0 Option A) -->
+                        <Border Grid.Row="2" Background="#020617" CornerRadius="12" Padding="16" BorderThickness="1" BorderBrush="#1e293b" MinHeight="450">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" /> <!-- Row 0: Toolbar -->
+                                    <RowDefinition Height="Auto" /> <!-- Row 1: Final Backup Summary Dashboard HUD (v2.8.0) -->
+                                    <RowDefinition Height="Auto" /> <!-- Row 2: Live Copy Stream HUD Banner -->
+                                    <RowDefinition Height="*" />    <!-- Row 3: Robocopy Log ListBox -->
+                                </Grid.RowDefinitions>
+
+                                <!-- Console Stream Header & Stream Options Toolbar -->
+                                <DockPanel Grid.Row="0" Margin="0,0,0,10">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="💻 Robocopy 프로세스 실시간 콘솔 스트림" Foreground="#38bdf8" FontSize="13" FontWeight="Bold"/>
+                                        <Border Background="#0369a1" CornerRadius="4" Padding="6,2" Margin="10,0,0,0">
+                                            <TextBlock Text="LIVE STREAM" Foreground="White" FontSize="10" FontWeight="Bold"/>
+                                        </Border>
+                                    </StackPanel>
+                                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                        <!-- Realtime Options Checkboxes -->
+                                        <CheckBox IsChecked="{Binding IsAutoScrollEnabled}" Content="⬇ 최신위치(v)" Foreground="#38bdf8" FontWeight="SemiBold" FontSize="11" Margin="0,0,12,0" VerticalAlignment="Center" Cursor="Hand" ToolTip="새 로그가 수신될 때 콘솔 화면을 항상 최신 위치로 자동 유지(실시간 자동 스크롤)합니다."/>
+                                        <CheckBox IsChecked="{Binding IsLiveStreamHudEnabled}" Content="🎯 최신 전송 HUD" Foreground="#94a3b8" FontSize="11" Margin="0,0,12,0" VerticalAlignment="Center" Cursor="Hand" ToolTip="현재 전송 중인 최신 파일 정보 배너를 표시합니다."/>
+                                        <CheckBox IsChecked="{Binding ShowExternalConsole}" Content="🖥️ 별도 CMD 콘솔창" Foreground="#94a3b8" FontSize="11" Margin="0,0,12,0" VerticalAlignment="Center" Cursor="Hand" ToolTip="Windows 기본 명령 프롬프트 창을 별도로 띄워 네이티브 콘솔 스트림을 확인합니다."/>
+
+                                        <Button Command="{Binding OpenSummaryHudCommand}" Content="📊 요약 통계" Width="90" Height="28" Margin="0,0,6,0" Background="#1e1b4b" Foreground="#a5b4fc" BorderThickness="1" BorderBrush="#4338ca" FontSize="11" FontWeight="Bold" Cursor="Hand" ToolTip="최근 완료된 Robocopy 최종 통계 대시보드 HUD를 엽니다."/>
+                                        <Button Command="{Binding SaveLogCommand}" Content="💾 로그 저장" Width="85" Height="28" Margin="0,0,6,0" Background="#334155" Foreground="White" BorderThickness="0" FontSize="11" Cursor="Hand"/>
+                                        <Button Command="{Binding ClearLogCommand}" Content="🧹 지우기" Width="70" Height="28" Margin="0,0,6,0" Background="#334155" Foreground="White" BorderThickness="0" FontSize="11" Cursor="Hand"/>
+                                        <Button Command="{Binding TogglePauseRobocopyCommand}" IsEnabled="{Binding IsRobocopyRunning}" Content="{Binding PauseResumeButtonText}" Height="28" Padding="10,0" Margin="0,0,6,0" Background="#d97706" Foreground="White" BorderThickness="0" FontSize="11" FontWeight="Bold" Cursor="Hand" ToolTip="프로세스 일시정지/재개"/>
+                                        <Button Command="{Binding StopCommand}" IsEnabled="{Binding IsRobocopyRunning}" Content="⏹ 강제 중지" Width="85" Height="28" Background="#dc2626" Foreground="White" BorderThickness="0" FontSize="11" FontWeight="Bold" Cursor="Hand" ToolTip="프로세스 즉시 강제 중지"/>
+                                    </StackPanel>
+                                </DockPanel>
+
+                                <!-- Final Backup Statistics Dashboard HUD Card (New v2.8.0 Option A) -->
+                                <Border Grid.Row="1" Visibility="{Binding HasSummaryReport, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Background="#0b1329" CornerRadius="10" Padding="14" Margin="0,0,0,12" BorderThickness="1.5" BorderBrush="#10b981">
+                                    <StackPanel>
+                                        <!-- Header: Title, Status Badge, Action Controls -->
+                                        <DockPanel LastChildFill="False" Margin="0,0,0,10">
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="📊" FontSize="16" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="최종 백업 통계 대시보드 리포트" Foreground="#f8fafc" FontSize="13" FontWeight="Bold" VerticalAlignment="Center"/>
+                                                
+                                                <!-- Status Badge -->
+                                                <Border Background="#065f46" CornerRadius="6" Padding="8,3" Margin="10,0,0,0" VerticalAlignment="Center">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding SummaryReport.ExitCodeTitle}" Foreground="#34d399" FontSize="11" FontWeight="Bold"/>
+                                                        <TextBlock Text=" (코드: " Foreground="#a7f3d0" FontSize="11"/>
+                                                        <TextBlock Text="{Binding SummaryReport.ExitCode}" Foreground="#ffffff" FontSize="11" FontWeight="Bold"/>
+                                                        <TextBlock Text=")" Foreground="#a7f3d0" FontSize="11"/>
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <!-- Ended Time -->
+                                                <TextBlock Text="{Binding SummaryReport.EndedTime, StringFormat={}완료 일시: {0}}" Foreground="#94a3b8" FontSize="11" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                                            </StackPanel>
+
+                                            <!-- Action Buttons (Right) -->
+                                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Button Command="{Binding CopySummaryReportCommand}" Content="📋 리포트 복사" Width="95" Height="26" Margin="0,0,6,0" Background="#1e293b" Foreground="#38bdf8" BorderThickness="1" BorderBrush="#334155" FontSize="11" Cursor="Hand" ToolTip="전체 통계표를 텍스트 형식으로 클립보드에 복사합니다."/>
+                                                <Button Command="{Binding ToggleSummaryReportCommand}" Content="{Binding SummaryToggleText}" Width="75" Height="26" Margin="0,0,6,0" Background="#1e293b" Foreground="#cbd5e1" BorderThickness="1" BorderBrush="#334155" FontSize="11" Cursor="Hand" ToolTip="상세 통계표를 접거나 펼칩니다."/>
+                                                <Button Command="{Binding CloseSummaryReportCommand}" Content="✕ 닫기" Width="60" Height="26" Background="#334155" Foreground="#f1f5f9" BorderThickness="0" FontSize="11" Cursor="Hand" ToolTip="통계 대시보드 HUD 카드를 닫습니다."/>
+                                            </StackPanel>
+                                        </DockPanel>
+
+                                        <!-- Collapsible Content Body (Visible when IsSummaryExpanded == true) -->
+                                        <StackPanel Visibility="{Binding IsSummaryExpanded, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <!-- 4 Key Metric Highlight Cards -->
+                                            <Grid Margin="0,0,0,12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <!-- Card 1: Dirs -->
+                                                <Border Grid.Column="0" Background="#111c38" CornerRadius="8" Padding="12,10" Margin="0,0,6,0" BorderThickness="1" BorderBrush="#1e293b">
+                                                    <StackPanel>
+                                                        <TextBlock Text="📁 디렉터리 (Dirs)" Foreground="#94a3b8" FontSize="11"/>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,4,0,2">
+                                                            <TextBlock Text="{Binding SummaryReport.DirsCopied}" Foreground="#38bdf8" FontSize="18" FontWeight="Bold"/>
+                                                            <TextBlock Text=" / " Foreground="#64748b" FontSize="13" Margin="2,4,2,0"/>
+                                                            <TextBlock Text="{Binding SummaryReport.DirsTotal}" Foreground="#cbd5e1" FontSize="13" Margin="0,4,0,0"/>
+                                                        </StackPanel>
+                                                        <TextBlock Foreground="#64748b" FontSize="10">
+                                                            <Run Text="건너뜀: "/><Run Text="{Binding SummaryReport.DirsSkipped}" Foreground="#f59e0b"/><Run Text=" · 불일치: "/><Run Text="{Binding SummaryReport.DirsMismatch}" Foreground="#cbd5e1"/>
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <!-- Card 2: Files -->
+                                                <Border Grid.Column="1" Background="#111c38" CornerRadius="8" Padding="12,10" Margin="0,0,6,0" BorderThickness="1" BorderBrush="#1e293b">
+                                                    <StackPanel>
+                                                        <TextBlock Text="📄 파일 (Files)" Foreground="#94a3b8" FontSize="11"/>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,4,0,2">
+                                                            <TextBlock Text="{Binding SummaryReport.FilesCopied}" Foreground="#10b981" FontSize="18" FontWeight="Bold"/>
+                                                            <TextBlock Text=" / " Foreground="#64748b" FontSize="13" Margin="2,4,2,0"/>
+                                                            <TextBlock Text="{Binding SummaryReport.FilesTotal}" Foreground="#cbd5e1" FontSize="13" Margin="0,4,0,0"/>
+                                                        </StackPanel>
+                                                        <TextBlock Foreground="#64748b" FontSize="10">
+                                                            <Run Text="실패: "/><Run Text="{Binding SummaryReport.FilesFailed}" Foreground="#ef4444" FontWeight="Bold"/><Run Text=" · 추가: "/><Run Text="{Binding SummaryReport.FilesExtras}" Foreground="#38bdf8"/>
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <!-- Card 3: Bytes -->
+                                                <Border Grid.Column="2" Background="#111c38" CornerRadius="8" Padding="12,10" Margin="0,0,6,0" BorderThickness="1" BorderBrush="#1e293b">
+                                                    <StackPanel>
+                                                        <TextBlock Text="💾 복사 용량 (Bytes)" Foreground="#94a3b8" FontSize="11"/>
+                                                        <TextBlock Text="{Binding SummaryReport.BytesCopied}" Foreground="#f59e0b" FontSize="18" FontWeight="Bold" Margin="0,4,0,2"/>
+                                                        <TextBlock Foreground="#64748b" FontSize="10">
+                                                            <Run Text="전체: "/><Run Text="{Binding SummaryReport.BytesTotal}" Foreground="#cbd5e1"/><Run Text=" · 건너뜀: "/><Run Text="{Binding SummaryReport.BytesSkipped}"/>
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </Border>
+
+                                                <!-- Card 4: Speed & Time -->
+                                                <Border Grid.Column="3" Background="#111c38" CornerRadius="8" Padding="12,10" BorderThickness="1" BorderBrush="#1e293b">
+                                                    <StackPanel>
+                                                        <TextBlock Text="⏱️ 소요 시간 &amp; 속도" Foreground="#94a3b8" FontSize="11"/>
+                                                        <TextBlock Text="{Binding SummaryReport.TimesCopied}" Foreground="#a855f7" FontSize="18" FontWeight="Bold" Margin="0,4,0,2"/>
+                                                        <TextBlock Foreground="#64748b" FontSize="10" TextTrimming="CharacterEllipsis">
+                                                            <Run Text="속도: "/><Run Text="{Binding SummaryReport.SpeedBytesPerSec}" Foreground="#38bdf8"/>
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </Border>
+                                            </Grid>
+
+                                            <!-- Detailed 6-Column Formatted Summary Table -->
+                                            <Border Background="#020617" CornerRadius="8" Padding="12,10" BorderThickness="1" BorderBrush="#1e293b">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/> <!-- Header -->
+                                                        <RowDefinition Height="Auto"/> <!-- Dirs -->
+                                                        <RowDefinition Height="Auto"/> <!-- Files -->
+                                                        <RowDefinition Height="Auto"/> <!-- Bytes -->
+                                                        <RowDefinition Height="Auto"/> <!-- Times -->
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="110"/> <!-- 항목 -->
+                                                        <ColumnDefinition Width="*"/>   <!-- 전체 -->
+                                                        <ColumnDefinition Width="*"/>   <!-- 복사됨 -->
+                                                        <ColumnDefinition Width="*"/>   <!-- 건너뜀 -->
+                                                        <ColumnDefinition Width="*"/>   <!-- 불일치 -->
+                                                        <ColumnDefinition Width="*"/>   <!-- 실패 -->
+                                                        <ColumnDefinition Width="*"/>   <!-- 추가 -->
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!-- Table Header Row -->
+                                                    <Border Grid.Row="0" Grid.ColumnSpan="7" Background="#0f172a" CornerRadius="4" Padding="6,5" Margin="0,0,0,4">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="110"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Grid.Column="0" Text="구분 항목" Foreground="#94a3b8" FontSize="11" FontWeight="Bold"/>
+                                                            <TextBlock Grid.Column="1" Text="전체 (Total)" Foreground="#cbd5e1" FontSize="11" FontWeight="Bold" TextAlignment="Center"/>
+                                                            <TextBlock Grid.Column="2" Text="복사됨 (Copied) 🟢" Foreground="#34d399" FontSize="11" FontWeight="Bold" TextAlignment="Center"/>
+                                                            <TextBlock Grid.Column="3" Text="건너뜀 (Skipped) 🟡" Foreground="#fbbf24" FontSize="11" FontWeight="Bold" TextAlignment="Center"/>
+                                                            <TextBlock Grid.Column="4" Text="불일치 (Mismatch) 🟠" Foreground="#fb923c" FontSize="11" FontWeight="Bold" TextAlignment="Center"/>
+                                                            <TextBlock Grid.Column="5" Text="실패 (Failed) 🔴" Foreground="#f87171" FontSize="11" FontWeight="Bold" TextAlignment="Center"/>
+                                                            <TextBlock Grid.Column="6" Text="추가 (Extras) 🔵" Foreground="#60a5fa" FontSize="11" FontWeight="Bold" TextAlignment="Center"/>
+                                                        </Grid>
+                                                    </Border>
+
+                                                    <!-- Row 1: Dirs -->
+                                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="📁 디렉터리" Foreground="#38bdf8" FontSize="11" FontWeight="Bold" Margin="4,4"/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SummaryReport.DirsTotal}" Foreground="#f1f5f9" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding SummaryReport.DirsCopied}" Foreground="#34d399" FontSize="11" FontWeight="Bold" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding SummaryReport.DirsSkipped}" Foreground="#fbbf24" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding SummaryReport.DirsMismatch}" Foreground="#fb923c" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="5" Text="{Binding SummaryReport.DirsFailed}" Foreground="#f87171" FontSize="11" FontWeight="Bold" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="6" Text="{Binding SummaryReport.DirsExtras}" Foreground="#60a5fa" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+
+                                                    <!-- Row 2: Files -->
+                                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="📄 파일" Foreground="#38bdf8" FontSize="11" FontWeight="Bold" Margin="4,4"/>
+                                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SummaryReport.FilesTotal}" Foreground="#f1f5f9" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding SummaryReport.FilesCopied}" Foreground="#34d399" FontSize="11" FontWeight="Bold" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding SummaryReport.FilesSkipped}" Foreground="#fbbf24" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="2" Grid.Column="4" Text="{Binding SummaryReport.FilesMismatch}" Foreground="#fb923c" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="2" Grid.Column="5" Text="{Binding SummaryReport.FilesFailed}" Foreground="#f87171" FontSize="11" FontWeight="Bold" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="2" Grid.Column="6" Text="{Binding SummaryReport.FilesExtras}" Foreground="#60a5fa" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+
+                                                    <!-- Row 3: Bytes -->
+                                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="💾 바이트" Foreground="#38bdf8" FontSize="11" FontWeight="Bold" Margin="4,4"/>
+                                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SummaryReport.BytesTotal}" Foreground="#f1f5f9" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding SummaryReport.BytesCopied}" Foreground="#34d399" FontSize="11" FontWeight="Bold" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="3" Grid.Column="3" Text="{Binding SummaryReport.BytesSkipped}" Foreground="#fbbf24" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="3" Grid.Column="4" Text="{Binding SummaryReport.BytesMismatch}" Foreground="#fb923c" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="3" Grid.Column="5" Text="{Binding SummaryReport.BytesFailed}" Foreground="#f87171" FontSize="11" FontWeight="Bold" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="3" Grid.Column="6" Text="{Binding SummaryReport.BytesExtras}" Foreground="#60a5fa" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+
+                                                    <!-- Row 4: Times -->
+                                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="⏱️ 시간" Foreground="#38bdf8" FontSize="11" FontWeight="Bold" Margin="4,4"/>
+                                                    <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SummaryReport.TimesTotal}" Foreground="#f1f5f9" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding SummaryReport.TimesCopied}" Foreground="#34d399" FontSize="11" FontWeight="Bold" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="4" Grid.Column="3" Text="-" Foreground="#64748b" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="4" Grid.Column="4" Text="-" Foreground="#64748b" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="4" Grid.Column="5" Text="{Binding SummaryReport.TimesFailed}" Foreground="#f87171" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+                                                    <TextBlock Grid.Row="4" Grid.Column="6" Text="{Binding SummaryReport.TimesExtras}" Foreground="#60a5fa" FontSize="11" TextAlignment="Center" Margin="0,4"/>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Bottom Diagnosis Bar -->
+                                            <Border Background="#0f172a" CornerRadius="6" Padding="10,6" Margin="0,8,0,0">
+                                                <DockPanel>
+                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                        <TextBlock Text="💡 상세 진단: " Foreground="#94a3b8" FontSize="11" FontWeight="Bold"/>
+                                                        <TextBlock Text="{Binding SummaryReport.ExitCodeDescription}" Foreground="#cbd5e1" FontSize="11"/>
+                                                    </StackPanel>
+                                                    <TextBlock DockPanel.Dock="Right" HorizontalAlignment="Right" Foreground="#64748b" FontSize="10" VerticalAlignment="Center">
+                                                        <Run Text="분당 전송 속도: "/><Run Text="{Binding SummaryReport.SpeedMegaBytesPerMin}" Foreground="#a5b4fc"/>
+                                                    </TextBlock>
+                                                </DockPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Live Copy Stream HUD Banner (Optionally visible) -->
+                                <Border Grid.Row="2" Visibility="{Binding IsLiveStreamHudEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                        Background="#0f172a" CornerRadius="8" Padding="12,10" Margin="0,0,0,10" BorderThickness="1" BorderBrush="#1e293b">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Status Radar Icon -->
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
+                                            <Border Background="#10b981" Width="10" Height="10" CornerRadius="5" Margin="0,0,8,0"/>
+                                            <TextBlock Text="현재 전송 파일:" Foreground="#94a3b8" FontSize="11" FontWeight="Bold"/>
+                                        </StackPanel>
+
+                                        <!-- File Path & Detail -->
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding CurrentActiveFile}" Foreground="#38bdf8" FontSize="12" FontWeight="Bold" FontFamily="Consolas, Courier New" TextTrimming="CharacterEllipsis"/>
+                                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                                <TextBlock Text="{Binding CurrentActiveFileDetail}" Foreground="#cbd5e1" FontSize="11" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding EstimatedRemainingTimeText, StringFormat=' · ⏱️ ETA: {0}'}" Foreground="#38bdf8" FontSize="11" FontWeight="SemiBold"/>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!-- Latest raw console ticker -->
+                                        <Border Grid.Column="2" Background="#020617" CornerRadius="6" Padding="8,4" BorderThickness="1" BorderBrush="#334155" Margin="10,0,0,0" MaxWidth="360">
+                                            <TextBlock Text="{Binding LatestLogLine}" Foreground="#64748b" FontSize="10" FontFamily="Consolas, Courier New" TextTrimming="CharacterEllipsis" ToolTip="{Binding LatestLogLine}"/>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Console ListBox with auto-scroll target Name -->
+                                <ListBox x:Name="RobocopyLogListBox" Grid.Row="3" ItemsSource="{Binding Logs}" Background="Transparent" BorderThickness="0" Foreground="#38bdf8" FontFamily="Consolas, Courier New" FontSize="12" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" MinHeight="300">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="Padding" Value="2"/>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </ScrollViewer>
             </TabItem>
 
             <!-- TAB 3: 백업 작업 스케줄러 (Task Scheduler & Windows Service) -->
@@ -2283,7 +2285,7 @@
                     <TextBlock Text="구글블로그" Foreground="#60a5fa" FontSize="11" TextDecorations="Underline"/>
                 </Button>
             </StackPanel>
-            <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.16.2 (Dual)'}" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.16.3 (Dual)'}" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         </DockPanel>
 
         <!-- Easy Backup Wizard Modal Overlay (v2.12.0) -->
@@ -2734,7 +2736,7 @@
                             <Border Grid.Column="0" Background="#0f172a" CornerRadius="8" Padding="12,10" BorderThickness="1" BorderBrush="#334155">
                                 <StackPanel HorizontalAlignment="Center">
                                     <TextBlock Text="현재 실행 중인 버전" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{Binding CurrentAppVersion, FallbackValue='v2.16.2'}" Foreground="#34d399" FontSize="16" FontWeight="Bold" Margin="0,4,0,0" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding CurrentAppVersion, FallbackValue='v2.16.3'}" Foreground="#34d399" FontSize="16" FontWeight="Bold" Margin="0,4,0,0" HorizontalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
 
@@ -2743,7 +2745,7 @@
                             <Border Grid.Column="2" Background="#0f172a" CornerRadius="8" Padding="12,10" BorderThickness="1" BorderBrush="#0284c7">
                                 <StackPanel HorizontalAlignment="Center">
                                     <TextBlock Text="GitHub 최신 릴리스" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{Binding LatestReleaseVersion, FallbackValue='v2.16.2'}" Foreground="#38bdf8" FontSize="16" FontWeight="Bold" Margin="0,4,0,0" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding LatestReleaseVersion, FallbackValue='v2.16.3'}" Foreground="#38bdf8" FontSize="16" FontWeight="Bold" Margin="0,4,0,0" HorizontalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
                         </Grid>

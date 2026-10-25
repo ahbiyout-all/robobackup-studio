@@ -1,5 +1,15 @@
 # RoboBackup Studio 패치 & 릴리즈 노트 (Patch Notes)
 
+## 📌 [v2.16.3] - 2026-10-25
+### 🛠️ 라이브 동기화(Live Sync) 탭 세로 스크롤바 누락 결함 해결 및 UI 가독성 개선
+1. **라이브 동기화 탭 세로 스크롤 환경 완벽 지원 (`MainWindow.xaml` & `App.tsx`)**:
+   - **문제 현상**: 라이브 동기화 탭에서 요약 통계 HUD가 확장되거나 터미널 높이가 커질 경우, 화면 하단이 잘리고 세로 스크롤이 불가능하여 하단 컨트롤 버튼에 접근할 수 없던 결함 수정.
+   - **해결 내역**:
+     - `MainWindow.xaml`: 라이브 동기화 탭(Tab 2)의 메인 컨텐츠를 `ScrollViewer`로 감싸고 `VerticalScrollBarVisibility="Auto"` 및 `HorizontalScrollBarVisibility="Disabled"`를 적용하여 창 크기에 상관없이 모든 컨트롤에 접근 가능하도록 개선.
+     - `App.tsx`: React 프리뷰의 메인 컨테이너에 세로 스크롤이 누락되어 긴 컨텐츠가 잘리던 현상을 방지하기 위해 스크롤 정책 점검 및 하단 푸터 버전 정보(`v2.16.3`) 최신화.
+2. **버전 메타데이터 일괄 동기화 (v2.16.3)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `src/App.tsx`, `package.json` 일괄 동기화.
+
 ---
 
 ## 📌 [v2.16.2] - 2026-10-24

@@ -1626,7 +1626,7 @@ namespace RoboBackupStudio.ViewModels
                 }
             }
             catch { }
-            return "v2.16.2";
+            return "v2.16.3";
         }
 
         public static string CurrentAppVersion => ResolveAppVersion();
