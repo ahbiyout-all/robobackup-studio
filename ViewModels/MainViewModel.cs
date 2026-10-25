@@ -1028,7 +1028,16 @@ namespace RoboBackupStudio.ViewModels
             }
         }
 
-        public int DirsProgressPercent => TotalDirs > 0 ? Math.Min(100, (int)((double)CopiedDirs / TotalDirs * 100)) : 0;
+        private int _dirsProgressPercent = 0;
+        public int DirsProgressPercent
+        {
+            get => TotalDirs > 0 ? Math.Min(100, (int)((double)CopiedDirs / TotalDirs * 100)) : _dirsProgressPercent;
+            set
+            {
+                _dirsProgressPercent = value;
+                OnPropertyChanged();
+            }
+        }
         public string DirsProgressText => TotalDirs > 0 
             ? $"{DirsProgressPercent}% ({CopiedDirs:N0} / {TotalDirs:N0} 디렉터리)" 
             : $"{CopiedDirs:N0}개 디렉터리";
@@ -1617,7 +1626,7 @@ namespace RoboBackupStudio.ViewModels
                 }
             }
             catch { }
-            return "v2.16.1";
+            return "v2.16.2";
         }
 
         public static string CurrentAppVersion => ResolveAppVersion();
@@ -6471,7 +6480,7 @@ namespace RoboBackupStudio.ViewModels
             {
                 using var client = new HttpClient();
                 client.Timeout = TimeSpan.FromSeconds(8);
-                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RoboBackupStudio-UpdateClient", "2.16.1"));
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RoboBackupStudio-UpdateClient", "2.16.2"));
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
 
                 string url = "https://api.github.com/repos/AhBiYout-all/robobackup-studio/releases/latest";

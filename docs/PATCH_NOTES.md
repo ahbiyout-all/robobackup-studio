@@ -2,6 +2,18 @@
 
 ---
 
+## 📌 [v2.16.2] - 2026-10-24
+### 🛠️ 데스크탑 C# WPF 시작 런타임 예외(DirsProgressPercent TwoWay 바인딩 오류) 완벽 해결
+1. **`DirsProgressPercent` 프로퍼티 `set` 접근자 추가 및 `ProgressBar` `Mode=OneWay` 명시 (`MainWindow.xaml` & `ViewModels/MainViewModel.cs`)**:
+   - **문제 원인**: WPF `ProgressBar.Value` 의존성 속성의 디폴트 바인딩이 TwoWay로 평가되어, 백업 디렉터리 진행률 속성인 `DirsProgressPercent`가 읽기 전용(Getter-Only)일 때 앱 시작 시 `System.Windows.Markup.XamlReader.RewrapException` 및 `TwoWay 또는 OneWayToSource 바인딩은 'MainViewModel' 형식의 읽기 전용 속성 'DirsProgressPercent'에서 작동하지 않습니다.` 치명적 런타임 오류가 발생하며 로딩에 실패하던 결함 수정.
+   - **해결 내역**:
+     - `ViewModels/MainViewModel.cs`: `DirsProgressPercent`에 백업 `set` 접근자 및 `_dirsProgressPercent` 필드를 추가하여 런타임 TwoWay 세팅 시 예외 방어.
+     - `MainWindow.xaml`: `ProgressBar Value="{Binding DirsProgressPercent, Mode=OneWay}"` 및 `ProgressPercent`에 `Mode=OneWay`를 명시하여 런타임 크래시 위험을 100% 근본 차단.
+2. **버전 메타데이터 일괄 동기화 (v2.16.2)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `src/components/Navbar.tsx`, `src/components/AutoUpdateModal.tsx`, `package.json` 일괄 동기화.
+
+---
+
 ## 📌 [v2.16.1] - 2026-10-24
 ### 🛠️ C# WPF `MainViewModel.cs` 하위 디렉터리 바인딩 프로퍼티 결함 수정 (GitHub Actions C# 컴파일 무결성 보장)
 1. **`IsCopySubdirectoriesWithEmpty` 및 `IsCopySubdirectoriesNoEmpty` 프로퍼티 신설 (`ViewModels/MainViewModel.cs`)**:
