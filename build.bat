@@ -4,7 +4,7 @@ setlocal
 REM ====================================================================
 REM  RoboBackup Studio - High Performance Build Pipeline
 REM  Developer: AhBiYout
-REM  Blog: https://ahbivibelog.blogspot.com/
+REM  Blog: https://ahbiyoutvibe.blogspot.com/
 REM ====================================================================
 
 cd /d "%~dp0"
@@ -12,7 +12,7 @@ cd /d "%~dp0"
 REM 1. Set Project Name and Default Version
 set "APP_NAME=RoboBackupStudio"
 set "PATCH_FILE=docs\PATCH_NOTES.md"
-set "VERSION=v2.16.6"
+set "VERSION=v2.16.8"
 
 if exist "%PATCH_FILE%" (
     echo [*] Reading latest patch version from %PATCH_FILE%...

@@ -25,7 +25,7 @@ using RoboBackupStudio.Core;
 namespace RoboBackupStudio.ViewModels
 {
     /// <summary>
-    /// RoboBackup Studio MainViewModel (v2.16.6 - High Performance Robocopy GUI & C# WPF Suite)
+    /// RoboBackup Studio MainViewModel (v2.16.8 - High Performance Robocopy GUI & C# WPF Suite)
     /// Developer: AhBiYout (ahbiyoutvibe.blogspot.com)
     /// </summary>
     public class MainViewModel : ViewModelBase
@@ -1626,7 +1626,7 @@ namespace RoboBackupStudio.ViewModels
                 }
             }
             catch { }
-            return "v2.16.4";
+            return "v2.16.8";
         }
 
         public static string CurrentAppVersion => ResolveAppVersion();
@@ -6480,7 +6480,7 @@ namespace RoboBackupStudio.ViewModels
             {
                 using var client = new HttpClient();
                 client.Timeout = TimeSpan.FromSeconds(8);
-                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RoboBackupStudio-UpdateClient", "2.16.2"));
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RoboBackupStudio-UpdateClient", "2.16.8"));
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
 
                 string url = "https://api.github.com/repos/AhBiYout-all/robobackup-studio/releases/latest";

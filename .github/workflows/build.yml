@@ -1,0 +1,86 @@
+name: Build and Test RoboBackup Studio
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  pull_request:
+    branches:
+      - main
+      - master
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build & Verify (Node 24 & .NET 8 WPF)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js (Node 24)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install NPM Dependencies
+        run: npm ci || npm install
+
+      - name: Lint Web Application
+        run: npm run lint
+
+      - name: Build Web Application & Server
+        run: npm run build
+
+      - name: Setup .NET SDK (8.0.x)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore C# WPF Project Dependencies
+        run: dotnet restore RoboBackupStudio.csproj
+
+      - name: Build C# WPF Project (Release Mode)
+        run: dotnet build RoboBackupStudio.csproj -c Release --no-restore /p:TreatWarningsAsErrors=false
+
+      - name: Publish C# WPF Executable (Self-Contained win-x64)
+        run: dotnet publish RoboBackupStudio.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true -o publish/portable
+
+      - name: Verify Built Artifacts
+        shell: pwsh
+        run: |
+          if (Test-Path "publish/portable/RoboBackupStudio.exe") {
+              Write-Host "SUCCESS: C# WPF Executable generated successfully!" -ForegroundColor Green
+              Get-Item "publish/portable/RoboBackupStudio.exe" | Format-List FullName, Length, LastWriteTime
+          } else {
+              Write-Error "ERROR: RoboBackupStudio.exe not found in publish directory!"
+              exit 1
+          }
+
+      - name: Upload Web Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist/
+          retention-days: 7
+
+      - name: Upload C# Desktop Application Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RoboBackupStudio-Desktop-win-x64
+          path: publish/portable/
+          retention-days: 7

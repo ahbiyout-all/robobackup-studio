@@ -647,7 +647,7 @@ export const CSHARP_MVVM_TEMPLATES: CsharpSnippet[] = [
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:RoboBackupStudio.ViewModels"
         mc:Ignorable="d"
-        Title="RoboBackup Studio v2.16.6 - High Performance Robocopy Studio" Height="880" Width="1160"
+        Title="RoboBackup Studio v2.16.8 - High Performance Robocopy Studio" Height="880" Width="1160"
         Background="#0b0f19" Foreground="#f8fafc">
 
     <Window.DataContext>
@@ -715,7 +715,7 @@ export const CSHARP_MVVM_TEMPLATES: CsharpSnippet[] = [
                             <TextBlock Text="RoboBackup" Foreground="#ffffff" FontSize="20" FontWeight="Bold"/>
                             <TextBlock Text="Studio" Foreground="#60a5fa" FontSize="20" FontWeight="Bold" Margin="4,0,0,0"/>
                             <Border Background="#10b981" CornerRadius="10" Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="v2.16.6" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Text="v2.16.8" Foreground="White" FontSize="11" FontWeight="Bold"/>
                             </Border>
                         </StackPanel>
                         <TextBlock Text="Windows High-Speed Robocopy GUI &amp; C# WPF Generator" Foreground="#94a3b8" FontSize="11"/>
@@ -990,6 +990,16 @@ namespace RoboBackupStudio.ViewModels
             get => _cleanupStatusSummary;
             set { _cleanupStatusSummary = value; OnPropertyChanged(); }
         }
+
+        // Robocopy Subdirectory Flag Bindings (v2.16.8)
+        private bool _isE = true;
+        private bool _isS = false;
+        private bool _isMir = false;
+        public bool IsE { get => _isE; set { _isE = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsCopySubdirectoriesWithEmpty)); } }
+        public bool IsS { get => _isS; set { _isS = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsCopySubdirectoriesNoEmpty)); } }
+        public bool IsMir { get => _isMir; set { _isMir = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsCopySubdirectoriesWithEmpty)); } }
+        public bool IsCopySubdirectoriesWithEmpty { get => IsE || IsMir; set { IsE = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsCopySubdirectoriesWithEmpty)); } }
+        public bool IsCopySubdirectoriesNoEmpty { get => IsS; set { IsS = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsCopySubdirectoriesNoEmpty)); } }
 
         // Commands
         public ICommand RestartAsAdminCommand { get; }

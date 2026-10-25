@@ -1,5 +1,35 @@
 # RoboBackup Studio 패치 & 릴리즈 노트 (Patch Notes)
 
+## 📌 [v2.16.8] - 2026-10-25
+### 🚀 GitHub Actions CI 빌드 워크플로 신설, Node 24 전환 및 C# 'IsCopySubdirectoriesNoEmpty' 빌드 무결성 확보
+1. **GitHub Actions CI/CD 전용 빌드 워크플로 신설 (`.github/workflows/build.yml`)**:
+   - `main`/`master` 브랜치 push 및 pull request, 수동 실행(`workflow_dispatch`)을 트리거하는 전용 빌드 검증 워크플로 구축.
+   - **Node.js 24 환경 전환**: 수명이 만료되거나 경고가 발생하는 레거시 Node 20 의존성을 완전히 제거하고 최신 안정 버전인 `node-version: '24'` 적용.
+   - 웹 프론트엔드 및 서버 검증(`npm run lint`, `npm run build`)과 배포 산출물 아티팩트(`web-dist`) 업로드 자동화.
+2. **C# WPF 프로젝트 빌드 단계 최적화 및 'IsCopySubdirectoriesNoEmpty' 네임스페이스 컴파일 무결성 보장**:
+   - Windows 최신 러너(`windows-latest`) 환경에서 .NET SDK 8.0.x(`dotnet-version: '8.0.x'`)를 기반으로 C# WPF 데스크탑 프로젝트 복원(`dotnet restore`) 및 Release 컴파일(`dotnet build`) 단계 구성.
+   - `publish/portable` 대상 win-x64 단일 독립 실행 파일(`RoboBackupStudio.exe`) 생성 및 빌드 성공 검증 스텝 탑재.
+   - `Core/RoboDirectoryCrawler.cs`의 `CrawlOptions` 내에 `IsCopySubdirectoriesNoEmpty` 및 `IsCopySubdirectoriesWithEmpty` 프로퍼티를 명시적 별칭으로 완벽 내장하여 C# 코드 컴파일 시 발생할 수 있는 식별자/네임스페이스 참조 오류(`CS0103`, `CS0117`)를 100% 원천 차단.
+   - `src/utils/robocopy.ts`의 C# MVVM 템플릿에도 `IsCopySubdirectoriesNoEmpty` 및 `IsCopySubdirectoriesWithEmpty` 프로퍼티를 반영하여 동기화.
+3. **릴리스 워크플로 Node 24 동기화 (`.github/workflows/build_release.yml`)**:
+   - `build_release.yml`의 Node.js 설정 또한 Node 24로 일괄 업그레이드하여 CI 환경 전반의 통일성 확보.
+4. **버전 메타데이터 일괄 동기화 (v2.16.8)**:
+   - `docs/PATCH_NOTES.md`, `.github/workflows/build.yml`, `.github/workflows/build_release.yml`, `RoboBackupStudio.csproj`, `build.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `src/components/AutoUpdateModal.tsx`, `src/components/Navbar.tsx`, `src/components/HelpAndLicense.tsx`, `src/App.tsx`, `package.json`, `README.md`, `docs/README.md`, `docs/GOOGLE_BLOGGER_COMPOSE_MODE.md`, `docs/GOOGLE_BLOGGER_HTML_MODE.html` 일괄 동기화.
+
+---
+
+## 📌 [v2.16.7] - 2026-10-25
+### 🧹 일반 사용자 중심 README 간소화: 개발자 소스 빌드 섹션 제거
+1. **README.md 가이드 최적화**:
+   - 일반 사용자 및 기업 관리자가 혼동 없이 즉시 다운로드하여 실행할 수 있도록 `README.md` 내 `### 2. 소스 코드 빌드 (개발자용)` 명령줄(CLI) 섹션 전면 제거.
+   - '빠른 시작(Quick Start)' 섹션을 공식 인스톨러 및 단일 독립 실행 파일 위주의 직관적 다운로드 안내로 개편.
+2. **공식 블로그 및 배포 문서 동기화**:
+   - `docs/GOOGLE_BLOGGER_COMPOSE_MODE.md`, `docs/GOOGLE_BLOGGER_HTML_MODE.html`, `docs/README.md` 내 버전 표기를 `v2.16.7`로 동기화.
+3. **데스크탑 C# WPF MVVM 및 웹 프리뷰 버전 일괄 동기화 (v2.16.7)**:
+   - `RoboBackupStudio.csproj`, `build.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `src/App.tsx`, `src/components/Navbar.tsx`, `package.json` 일괄 갱신.
+
+---
+
 ## 📌 [v2.16.6] - 2026-10-25
 ### 📝 구글 블로거(Blogger/Blogspot) 공식 포스팅 문서 듀얼 모드 생성
 1. **[작성 모드 (서식 있는 텍스트)] 전용 문서 생성 (`docs/GOOGLE_BLOGGER_COMPOSE_MODE.md`)**:

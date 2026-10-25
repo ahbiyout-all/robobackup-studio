@@ -36,7 +36,7 @@ Windows **Robocopy** 전용 GUI 백업 관리자 및 **C# WPF (MVVM)** 프로젝
    - MIT, Lucide Icons, OS 내장 유틸리티 및 개발자 정보
 
 9. **영문 자동 빌드 스크립트 (`build.bat`)**
-   - `docs/PATCH_NOTES.md` 내 최신 버전 태그(예: `v2.16.5`)를 파싱하여 `RoboBackupStudio_v2.16.5.exe` 및 Inno Setup 설치 파일 자동 컴파일 및 패키징
+   - `docs/PATCH_NOTES.md` 내 최신 버전 태그(예: `v2.16.8`)를 파싱하여 `RoboBackupStudio_v2.16.8.exe` 및 Inno Setup 설치 파일 자동 컴파일 및 패키징
 
 10. [구글 블로거 포스팅 가이드 - 작성 모드 (서식 있는 텍스트)](./GOOGLE_BLOGGER_COMPOSE_MODE.md)
     - 구글 블로거(Blogger / Blogspot) 시각적 편집기(작성 모드)에 바로 복사하여 붙여넣을 수 있는 마크다운 및 서식 문서
@@ -46,7 +46,7 @@ Windows **Robocopy** 전용 GUI 백업 관리자 및 **C# WPF (MVVM)** 프로젝
 
 ---
 
-## 🚀 프로젝트 개요 (v2.16.5)
+## 🚀 프로젝트 개요 (v2.16.8)
 - **앱 이름**: RoboBackup Studio
 - **목적**: Windows 기본 내장 백업 유틸리티인 `Robocopy.exe`를 GUI 기반으로 시각화 및 제어하고, C# WPF MVVM 생산용 코드를 즉시 제공하며, 5대 순수 창작 코어 DLL 엔진으로 무중단·초고속·초절약 백업을 실현하는 고성능 백업 스튜디오.
 - **주요 기능**:

@@ -23,6 +23,19 @@ namespace RoboBackupStudio.Core
             public bool ExcludeJunctions { get; set; } = true;         // /XJ
             public List<string> ExcludeDirPatterns { get; set; } = new List<string>(); // /XD
             public List<string> ExcludeFilePatterns { get; set; } = new List<string>(); // /XF
+
+            // Alias properties for robust Robocopy flag binding and compiler compatibility
+            public bool IsCopySubdirectoriesNoEmpty
+            {
+                get => ExcludeEmptyDirectories;
+                set => ExcludeEmptyDirectories = value;
+            }
+
+            public bool IsCopySubdirectoriesWithEmpty
+            {
+                get => IncludeSubdirectories && !ExcludeEmptyDirectories;
+                set => IncludeSubdirectories = value;
+            }
         }
 
         public class CrawlProgressInfo

@@ -79,7 +79,7 @@ export const HelpAndLicense: React.FC = () => {
             <div className="flex items-center space-x-2">
               <h2 className="text-xl font-bold text-white">도움말 및 오픈소스 라이선스 고지</h2>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 font-mono">
-                v2.16.5
+                v2.16.8
               </span>
             </div>
             <p className="text-sm text-slate-300 mt-1">
@@ -313,7 +313,7 @@ export const HelpAndLicense: React.FC = () => {
                   <div className="flex items-center space-x-2">
                     <h3 className="text-lg font-bold text-white">순수 창작 5대 코어 DLL 아키텍처 및 세부 동작 원리</h3>
                     <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 font-mono">
-                      v2.16.4
+                      v2.16.8
                     </span>
                   </div>
                   <p className="text-xs text-purple-300/80 mt-0.5">
@@ -567,7 +567,7 @@ export const HelpAndLicense: React.FC = () => {
                 <h3>제3자 오픈소스 소프트웨어 라이선스 고지 (Third-Party Licenses)</h3>
               </div>
               <button
-                onClick={() => handleCopy(`RoboBackup Studio (v2.16.4)\nMIT License Copyright (c) 2026 AhBiYout`, 'full_lic')}
+                onClick={() => handleCopy(`RoboBackup Studio (v2.16.8)\nMIT License Copyright (c) 2026 AhBiYout`, 'full_lic')}
                 className="px-3 py-1.5 rounded-lg bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 hover:text-white text-xs font-semibold border border-indigo-500/30 flex items-center space-x-1.5 transition-colors"
               >
                 {copiedKey === 'full_lic' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}

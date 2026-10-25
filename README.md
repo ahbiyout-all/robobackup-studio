@@ -1,10 +1,10 @@
-# 🚀 RoboBackup Studio (v2.16.5)
+# 🚀 RoboBackup Studio (v2.16.8)
 
 > **High-Performance Robocopy GUI, Real-time Monitor, Scheduler & C# WPF MVVM Generator**  
 > **개발자**: AhBiYout | **공식 블로그**: [ahbiyoutvibe.blogspot.com](https://ahbiyoutvibe.blogspot.com/) | **소속**: CISNET ([www.cisnet.co.kr](https://www.cisnet.co.kr/))
 
 [![Latest Release](https://img.shields.io/github/v/release/AhBiYout-all/robobackup-studio?color=emerald&label=Release&style=flat-sqlite)](https://github.com/AhBiYout-all/robobackup-studio/releases)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/AhBiYout-all/robobackup-studio/build_release.yml?branch=main&label=CI/CD%20Build)](https://github.com/AhBiYout-all/robobackup-studio/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/AhBiYout-all/robobackup-studio/build.yml?branch=main&label=CI%20Build)](https://github.com/AhBiYout-all/robobackup-studio/actions)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20.NET%208%20WPF-blue)](https://github.com/AhBiYout-all/robobackup-studio)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](docs/LICENSE.txt)
 
@@ -51,21 +51,7 @@ RoboBackup Studio 오픈소스 프로젝트는 개인 및 기업 사용자를 �
 
 ## 🚀 빠른 시작 (Quick Start)
 
-### 1. 인스톨러 다운로드 & 설치
-[GitHub Releases 페이지](https://github.com/AhBiYout-all/robobackup-studio/releases/latest)에서 최신 `RoboBackupStudio_vX.Y.Z_Setup.exe`를 다운로드하여 실행합니다.
-
-### 2. 소스 코드 빌드 (개발자용)
-```bash
-# 1. 원격 저장소 클론
-git clone https://github.com/AhBiYout-all/robobackup-studio.git
-cd robobackup-studio
-
-# 2. C# WPF 앱 빌드 (Visual Studio 또는 .NET 8 SDK)
-dotnet publish RoboBackupStudio.csproj -c Release -r win-x64 --self-contained true
-
-# 3. 원클릭 GitHub 배포 푸시 (Windows)
-push_github.bat
-```
+[GitHub Releases 페이지](https://github.com/AhBiYout-all/robobackup-studio/releases/latest)에서 최신 `RoboBackupStudio_v2.16.8_Setup.exe` 설치 관리자 또는 단일 독립 실행 파일(`.exe`)을 다운로드하여 즉시 실행할 수 있습니다. 별도의 복잡한 런타임 설치 없이 Windows 10/11 및 Windows Server 환경에서 바로 작동합니다.
 
 ---
 
