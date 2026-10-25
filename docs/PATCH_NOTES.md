@@ -10,8 +10,11 @@
      - `_isS` 플래그 필드 및 `IsS` (`/S` - 빈 디렉터리 제외 하위 폴더 복사) 프로퍼티 추가.
      - `IsCopySubdirectoriesWithEmpty` (`get => IsE || IsMir;`) 및 `IsCopySubdirectoriesNoEmpty` (`get => IsS;`) 바인딩/헬퍼 프로퍼티를 완벽 추가하여 C# MSBuild 빌드 무결성 100% 확보.
      - `UpdateCommand()`에 `IsS` (`/S`) 플래그 문자열 추가 로직 반영.
-2. **버전 메타데이터 일괄 동기화 (v2.16.1)**:
-   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `src/components/Navbar.tsx`, `src/components/AutoUpdateModal.tsx`, `package.json` 일괄 동기화.
+2. **GitHub Releases 무조건 자동 생성/갱신 개편 (`.github/workflows/build_release.yml`)**:
+   - **문제 원인**: 기존 Release 생성 단계의 조건식(`if: startsWith(github.ref, 'refs/tags/v')...`)으로 인해 일반 브랜치 push(`main`/`master`) 시 해당 스텝이 무조건 스킵되어 GitHub Releases가 등록되지 않던 결함 수정.
+   - **해결 내역**: 조건식을 해제하고 `make_latest: true`를 적용하여 `main`/`master`/태그/수동 실행 등 모든 CI 빌드 완료 시 인스톨러 실행 파일(`publish/*.exe`)이 GitHub Releases(Latest)로 100% 자동 생성·갱신되도록 개선.
+3. **버전 메타데이터 일괄 동기화 (v2.16.1)**:
+   - `docs/PATCH_NOTES.md`, `.github/workflows/build_release.yml`, `RoboBackupStudio.csproj`, `build.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `src/components/Navbar.tsx`, `src/components/AutoUpdateModal.tsx`, `package.json` 일괄 동기화.
 
 ---
 

@@ -69,7 +69,7 @@ jobs:
         shell: pwsh
         run: |
           $patchFile = "docs/PATCH_NOTES.md"
-          $version = "v2.16.0"
+          $version = "v2.16.1"
           if (Test-Path $patchFile) {
               $match = Select-String -Path $patchFile -Pattern "^##.*\[(v[0-9]+\.[0-9]+\.[0-9]+)\]" | Select-Object -First 1
               if ($match -and $match.Matches.Groups.Count -gt 1) {
@@ -84,13 +84,13 @@ jobs:
 
       - name: Create GitHub Release and Upload Installer Asset
         uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
         with:
           tag_name: ${{ steps.get_version.outputs.VERSION }}
           name: RoboBackup Studio ${{ steps.get_version.outputs.VERSION }} Release
           files: |
-            publish/RoboBackupStudio_*_Setup.exe
+            publish/*.exe
           generate_release_notes: true
+          make_latest: true
           draft: false
           prerelease: false
         env:
