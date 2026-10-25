@@ -2,6 +2,19 @@
 
 ---
 
+## 📌 [v2.16.1] - 2026-10-24
+### 🛠️ C# WPF `MainViewModel.cs` 하위 디렉터리 바인딩 프로퍼티 결함 수정 (GitHub Actions C# 컴파일 무결성 보장)
+1. **`IsCopySubdirectoriesWithEmpty` 및 `IsCopySubdirectoriesNoEmpty` 프로퍼티 신설 (`ViewModels/MainViewModel.cs`)**:
+   - **문제 원인**: `RoboDirectoryCrawler` 재귀 크롤러 실행 옵션 지정 시 `IsCopySubdirectoriesWithEmpty` (`/E`, `/MIR` 연동) 및 `IsCopySubdirectoriesNoEmpty` (`/S` 연동) 프로퍼티가 누락되어 GitHub Actions CI/CD C# MSBuild 단계(`dotnet publish`)에서 `CS0103: The name 'IsCopySubdirectoriesNoEmpty' does not exist in the current context` 컴파일 에러가 발생하던 현상 수정.
+   - **해결 내역**:
+     - `_isS` 플래그 필드 및 `IsS` (`/S` - 빈 디렉터리 제외 하위 폴더 복사) 프로퍼티 추가.
+     - `IsCopySubdirectoriesWithEmpty` (`get => IsE || IsMir;`) 및 `IsCopySubdirectoriesNoEmpty` (`get => IsS;`) 바인딩/헬퍼 프로퍼티를 완벽 추가하여 C# MSBuild 빌드 무결성 100% 확보.
+     - `UpdateCommand()`에 `IsS` (`/S`) 플래그 문자열 추가 로직 반영.
+2. **버전 메타데이터 일괄 동기화 (v2.16.1)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `src/components/Navbar.tsx`, `src/components/AutoUpdateModal.tsx`, `package.json` 일괄 동기화.
+
+---
+
 ## 📌 [v2.16.0] - 2026-10-24
 ### 🚀 GitHub Actions CI/CD 빌드·릴리즈 워크플로 완전 정상화, push_github.bat 자동 태깅 연동 및 데스크탑 C# WPF·React 듀얼 실시간 자동 업데이트 센터 구축
 1. **GitHub Actions CI/CD 워크플로 완전 정상화 (`.github/workflows/build_release.yml`)**:

@@ -37,6 +37,7 @@ namespace RoboBackupStudio.ViewModels
         // Flag properties
         private bool _isMir = true;
         private bool _isE = false;
+        private bool _isS = false;
         private bool _isMt16 = true;
         private bool _isZb = true;
         private bool _isFft = true;
@@ -484,13 +485,31 @@ namespace RoboBackupStudio.ViewModels
         public bool IsMir
         {
             get => _isMir;
-            set { _isMir = value; OnPropertyChanged(); UpdateCommand(); }
+            set { _isMir = value; OnPropertyChanged(); UpdateCommand(); OnPropertyChanged(nameof(IsCopySubdirectoriesWithEmpty)); }
         }
 
         public bool IsE
         {
             get => _isE;
-            set { _isE = value; OnPropertyChanged(); UpdateCommand(); }
+            set { _isE = value; OnPropertyChanged(); UpdateCommand(); OnPropertyChanged(nameof(IsCopySubdirectoriesWithEmpty)); }
+        }
+
+        public bool IsS
+        {
+            get => _isS;
+            set { _isS = value; OnPropertyChanged(); UpdateCommand(); OnPropertyChanged(nameof(IsCopySubdirectoriesNoEmpty)); }
+        }
+
+        public bool IsCopySubdirectoriesWithEmpty
+        {
+            get => IsE || IsMir;
+            set { IsE = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsCopySubdirectoriesWithEmpty)); }
+        }
+
+        public bool IsCopySubdirectoriesNoEmpty
+        {
+            get => IsS;
+            set { IsS = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsCopySubdirectoriesNoEmpty)); }
         }
 
         public bool IsXc
@@ -1598,7 +1617,7 @@ namespace RoboBackupStudio.ViewModels
                 }
             }
             catch { }
-            return "v2.16.0";
+            return "v2.16.1";
         }
 
         public static string CurrentAppVersion => ResolveAppVersion();
@@ -2894,6 +2913,7 @@ namespace RoboBackupStudio.ViewModels
 
             if (IsMir) sb.Append(" /MIR");
             else if (IsE) sb.Append(" /E");
+            else if (IsS) sb.Append(" /S");
             
             // Threads 및 IsMt16 중복 플래그 방지
             if (Threads > 1)
@@ -6451,7 +6471,7 @@ namespace RoboBackupStudio.ViewModels
             {
                 using var client = new HttpClient();
                 client.Timeout = TimeSpan.FromSeconds(8);
-                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RoboBackupStudio-UpdateClient", "2.16.0"));
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RoboBackupStudio-UpdateClient", "2.16.1"));
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
 
                 string url = "https://api.github.com/repos/AhBiYout-all/robobackup-studio/releases/latest";

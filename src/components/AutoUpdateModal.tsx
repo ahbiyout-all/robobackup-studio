@@ -10,7 +10,7 @@ interface GitHubReleaseInfo {
 }
 
 export const AutoUpdateModal: React.FC = () => {
-  const currentVersion = 'v2.16.0';
+  const currentVersion = 'v2.16.1';
   const [isOpen, setIsOpen] = useState(false);
   const [checking, setChecking] = useState(false);
   const [latestRelease, setLatestRelease] = useState<GitHubReleaseInfo | null>(null);
@@ -119,7 +119,7 @@ export const AutoUpdateModal: React.FC = () => {
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">최신 릴리즈 버전:</span>
                 <span className="text-blue-400 font-bold px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20">
-                  {latestRelease ? latestRelease.tag_name : 'v2.16.0 (최신 상태)'}
+                  {latestRelease ? latestRelease.tag_name : 'v2.16.1 (최신 상태)'}
                 </span>
               </div>
               <div className="flex justify-between items-center">
