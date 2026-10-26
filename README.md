@@ -1,4 +1,4 @@
-# 🚀 RoboBackup Studio (v2.16.8)
+# 🚀 RoboBackup Studio (v2.16.9)
 
 > **High-Performance Robocopy GUI, Real-time Monitor, Scheduler & C# WPF MVVM Generator**  
 > **개발자**: AhBiYout | **공식 블로그**: [ahbiyoutvibe.blogspot.com](https://ahbiyoutvibe.blogspot.com/) | **소속**: CISNET ([www.cisnet.co.kr](https://www.cisnet.co.kr/))
@@ -51,7 +51,7 @@ RoboBackup Studio 오픈소스 프로젝트는 개인 및 기업 사용자를 �
 
 ## 🚀 빠른 시작 (Quick Start)
 
-[GitHub Releases 페이지](https://github.com/AhBiYout-all/robobackup-studio/releases/latest)에서 최신 `RoboBackupStudio_v2.16.8_Setup.exe` 설치 관리자 또는 단일 독립 실행 파일(`.exe`)을 다운로드하여 즉시 실행할 수 있습니다. 별도의 복잡한 런타임 설치 없이 Windows 10/11 및 Windows Server 환경에서 바로 작동합니다.
+[GitHub Releases 페이지](https://github.com/AhBiYout-all/robobackup-studio/releases/latest)에서 최신 `RoboBackupStudio_v2.16.9_Setup.exe` 설치 관리자를 다운로드하여 즉시 설치할 수 있습니다. Windows 10/11 및 Windows Server 환경(PC 전용)에서 안정적으로 작동하며, 모바일 OS(Android APK / iOS)는 Robocopy 유틸리티 미지원으로 제외됩니다.
 
 ---
 

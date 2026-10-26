@@ -89,7 +89,7 @@ jobs:
           tag_name: ${{ steps.get_version.outputs.VERSION }}
           name: RoboBackup Studio ${{ steps.get_version.outputs.VERSION }} Release
           files: |
-            publish/*.exe
+            publish/RoboBackupStudio_*_Setup.exe
           generate_release_notes: true
           make_latest: true
           draft: false

@@ -1,18 +1,78 @@
+# ====================================================================
+# RoboBackup Studio - Git Ignore Rules
+# High Performance Robocopy GUI & C# WPF Generator
+# Developer: AhBiYout (ahbiyoutvibe.blogspot.com)
+# ====================================================================
+
+# 1. GitHub Automated Push Scripts (Excluded as per directive)
+push_github.bat
+push_*.bat
+*.push.bat
+push_*.sh
+*.push.sh
+
+# 2. AI Studio Internal & Metadata
+.aistudio/
+.aistudio/**
+
+# 3. Environment & Sensitive Data / Private Keys / Secrets
+.env
+.env.local
+.env.*.local
+*.pfx
+*.key
+*.pem
+*.cer
+*.secret
+credentials.json
+token.json
+!/.env.example
+
+# 4. Node.js & Web Dependencies / Build Outputs
 node_modules/
-build/
 dist/
-publish/
+build/
 coverage/
-.DS_Store
-*.log
-.env*
-!.env.example
-*.user
-*.suo
-.vs/
-.vscode/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+bun.lock
+bun.lockb
+
+# 5. .NET / C# / MSBuild Intermediate & Build Outputs
 bin/
 obj/
+publish/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.pidb
+*.booproj
+*.svclog
+*.visualstate
+
+# 6. IDE / Editor Configurations
+.vs/
+.vscode/
+*.swp
+*.bak
+*~
+
+# 7. OS Generated Junk Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# 8. Logs & Temporary Caches
+*.log
 *.tmp
 *.cache
-.aistudio/
+*.dmp
+*.crash

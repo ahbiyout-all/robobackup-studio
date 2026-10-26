@@ -1,5 +1,27 @@
 # RoboBackup Studio 패치 & 릴리즈 노트 (Patch Notes)
 
+## 📌 [v2.16.9] - 2026-10-25
+### 🛡️ GitHub Releases 실시간 자동 업데이트 팝업 고도화, 설치 파일 릴리즈 단일화, 불필요 파일 및 푸시 스크립트 제외(.gitignore) 전면 개편
+1. **GitHub Releases 실시간 자동 업데이트 팝업 자동 실행 및 다운로드 UI 구축**:
+   - 앱 구동 시 최신 GitHub 릴리스를 비동기 점검하여 새 버전 감지 시 **업데이트 알림 팝업창 자동 실행(Auto Popup)**.
+   - 알림 팝업창 내에 최신 설치 관리자(`Setup.exe`) 직접 다운로드 버튼, 공식 GitHub 저장소 경로(`https://github.com/AhBiYout-all/robobackup-studio`), 현재 버전 vs 최신 릴리스 버전 비교 카드, 변경 내역 스크롤 박스 완비.
+   - C# WPF 데스크탑 앱(`MainViewModel.cs`)과 React 웹 프리뷰(`AutoUpdateModal.tsx`) 상호 100% 듀얼 동기화.
+2. **GitHub 저장소 제외 규칙(.gitignore) 전면 개편 및 핵심 파일 선별화**:
+   - `push_github.bat`, `push_*.bat`, `*.push.bat`, `push_*.sh` 등 자동 푸시 스크립트 자체를 Git 업로드 대상에서 완벽 제외.
+   - 개인정보, 이메일, 인증키, 환경변수 파일(`.env*`), 임시 로그/캐시/덤프 파일, 빌드 산출물(`bin/`, `obj/`, `dist/`, `publish/`, `node_modules/`, `bun.lock`) 등 불필요한 파일 일괄 제외 처리.
+   - 실제 빌드에 필수적인 C# WPF 핵심 소스코드, 공식 문서, 설정 파일 및 빌드 스크립트만 선별하여 리포지토리 청정성 유지.
+3. **GitHub Releases 첨부 자산 설치 파일 단일화 및 모바일(APK/iOS) 제외 정리**:
+   - `.github/workflows/build_release.yml` 내 릴리스 첨부 자산을 `publish/RoboBackupStudio_*_Setup.exe`로 한정하여 인스톨러만 깔끔하게 등록되도록 최적화.
+   - 본 애플리케이션은 Windows 네이티브 Robocopy 및 Win32 커널 API를 활용하는 PC(Windows 10/11 및 Windows Server x64) 전용 소프트웨어이므로, 구동이 불가능한 모바일(Android APK / iOS) 플랫폼 관련 내용을 명확히 정리.
+4. **원클릭 GitHub 자동 푸시 스크립트(`push_github.bat`) 고도화**:
+   - 기본 원격 저장소 이름을 앱 명칭 기반인 `robobackup-studio`로 기본 설정.
+   - `docs/PATCH_NOTES.md` 상단에서 최신 버전(`v2.16.9`)을 동적으로 파싱하여 태깅 및 푸시 연동.
+   - 스크립트 실행 시 `git rm --cached`를 통해 스크립트 자체 및 AI Studio 메타데이터가 실수로 인덱스에 포함되지 않도록 이중 방어.
+5. **버전 메타데이터 일괄 동기화 (v2.16.9)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `push_github.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `src/components/AutoUpdateModal.tsx`, `src/components/Navbar.tsx`, `src/components/HelpAndLicense.tsx`, `src/App.tsx`, `package.json`, `README.md`, `docs/README.md`, `docs/GOOGLE_BLOGGER_COMPOSE_MODE.md`, `docs/GOOGLE_BLOGGER_HTML_MODE.html` 일괄 동기화.
+
+---
+
 ## 📌 [v2.16.8] - 2026-10-25
 ### 🚀 GitHub Actions CI 빌드 워크플로 신설, Node 24 전환 및 C# 'IsCopySubdirectoriesNoEmpty' 빌드 무결성 확보
 1. **GitHub Actions CI/CD 전용 빌드 워크플로 신설 (`.github/workflows/build.yml`)**:
