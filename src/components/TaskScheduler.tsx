@@ -81,8 +81,15 @@ export const TaskScheduler: React.FC<TaskSchedulerProps> = ({ currentJob, setCur
   const [isServiceAutoVssEnabled, setIsServiceAutoVssEnabled] = useState(false);
   const [serviceStatus, setServiceStatus] = useState<'running' | 'stopped' | 'not_installed'>('stopped');
   const [isFirewallRegistered, setIsFirewallRegistered] = useState(true);
-  const firewallRuleBaseName = 'RoboBackup Studio v2.13.0';
+  const firewallRuleBaseName = 'RoboBackup Studio v2.17.0';
   const [statusNotification, setStatusNotification] = useState<string | null>(null);
+
+  // System Tray & Background Notification States (v2.17.0)
+  const [isMinimizeToTrayEnabled, setIsMinimizeToTrayEnabled] = useState(true);
+  const [isTrayNotificationEnabled, setIsTrayNotificationEnabled] = useState(true);
+  const [isBackupTriggerNotifyEnabled, setIsBackupTriggerNotifyEnabled] = useState(true);
+  const [isBackupCompleteNotifyEnabled, setIsBackupCompleteNotifyEnabled] = useState(true);
+  const [isScheduledBackupNotifyEnabled, setIsScheduledBackupNotifyEnabled] = useState(true);
 
   // Registered Tasks List & Selection States (Starts empty; only user registered tasks)
   const [registeredTasks, setRegisteredTasks] = useState<RegisteredTaskItem[]>(() => {
@@ -572,6 +579,90 @@ if %RC_EXIT% LEQ 7 (
             <span className={`font-bold ${isFirewallRegistered ? 'text-emerald-400' : 'text-slate-500'}`}>
               {isFirewallRegistered ? `🟢 정상 등록됨 (${firewallRuleBaseName})` : '⚪ 미등록 (규칙 없음)'}
             </span>
+          </div>
+        </div>
+
+        {/* System Tray Background Execution & Balloon Notification Control Card (v2.17.0) */}
+        <div className="p-4 rounded-xl bg-slate-950/80 border border-blue-500/30 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+            <div className="space-y-1">
+              <div className="flex items-center space-x-2">
+                <span className="font-bold text-sm text-blue-400 flex items-center gap-1.5">
+                  <Bell className="w-4 h-4 text-blue-400" />
+                  <span>🛡️ 시스템 트레이 백그라운드 구동 &amp; 알림 설정</span>
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-bold border border-blue-500/30">
+                  v2.17.0 신규
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                창을 닫거나 최소화하더라도 백그라운드 트레이 영역에서 애플리케이션이 계속 가동하며, 예약 백업 시작/완료 시 우측 하단 풍선 알림(Balloon Tooltip)을 전송합니다.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setStatusNotification('🔔 [RoboBackup Studio] 시스템 트레이 테스트 알림: 트레이 알림 엔진 및 풍선 알림이 정상 가동 중입니다.');
+                }}
+                className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-md shadow-blue-950/50 transition flex items-center gap-1 cursor-pointer"
+              >
+                <Bell className="w-3.5 h-3.5" />
+                <span>트레이 알림 테스트</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+            <label className="flex items-center space-x-2.5 p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isMinimizeToTrayEnabled}
+                onChange={(e) => setIsMinimizeToTrayEnabled(e.target.checked)}
+                className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 bg-slate-950 border-slate-700"
+              />
+              <span className="text-slate-200 font-medium">창 닫기/최소화 시 트레이로 숨김 구동</span>
+            </label>
+
+            <label className="flex items-center space-x-2.5 p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isTrayNotificationEnabled}
+                onChange={(e) => setIsTrayNotificationEnabled(e.target.checked)}
+                className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 bg-slate-950 border-slate-700"
+              />
+              <span className="text-slate-200 font-medium">시스템 트레이 풍선 알림 전체 활성화</span>
+            </label>
+
+            <label className="flex items-center space-x-2.5 p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isBackupTriggerNotifyEnabled}
+                onChange={(e) => setIsBackupTriggerNotifyEnabled(e.target.checked)}
+                className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 bg-slate-950 border-slate-700"
+              />
+              <span className="text-slate-200 font-medium">백업 시작 시 알림 받기 ([백업 시작])</span>
+            </label>
+
+            <label className="flex items-center space-x-2.5 p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isBackupCompleteNotifyEnabled}
+                onChange={(e) => setIsBackupCompleteNotifyEnabled(e.target.checked)}
+                className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 bg-slate-950 border-slate-700"
+              />
+              <span className="text-slate-200 font-medium">백업 완료/결과 알림 받기 ([백업 완료])</span>
+            </label>
+
+            <label className="flex items-center space-x-2.5 p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isScheduledBackupNotifyEnabled}
+                onChange={(e) => setIsScheduledBackupNotifyEnabled(e.target.checked)}
+                className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 bg-slate-950 border-slate-700"
+              />
+              <span className="text-slate-200 font-medium">예약 스케줄 무인 백업 실행 알림</span>
+            </label>
           </div>
         </div>
 

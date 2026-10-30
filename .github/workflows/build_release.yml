@@ -22,11 +22,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js (Node 24)
+      - name: Setup Node.js (Node 22 LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
-          cache: 'npm'
+          node-version: '22'
 
       - name: Install Dependencies
         run: npm install

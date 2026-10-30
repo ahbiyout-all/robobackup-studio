@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:RoboBackupStudio.ViewModels"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle, FallbackValue='RoboBackup Studio v2.16.6 - High Performance Robocopy Studio'}" Height="880" Width="1160"
+        Title="{Binding WindowTitle, FallbackValue='RoboBackup Studio v2.17.0 - High Performance Robocopy Studio'}" Height="880" Width="1160"
         Icon="robocopy.png"
         WindowStartupLocation="CenterScreen" Background="{Binding ThemeWindowBackground}">
 
@@ -141,7 +141,7 @@
                             <TextBlock Text="RoboBackup" Foreground="{Binding ThemeHeaderForeground}" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI"/>
                             <TextBlock Text="Studio" Foreground="#60a5fa" FontSize="20" FontWeight="Bold" Margin="4,0,0,0"/>
                             <Border Background="#10b981" CornerRadius="10" Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.16.6 (Dual)'}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.17.0 (Dual)'}" Foreground="White" FontSize="11" FontWeight="Bold"/>
                             </Border>
                             <!-- GitHub Update Check Button (v2.16.0) -->
                             <Button Command="{Binding CheckUpdateCommand}" Height="24" Padding="8,1" Margin="8,0,0,0" Background="#1e293b" Foreground="#38bdf8" BorderBrush="#0284c7" BorderThickness="1.2" VerticalAlignment="Center" Cursor="Hand" ToolTip="GitHub Releases 실시간 업데이트 확인">
@@ -1449,6 +1449,43 @@
                                             </Grid>
                                         </StackPanel>
                                     </Border>
+
+                                    <!-- System Tray & Background Notification Control Card (v2.17.0) -->
+                                    <Border Background="#0f172a" CornerRadius="12" Padding="20" Margin="0,16,0,0" BorderThickness="1" BorderBrush="#2563eb">
+                                        <StackPanel>
+                                            <DockPanel Margin="0,0,0,12">
+                                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" VerticalAlignment="Center">
+                                                    <TextBlock Text="🛡️ 시스템 트레이 백그라운드 구동 &amp; 알림 설정 (System Tray &amp; Notifications)" Foreground="#ffffff" FontSize="15" FontWeight="Bold"/>
+                                                    <Border Background="#3b82f6" CornerRadius="10" Padding="6,2" Margin="10,0,0,0" VerticalAlignment="Center">
+                                                        <TextBlock Text="v2.17.0" Foreground="White" FontSize="10" FontWeight="Bold"/>
+                                                    </Border>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                                                    <Button Command="{Binding TestSystemTrayNotificationCommand}" Content="🔔 알림 테스트" Padding="12,5" Margin="0,0,8,0" Background="#2563eb" Foreground="White" FontSize="11" FontWeight="Bold" BorderThickness="0" Cursor="Hand" ToolTip="시스템 트레이 풍선 알림(Balloon Tooltip)이 정상 발송되는지 테스트합니다."/>
+                                                    <Button Command="{Binding MinimizeToTrayCommand}" Content="🔽 트레이로 최소화" Padding="12,5" Background="#334155" Foreground="#f8fafc" FontSize="11" FontWeight="Bold" BorderThickness="0" Cursor="Hand" ToolTip="프로그램을 시스템 트레이로 숨기고 백그라운드 구동 모드로 전환합니다."/>
+                                                </StackPanel>
+                                            </DockPanel>
+
+                                            <TextBlock Text="프로그램을 최소화하거나 닫아도 백그라운드에서 예약 스케줄 및 실시간 동기화가 계속 작동하며, 백업 시작 및 완료 시 시스템 트레이 풍선 알림을 표시합니다." Foreground="#94a3b8" FontSize="12" Margin="0,0,0,14"/>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+
+                                                <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding IsMinimizeToTrayEnabled, Mode=TwoWay}" Content="최소화 / 닫기 버튼 클릭 시 시스템 트레이 백그라운드 구동" Foreground="#f8fafc" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                                <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding IsTrayNotificationEnabled, Mode=TwoWay}" Content="시스템 트레이 알림 (풍선 팝업) 전체 활성화" Foreground="#f8fafc" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,10"/>
+
+                                                <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding IsBackupTriggerNotifyEnabled, Mode=TwoWay}" Content="백업 시작 시 시스템 트레이 알림 표시 (예약/수동)" Foreground="#38bdf8" FontSize="12" Margin="0,0,0,6"/>
+                                                <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsBackupCompleteNotifyEnabled, Mode=TwoWay}" Content="백업 완료 / 오류 시 시스템 트레이 알림 표시" Foreground="#34d399" FontSize="12" Margin="0,0,0,6"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -2285,7 +2322,7 @@
                     <TextBlock Text="공식블로그" Foreground="#60a5fa" FontSize="11" TextDecorations="Underline"/>
                 </Button>
             </StackPanel>
-            <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.16.9 (Dual)'}" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding AppVersionBadgeText, FallbackValue='v2.16.10 (Dual)'}" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         </DockPanel>
 
         <!-- Easy Backup Wizard Modal Overlay (v2.12.0) -->
@@ -2736,7 +2773,7 @@
                             <Border Grid.Column="0" Background="#0f172a" CornerRadius="8" Padding="12,10" BorderThickness="1" BorderBrush="#334155">
                                 <StackPanel HorizontalAlignment="Center">
                                     <TextBlock Text="현재 실행 중인 버전" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{Binding CurrentAppVersion, FallbackValue='v2.16.9'}" Foreground="#34d399" FontSize="16" FontWeight="Bold" Margin="0,4,0,0" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding CurrentAppVersion, FallbackValue='v2.16.10'}" Foreground="#34d399" FontSize="16" FontWeight="Bold" Margin="0,4,0,0" HorizontalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
 
@@ -2745,7 +2782,7 @@
                             <Border Grid.Column="2" Background="#0f172a" CornerRadius="8" Padding="12,10" BorderThickness="1" BorderBrush="#0284c7">
                                 <StackPanel HorizontalAlignment="Center">
                                     <TextBlock Text="GitHub 최신 릴리스" Foreground="#94a3b8" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{Binding LatestReleaseVersion, FallbackValue='v2.16.9'}" Foreground="#38bdf8" FontSize="16" FontWeight="Bold" Margin="0,4,0,0" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding LatestReleaseVersion, FallbackValue='v2.16.10'}" Foreground="#38bdf8" FontSize="16" FontWeight="Bold" Margin="0,4,0,0" HorizontalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
                         </Grid>

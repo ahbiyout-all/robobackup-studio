@@ -1,5 +1,32 @@
 # RoboBackup Studio 패치 & 릴리즈 노트 (Patch Notes)
 
+## 📌 [v2.17.0] - 2026-10-30
+### 🛡️ 시스템 트레이 백그라운드 구동 및 실시간 백업 풍선 알림(System Tray Balloon Notification) 탑재
+1. **네이티브 Win32 시스템 트레이 알림 엔진 신설 (`Core/SystemTrayNotifier.cs`)**:
+   - `System.Windows.Forms.NotifyIcon` 및 `System.Drawing.Icon` 기반의 시스템 트레이 알림 엔진 탑재.
+   - 우측 하단 트레이 콘텍스트 메뉴(메인 창 열기, 백업 지금 시작, 백그라운드 구동 안내, 프로그램 종료) 및 트레이 아이콘 더블 클릭 시 메인 창 복원 지원.
+   - 백업 시작(`[RoboBackup Studio] 백업 시작`), 백업 완료/실패(`[RoboBackup Studio] 백업 완료`), 백그라운드 최소화 안내 메시지 풍선 알림(Balloon Tooltip) 구동.
+2. **메인 창 수명 주기 연동 (`MainWindow.xaml.cs`)**:
+   - 최소화 버튼 또는 창 닫기(X) 시 트레이 백그라운드 구동 옵션(`IsMinimizeToTrayEnabled`) 활성화 여부에 따라 작업을 취소하지 않고 백그라운드 트레이로 숨김 전환.
+3. **MVVM 바인딩 및 스케줄러 제어 카드 탑재 (`ViewModels/MainViewModel.cs` & `MainWindow.xaml`)**:
+   - 백업 스케줄러 탭(Tab 3)에 "🛡️ 시스템 트레이 백그라운드 구동 & 알림 설정" 제어 카드 신설.
+   - 트레이 최소화 구동 토글, 전체 알림 켜기/끄기, 백업 시작/완료/스케줄 실행 알림 옵션 체크박스 및 [🔔 트레이 알림 테스트], [📥 트레이로 최소화] 커맨드 연동.
+4. **버전 메타데이터 일괄 동기화 (v2.17.0)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `push_github.bat`, `installer.iss`, `package.json`, `README.md`, `docs/README.md`, `docs/GOOGLE_BLOGGER_COMPOSE_MODE.md`, `docs/GOOGLE_BLOGGER_HTML_MODE.html`, `src/App.tsx`, `src/components/Navbar.tsx`, `src/components/HelpAndLicense.tsx`, `src/components/AutoUpdateModal.tsx`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts` 일괄 동기화.
+
+---
+
+## 📌 [v2.16.10] - 2026-10-26
+### 🛠️ GitHub Actions 패키지 잠금 파일(package-lock.json) 생성 및 워크플로 캐시 오류/경고 차단
+1. **GitHub Actions lockfile 미발견 오류 해결**:
+   - `package-lock.json` 파일 생성 및 리포지토리 추적 등록으로 CI/CD 환경(`npm ci` 및 `actions/setup-node`)에서 `Dependencies lock file is not found` 에러 완전 원천 차단.
+2. **actions/setup-node 캐시 옵션 정비**:
+   - `build.yml` 및 `build_release.yml`의 `setup-node` 스텝에서 락파일 미존재 시 발생할 수 있는 캐시 실패 가능성을 방지하도록 설정 정비.
+3. **버전 메타데이터 일괄 동기화 (v2.16.10)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `push_github.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `src/components/AutoUpdateModal.tsx`, `src/components/Navbar.tsx`, `src/components/HelpAndLicense.tsx`, `src/App.tsx`, `package.json`, `README.md`, `docs/README.md`, `docs/GOOGLE_BLOGGER_COMPOSE_MODE.md`, `docs/GOOGLE_BLOGGER_HTML_MODE.html` 일괄 동기화.
+
+---
+
 ## 📌 [v2.16.9] - 2026-10-25
 ### 🛡️ GitHub Releases 실시간 자동 업데이트 팝업 고도화, 설치 파일 릴리즈 단일화, 불필요 파일 및 푸시 스크립트 제외(.gitignore) 전면 개편
 1. **GitHub Releases 실시간 자동 업데이트 팝업 자동 실행 및 다운로드 UI 구축**:

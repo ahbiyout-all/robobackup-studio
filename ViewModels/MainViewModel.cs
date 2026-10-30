@@ -25,7 +25,7 @@ using RoboBackupStudio.Core;
 namespace RoboBackupStudio.ViewModels
 {
     /// <summary>
-    /// RoboBackup Studio MainViewModel (v2.16.9 - High Performance Robocopy GUI & C# WPF Suite)
+    /// RoboBackup Studio MainViewModel (v2.17.0 - High Performance Robocopy GUI & C# WPF Suite)
     /// Developer: AhBiYout (ahbiyoutvibe.blogspot.com)
     /// </summary>
     public class MainViewModel : ViewModelBase
@@ -249,6 +249,100 @@ namespace RoboBackupStudio.ViewModels
         private ObservableCollection<string> _cleanupPreviewList = new ObservableCollection<string>();
         private string _cleanupStatusSummary = "정기 파일 삭제 규칙을 설정하고 스캔하세요.";
 
+        // System Tray & Background Notification Properties (New v2.17.0)
+        private bool _isMinimizeToTrayEnabled = true;
+        private bool _isTrayNotificationEnabled = true;
+        private bool _isBackupTriggerNotifyEnabled = true;
+        private bool _isBackupCompleteNotifyEnabled = true;
+        private bool _isScheduledBackupNotifyEnabled = true;
+
+        public bool IsMinimizeToTrayEnabled
+        {
+            get => _isMinimizeToTrayEnabled;
+            set { _isMinimizeToTrayEnabled = value; OnPropertyChanged(); }
+        }
+
+        public bool IsTrayNotificationEnabled
+        {
+            get => _isTrayNotificationEnabled;
+            set
+            {
+                _isTrayNotificationEnabled = value;
+                OnPropertyChanged();
+                if (TrayNotifier != null) TrayNotifier.IsTrayEnabled = value;
+            }
+        }
+
+        public bool IsBackupTriggerNotifyEnabled
+        {
+            get => _isBackupTriggerNotifyEnabled;
+            set
+            {
+                _isBackupTriggerNotifyEnabled = value;
+                OnPropertyChanged();
+                if (TrayNotifier != null) TrayNotifier.ShowStartNotifications = value;
+            }
+        }
+
+        public bool IsBackupCompleteNotifyEnabled
+        {
+            get => _isBackupCompleteNotifyEnabled;
+            set
+            {
+                _isBackupCompleteNotifyEnabled = value;
+                OnPropertyChanged();
+                if (TrayNotifier != null) TrayNotifier.ShowCompletionNotifications = value;
+            }
+        }
+
+        public bool IsScheduledBackupNotifyEnabled
+        {
+            get => _isScheduledBackupNotifyEnabled;
+            set { _isScheduledBackupNotifyEnabled = value; OnPropertyChanged(); }
+        }
+
+        public RoboBackupStudio.Core.SystemTrayNotifier? TrayNotifier { get; private set; }
+
+        public void InitializeTrayNotifier(Action onOpenWindow, Action onExitApp)
+        {
+            if (TrayNotifier == null)
+            {
+                TrayNotifier = new RoboBackupStudio.Core.SystemTrayNotifier(
+                    onOpenWindow,
+                    onStartBackupNow: () =>
+                    {
+                        if (StartBackupCommand.CanExecute(null))
+                        {
+                            StartBackupCommand.Execute(null);
+                        }
+                    },
+                    onExitApp
+                )
+                {
+                    IsTrayEnabled = IsTrayNotificationEnabled,
+                    ShowStartNotifications = IsBackupTriggerNotifyEnabled,
+                    ShowCompletionNotifications = IsBackupCompleteNotifyEnabled
+                };
+            }
+        }
+
+        public void TestSystemTrayNotification()
+        {
+            if (TrayNotifier != null)
+            {
+                TrayNotifier.ShowNotification(
+                    "🔔 [RoboBackup Studio] 트레이 알림 테스트",
+                    "시스템 트레이 알림 엔진이 정상 작동 중입니다.\n백그라운드 백업 스케줄 및 실시간 동기화 상태가 표시됩니다.",
+                    System.Windows.Forms.ToolTipIcon.Info,
+                    3500
+                );
+            }
+            else
+            {
+                MessageBox.Show("시스템 트레이 알림 엔진이 초기화되었거나 트레이 아이콘을 구동할 수 있는 상태입니다.", "트레이 알림 안내", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
         // NAS / Network Credentials Properties (New v1.4.0)
         private string _nasServerAddress = "192.168.0.100";
         private string _nasSharePath = @"\\192.168.0.100";
@@ -326,6 +420,10 @@ namespace RoboBackupStudio.ViewModels
             OpenDestinationFolderCommand = new RelayCommand(_ => OpenFolder(DestinationPath));
             OpenNasFolderCommand = new RelayCommand(_ => OpenNasFolder());
             ApplyNasPathCommand = new RelayCommand(_ => ApplyNasPathToDestination());
+
+            // System Tray Commands (v2.17.0)
+            TestSystemTrayNotificationCommand = new RelayCommand(_ => TestSystemTrayNotification());
+            MinimizeToTrayCommand = new RelayCommand(_ => Application.Current?.Dispatcher?.Invoke(() => Application.Current.MainWindow?.Hide()));
 
             // Auto Cleanup Scheduler Commands (Async v2.2.4 & Master-Detail v2.6.2)
             RegisterCleanupTaskCommand = new RelayCommand(async _ => await RegisterCleanupTaskAsync());
@@ -1626,7 +1724,7 @@ namespace RoboBackupStudio.ViewModels
                 }
             }
             catch { }
-            return "v2.16.9";
+            return "v2.17.0";
         }
 
         public static string CurrentAppVersion => ResolveAppVersion();
@@ -2747,6 +2845,10 @@ namespace RoboBackupStudio.ViewModels
         public ICommand OpenNasFolderCommand { get; }
         public ICommand ApplyNasPathCommand { get; }
 
+        // System Tray & Background Notification Commands (New v2.17.0)
+        public ICommand TestSystemTrayNotificationCommand { get; }
+        public ICommand MinimizeToTrayCommand { get; }
+
         // Cleanup Scheduler Commands (v1.3.0 & Master-Detail v2.6.2)
         public ICommand RegisterCleanupTaskCommand { get; }
         public ICommand RefreshCleanupTaskStatusCommand { get; }
@@ -3617,6 +3719,7 @@ namespace RoboBackupStudio.ViewModels
 
             Logs.Add($"[{DateTime.Now:HH:mm:ss}] === Robocopy 백업 작업 시작 ===");
             Logs.Add($"[{DateTime.Now:HH:mm:ss}] 실행 명령어: {RobocopyCommand}");
+            TrayNotifier?.NotifyBackupStarted(SourcePath, DestinationPath, isScheduled: false);
             if (ShowExternalConsole)
             {
                 Logs.Add($"[{DateTime.Now:HH:mm:ss}] [옵션 활성] 별도 Windows 명령 프롬프트(CMD) 창에서 실시간 콘솔 스트림이 동시 출력됩니다.");
@@ -3830,6 +3933,9 @@ namespace RoboBackupStudio.ViewModels
                             {
                                 RequestScrollToBottom?.Invoke();
                             }
+
+                            // Trigger System Tray Notification for Backup Completion / Result
+                            TrayNotifier?.NotifyBackupCompleted(SourcePath, DestinationPath, exitCode, CopiedFiles, elapsed, isScheduled: false);
                         });
                     }
                 });
@@ -6480,7 +6586,7 @@ namespace RoboBackupStudio.ViewModels
             {
                 using var client = new HttpClient();
                 client.Timeout = TimeSpan.FromSeconds(8);
-                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RoboBackupStudio-UpdateClient", "2.16.9"));
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("RoboBackupStudio-UpdateClient", "2.16.10"));
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
 
                 string url = "https://api.github.com/repos/AhBiYout-all/robobackup-studio/releases/latest";

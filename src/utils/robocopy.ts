@@ -647,7 +647,7 @@ export const CSHARP_MVVM_TEMPLATES: CsharpSnippet[] = [
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:RoboBackupStudio.ViewModels"
         mc:Ignorable="d"
-        Title="RoboBackup Studio v2.16.9 - High Performance Robocopy Studio" Height="880" Width="1160"
+        Title="RoboBackup Studio v2.17.0 - High Performance Robocopy Studio" Height="880" Width="1160"
         Background="#0b0f19" Foreground="#f8fafc">
 
     <Window.DataContext>
@@ -715,7 +715,7 @@ export const CSHARP_MVVM_TEMPLATES: CsharpSnippet[] = [
                             <TextBlock Text="RoboBackup" Foreground="#ffffff" FontSize="20" FontWeight="Bold"/>
                             <TextBlock Text="Studio" Foreground="#60a5fa" FontSize="20" FontWeight="Bold" Margin="4,0,0,0"/>
                             <Border Background="#10b981" CornerRadius="10" Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="v2.16.9" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Text="v2.17.0" Foreground="White" FontSize="11" FontWeight="Bold"/>
                             </Border>
                         </StackPanel>
                         <TextBlock Text="Windows High-Speed Robocopy GUI &amp; C# WPF Generator" Foreground="#94a3b8" FontSize="11"/>
