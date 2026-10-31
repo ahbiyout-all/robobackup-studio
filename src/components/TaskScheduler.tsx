@@ -81,7 +81,7 @@ export const TaskScheduler: React.FC<TaskSchedulerProps> = ({ currentJob, setCur
   const [isServiceAutoVssEnabled, setIsServiceAutoVssEnabled] = useState(false);
   const [serviceStatus, setServiceStatus] = useState<'running' | 'stopped' | 'not_installed'>('stopped');
   const [isFirewallRegistered, setIsFirewallRegistered] = useState(true);
-  const firewallRuleBaseName = 'RoboBackup Studio v2.17.1';
+  const firewallRuleBaseName = 'RoboBackup Studio v2.17.2';
   const [statusNotification, setStatusNotification] = useState<string | null>(null);
 
   // System Tray & Background Notification States (v2.17.0)

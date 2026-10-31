@@ -176,7 +176,7 @@ export default function App() {
             </a>
           </div>
           <div className="flex items-center space-x-3 shrink-0">
-            <span className="font-mono text-xs text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700/60 font-semibold">v2.17.1</span>
+            <span className="font-mono text-xs text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700/60 font-semibold">v2.17.2</span>
           </div>
         </div>
       </footer>

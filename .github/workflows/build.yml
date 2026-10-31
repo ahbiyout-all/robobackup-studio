@@ -37,7 +37,11 @@ jobs:
           node-version: '22'
 
       - name: Install NPM Dependencies
-        run: npm ci || npm install
+        shell: pwsh
+        run: |
+          npm ci
+          if ($LASTEXITCODE -ne 0) { npm install }
+          npm install @rollup/rollup-win32-x64-msvc --no-save
 
       - name: Lint Web Application
         run: npm run lint

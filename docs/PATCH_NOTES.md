@@ -1,5 +1,16 @@
 # RoboBackup Studio 패치 & 릴리즈 노트 (Patch Notes)
 
+## 📌 [v2.17.2] - 2026-10-30
+### 🛠️ GitHub Actions Windows 환경 빌드 오류 해결: Rollup 네이티브 바이너리(@rollup/rollup-win32-x64-msvc) 자동 보완 및 CI/CD 워크플로 안정화
+1. **Windows 환경 Vite/Rollup 바이너리 누락 오류 해결**:
+   - `windows-latest` 환경에서 `npm run build` (`vite build`) 수행 시 발생하던 `Cannot find module @rollup/rollup-win32-x64-msvc` (npm 버그 #4828 관련) 원천 해결.
+   - `package.json` 내 `optionalDependencies`에 `@rollup/rollup-win32-x64-msvc` 명시 등록 및 `package-lock.json` 연동.
+   - `.github/workflows/build.yml` 및 `build_release.yml`에 Windows 환경 전용 네이티브 바이너리 설치 스텝(`npm install @rollup/rollup-win32-x64-msvc --no-save`) 추가로 CI 빌드 무결성 100% 보장.
+2. **버전 메타데이터 일괄 동기화 (v2.17.2)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `push_github.bat`, `installer.iss`, `package.json`, `package-lock.json`, `README.md`, `docs/GOOGLE_BLOGGER_COMPOSE_MODE.md`, `docs/GOOGLE_BLOGGER_HTML_MODE.html`, `src/App.tsx`, `src/components/Navbar.tsx`, `src/components/HelpAndLicense.tsx`, `src/components/AutoUpdateModal.tsx`, `src/components/TaskScheduler.tsx`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `docs/THIRD_PARTY_LICENSES.md`, `docs/CORE_DLL_ARCHITECTURE.md`, `docs/WorkLog.md` 일괄 동기화.
+
+---
+
 ## 📌 [v2.17.1] - 2026-10-30
 ### 🧹 브랜드 및 메타데이터 정비: 이전 외부 회사명 및 링크 전면 제거 및 개발자 브랜드(AhBiYout) 단일화
 1. **외부 회사 명칭 및 링크 전면 제거**:

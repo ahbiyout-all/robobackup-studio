@@ -1514,11 +1514,11 @@ namespace RoboBackupStudio
 ; ====================================================================
 
 #define MyAppName "RoboBackup Studio"
-#define MyAppVersion "v2.17.1"
+#define MyAppVersion "v2.17.2"
 #define MyAppPublisher "AhBiYout"
 #define MyAppURL "https://ahbiyoutvibe.blogspot.com/"
 #define MyAppExeName "RoboBackupStudio.exe"
-#define MyAppOutputName "RoboBackupStudio_v2.17.1_Setup"
+#define MyAppOutputName "RoboBackupStudio_v2.17.2_Setup"
 
 [Setup]
 AppId={{8B237C9F-3F1E-4E2F-A5C0-9A2E12F3D9A1}}

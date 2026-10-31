@@ -3,7 +3,7 @@
 
 ---
 
-# 🚀 [초고속 백업] Windows Robocopy 전용 GUI & C# WPF 소스 생성기 - RoboBackup Studio v2.17.1 배포
+# 🚀 [초고속 백업] Windows Robocopy 전용 GUI & C# WPF 소스 생성기 - RoboBackup Studio v2.17.2 배포
 
 안녕하세요! 개발자 **AhBiYout**입니다.
 
@@ -11,7 +11,7 @@
 
 윈도우 운영체제에는 전 세계 시스템 엔지니어들이 인정하는 최고의 백업 도구인 **Robocopy(Robust File Copy)** 가 기본 내장되어 있습니다. 하지만 수백 개에 달하는 복잡한 커맨드라인(CLI) 옵션(`/MIR`, `/MT:16`, `/ZB`, `/FFT`, `/R:1`, `/W:1` 등) 때문에 일반 사용자가 다루기는 쉽지 않았습니다.
 
-이를 완벽하게 해결하기 위해 **마우스 클릭만으로 Robocopy의 모든 최고급 성능을 이끌어내고, 실제 C# WPF(MVVM) 소스 코드까지 100% 자동 생성해 주는 오픈소스 고성능 백업 도구 "RoboBackup Studio v2.17.1"** 를 공개합니다!
+이를 완벽하게 해결하기 위해 **마우스 클릭만으로 Robocopy의 모든 최고급 성능을 이끌어내고, 실제 C# WPF(MVVM) 소스 코드까지 100% 자동 생성해 주는 오픈소스 고성능 백업 도구 "RoboBackup Studio v2.17.2"** 를 공개합니다!
 
 ---
 

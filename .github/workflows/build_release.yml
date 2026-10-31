@@ -28,7 +28,10 @@ jobs:
           node-version: '22'
 
       - name: Install Dependencies
-        run: npm install
+        shell: pwsh
+        run: |
+          npm install
+          npm install @rollup/rollup-win32-x64-msvc --no-save
 
       - name: Build Web Frontend & Server
         run: npm run build
