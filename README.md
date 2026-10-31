@@ -1,4 +1,4 @@
-# 🚀 RoboBackup Studio (v2.17.8)
+# 🚀 RoboBackup Studio (v2.17.9)
 
 > **High-Performance Robocopy GUI, Real-time Monitor, Scheduler & C# WPF MVVM Generator**  
 > **개발자**: AhBiYout | **공식 블로그**: [ahbiyoutvibe.blogspot.com](https://ahbiyoutvibe.blogspot.com/) | **GitHub**: [github.com/AhBiYout-all](https://github.com/AhBiYout-all)

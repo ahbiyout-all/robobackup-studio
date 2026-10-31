@@ -57,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="flex items-center space-x-2">
                 <span className="font-bold text-lg tracking-tight text-white">RoboBackup</span>
                 <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-semibold border border-blue-500/30">Studio</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/30 font-mono">v2.17.8</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/30 font-mono">v2.17.9</span>
               </div>
               <p className="text-xs text-slate-400 hidden sm:block">초고속 파일 백업 &amp; 동기화 관리 시스템</p>
             </div>
