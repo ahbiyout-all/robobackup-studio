@@ -17,7 +17,7 @@ interface GitHubReleaseInfo {
 }
 
 export const AutoUpdateModal: React.FC = () => {
-  const currentVersion = 'v2.17.0';
+  const currentVersion = 'v2.17.1';
   const [isOpen, setIsOpen] = useState(false);
   const [checking, setChecking] = useState(false);
   const [latestRelease, setLatestRelease] = useState<GitHubReleaseInfo | null>(null);
@@ -241,7 +241,7 @@ export const AutoUpdateModal: React.FC = () => {
             </div>
 
             <div className="text-[10px] text-slate-500 text-center border-t border-slate-800/80 pt-3">
-              개발자: AhBiYout | 공식 블로그: <a href="https://ahbiyoutvibe.blogspot.com/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">ahbiyoutvibe.blogspot.com</a> | (주)씨아이에스넷 (<a href="https://www.cisnet.co.kr" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">cisnet.co.kr</a>)
+              개발자: AhBiYout | 공식 블로그: <a href="https://ahbiyoutvibe.blogspot.com/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">ahbiyoutvibe.blogspot.com</a> | GitHub: <a href="https://github.com/AhBiYout-all/robobackup-studio" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">robobackup-studio</a>
             </div>
 
           </div>

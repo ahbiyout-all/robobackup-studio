@@ -1,9 +1,9 @@
 # 📜 Third-Party Open Source Software Licenses & Legal Notices
 
-**RoboBackup Studio (v2.12.4)**
+**RoboBackup Studio (v2.17.1)**
 - **Lead Developer**: AhBiYout
-- **Tech Blog**: https://ahbivibelog.blogspot.com/
-- **Company Website**: CISNET (http://www.cisnet.co.kr/)
+- **Tech Blog**: https://ahbiyoutvibe.blogspot.com/
+- **GitHub Repository**: https://github.com/AhBiYout-all/robobackup-studio
 - **Copyright**: (c) 2026 AhBiYout. All rights reserved.
 
 본 소프트웨어는 상업적 이용 및 재배포가 자유로운 오픈소스 컴포넌트와 Windows OS 표준 내장 유틸리티를 기반으로 제작되었습니다. 본 문서에는 본 프로그램에 포함되거나 연동된 오픈소스 및 제3자 소프트웨어의 라이선스 고지사항이 기재되어 있습니다.

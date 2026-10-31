@@ -1,7 +1,7 @@
-# 🚀 RoboBackup Studio (v2.17.0)
+# 🚀 RoboBackup Studio (v2.17.1)
 
 > **High-Performance Robocopy GUI, Real-time Monitor, Scheduler & C# WPF MVVM Generator**  
-> **개발자**: AhBiYout | **공식 블로그**: [ahbiyoutvibe.blogspot.com](https://ahbiyoutvibe.blogspot.com/) | **소속**: CISNET ([www.cisnet.co.kr](https://www.cisnet.co.kr/))
+> **개발자**: AhBiYout | **공식 블로그**: [ahbiyoutvibe.blogspot.com](https://ahbiyoutvibe.blogspot.com/) | **GitHub**: [github.com/AhBiYout-all](https://github.com/AhBiYout-all)
 
 [![Latest Release](https://img.shields.io/github/v/release/AhBiYout-all/robobackup-studio?color=emerald&label=Release&style=flat-sqlite)](https://github.com/AhBiYout-all/robobackup-studio/releases)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/AhBiYout-all/robobackup-studio/build.yml?branch=main&label=CI%20Build)](https://github.com/AhBiYout-all/robobackup-studio/actions)
@@ -16,7 +16,7 @@ RoboBackup Studio 오픈소스 프로젝트는 개인 및 기업 사용자를 �
 프로젝트의 지속적인 발전과 고성능 엔진 개발을 후원하고 싶으시거나 **README / 앱 내 광고 및 제휴 문의**가 있으신 경우 아래 링크를 확인해 주세요.
 
 * **📢 배너 / 스폰서십 광고 문의**: `https://ahbiyoutvibe.blogspot.com/` (공식 블로그 문의)
-* **🏢 공식 기업 홈페이지**: [CISNET (www.cisnet.co.kr)](https://www.cisnet.co.kr/)
+* **💻 공식 GitHub 저장소**: [github.com/AhBiYout-all/robobackup-studio](https://github.com/AhBiYout-all/robobackup-studio)
 * **☕ 개발자 후원 (GitHub Sponsors)**: 상단의 `💖 Sponsor` 버튼 클릭
 
 ---

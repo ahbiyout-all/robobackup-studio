@@ -1,5 +1,19 @@
 # RoboBackup Studio 패치 & 릴리즈 노트 (Patch Notes)
 
+## 📌 [v2.17.1] - 2026-10-30
+### 🧹 브랜드 및 메타데이터 정비: 이전 외부 회사명 및 링크 전면 제거 및 개발자 브랜드(AhBiYout) 단일화
+1. **외부 회사 명칭 및 링크 전면 제거**:
+   - 이전 외부 기업 명칭, 관련 웹사이트 링크 및 관련 문구를 전체 소스코드, UI, 인스톨러 및 문서에서 전면 제거.
+   - 공식 개발자 브랜드(`AhBiYout`), 공식 블로그(`https://ahbiyoutvibe.blogspot.com/`) 및 공식 GitHub 저장소(`https://github.com/AhBiYout-all/robobackup-studio`)로 단일화 및 최신화.
+2. **C# WPF 데스크탑 앱 및 React 프리뷰 듀얼 동기화**:
+   - `MainWindow.xaml`: 개발자 정보 카드 및 하단 푸터에서 회사 링크를 제거하고 공식 GitHub 저장소 링크로 전환.
+   - `src/App.tsx`, `src/components/HelpAndLicense.tsx`, `src/components/AutoUpdateModal.tsx`: 푸터 및 개발자 프로필 카드 내 회사 정보 제거 및 GitHub 저장소 연결.
+   - `installer.iss`, `src/utils/robocopy.ts`: 인스톨러 배포 URL을 공식 블로그로 교체.
+3. **버전 메타데이터 일괄 동기화 (v2.17.1)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `push_github.bat`, `installer.iss`, `package.json`, `README.md`, `docs/GOOGLE_BLOGGER_COMPOSE_MODE.md`, `docs/GOOGLE_BLOGGER_HTML_MODE.html`, `src/App.tsx`, `src/components/Navbar.tsx`, `src/components/HelpAndLicense.tsx`, `src/components/AutoUpdateModal.tsx`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `docs/THIRD_PARTY_LICENSES.md`, `docs/CORE_DLL_ARCHITECTURE.md`, `docs/WorkLog.md` 일괄 동기화.
+
+---
+
 ## 📌 [v2.17.0] - 2026-10-30
 ### 🛡️ 시스템 트레이 백그라운드 구동 및 실시간 백업 풍선 알림(System Tray Balloon Notification) 탑재
 1. **네이티브 Win32 시스템 트레이 알림 엔진 신설 (`Core/SystemTrayNotifier.cs`)**:
@@ -110,7 +124,7 @@
 1. **공식 채널 및 블로그 주소 일괄 업데이트**:
    - **공식 구글 블로그**: 기존 `ahbivibelog.blogspot.com`에서 `ahbiyoutvibe.blogspot.com`으로 전면 교체.
    - **GitHub 저장소**: `https://github.com/AhBiYout-all` 프로필 및 관련 리포지토리 링크 최신 상태 반영.
-   - **소속 및 협력사**: `https://www.cisnet.co.kr` 공식 홈페이지 링크 검증 및 적용.
+   - **공식 채널**: GitHub 및 공식 블로그 링크 검증 및 적용.
 2. **애플리케이션 전반의 브랜딩 동기화**:
    - `MainWindow.xaml`, `App.tsx`, `HelpAndLicense.tsx`, `AutoUpdateModal.tsx` 등 UI 요소 내 링크 및 텍스트 수정.
    - `ViewModels/MainViewModel.cs` 및 `src/utils/robocopy.ts` (C# 템플릿) 내 개발자 메타데이터 갱신.
@@ -186,7 +200,7 @@
    - **React 프리뷰 계층 (`AutoUpdateModal.tsx`, `Navbar.tsx`)**:
      - `currentVersion`을 `v2.16.0`으로 갱신하고 GitHub 릴리스 비교 UI 듀얼 동기화.
 4. **보안 및 메타데이터 무결성 강화**:
-   - 개인 이메일 등 불필요한 민감 정보 전면 제거 및 공식 개발자 브랜드 `AhBiYout` (`AhBiYout-all`, `ahbivibelog.blogspot.com`, `www.cisnet.co.kr`) 일괄 동기화.
+   - 개인 이메일 등 불필요한 민감 정보 전면 제거 및 공식 개발자 브랜드 `AhBiYout` (`AhBiYout-all`, `ahbiyoutvibe.blogspot.com`) 일괄 동기화.
    - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `installer.iss`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `src/components/Navbar.tsx`, `package.json` 버전 일괄 갱신 (`v2.16.0`).
 
 ---
@@ -961,7 +975,7 @@
 ## 📌 [v2.5.7] - 2026-09-03
 ### ⚖️ 라이선스 및 저작권(Copyright) 표기 단일화 (AhBiYout)
 - **📝 저작권(Copyright) 공식 표기 변경 적용**:
-  - `Copyright (c) 2026 AhBiYout (CISNET: www.cisnet.co.kr)` 형식을 요청에 따라 **`Copyright (c) 2026 AhBiYout`**로 단일화 및 명확화했습니다.
+  - 이전 복합 표기 형식을 요청에 따라 **`Copyright (c) 2026 AhBiYout`**로 단일화 및 명확화했습니다.
   - `docs/LICENSE.txt` (MIT License 정식 표기), `docs/THIRD_PARTY_LICENSES.md`의 저작권 고지문을 일괄 갱신했습니다.
 - **🛠️ 프로젝트 메타데이터 및 빌드/인스톨러 스크립트 작성자 정보 정제**:
   - `RoboBackupStudio.csproj`: `<Copyright>Copyright © 2026 AhBiYout</Copyright>` 명시 및 버전 2.5.7 갱신.
@@ -1146,13 +1160,13 @@
 ---
 
 ## 📌 [v2.3.5] - 2026-08-27
-### 🌐 하단 푸터(Footer) 영역 개발자 정보 및 공식 링크(블로그/회사) 탑재
+### 🌐 하단 푸터(Footer) 영역 개발자 정보 및 공식 링크(블로그/저장소) 탑재
 - **✨ 웹 및 WPF 푸터 영역 공식 메타데이터 연동**:
   - 개발자명: `AhBiYout`
-  - 회사 홈페이지: `http://www.cisnet.co.kr/` (CISNET)
+  - GitHub 저장소: `https://github.com/AhBiYout-all/robobackup-studio`
   - 구글 블로그: `https://ahbivibelog.blogspot.com/` (AhBi VibeLog)
 - **🖥️ C# WPF `MainWindow.xaml` 푸터 인터랙티브 하이퍼링크 구현**:
-  - `OpenUrlCommand` 바인딩을 통해 WPF 클라이언트 푸터에서 회사홈페이지 및 구글블로그 클릭 시 기본 웹 브라우저로 원클릭 이동하도록 구현했습니다.
+  - `OpenUrlCommand` 바인딩을 통해 WPF 클라이언트 푸터에서 GitHub 저장소 및 구글블로그 클릭 시 기본 웹 브라우저로 원클릭 이동하도록 구현했습니다.
 - **🌐 React 프리뷰 푸터 반응형 레이아웃 구성**:
   - 데스크톱 및 모바일 화면에 최적화된 플렉스 랩(Flex-wrap) 레이아웃 및 텍스트 하이라이트를 적용했습니다.
 - **🔄 버전 메타데이터 전체 일괄 동기화 (v2.3.5)**:
@@ -1438,9 +1452,9 @@
 ---
 
 ## 📌 [v1.7.2] - 2026-08-17
-### 🔗 개발자 블로그 & 회사 홈페이지 하이퍼링크 클릭 실행 기능 추가
+### 🔗 개발자 블로그 & GitHub 저장소 하이퍼링크 클릭 실행 기능 추가
 - **🌐 하이퍼링크 클릭 시 웹 브라우저 자동 실행 지원 (Interactive URL Links)**:
-  - 하단 푸터 영역 및 '도움말 & 라이선스' 탭 내 개발자 정보에 포함된 **구글 블로그 (`https://ahbivibelog.blogspot.com/`)** 및 **회사 홈페이지 (`http://www.cisnet.co.kr/`)** 텍스트 클릭 시, 사용자의 기본 웹 브라우저에서 해당 사이트가 즉시 열리도록 개선.
+  - 하단 푸터 영역 및 '도움말 & 라이선스' 탭 내 개발자 정보에 포함된 **구글 블로그 (`https://ahbivibelog.blogspot.com/`)** 및 **GitHub 저장소 (`https://github.com/AhBiYout-all/robobackup-studio`)** 텍스트 클릭 시, 사용자의 기본 웹 브라우저에서 해당 사이트가 즉시 열리도록 개선.
 - **🔄 React 웹 UI & C# WPF MVVM 듀얼 구현**:
   - **React UI (`App.tsx`, `HelpAndLicense.tsx`)**: `target="_blank" rel="noopener noreferrer"` 속성이 적용된 대화형 웹 링크로 렌더링.
   - **C# WPF (`MainWindow.xaml`, `ViewModels/MainViewModel.cs`)**:
@@ -1582,7 +1596,7 @@
 - **📜 도움말 및 오픈소스 라이선스 고지 (Help & Licenses)**:
   - 기능별 상세 사용 매뉴얼, 주요 플래그 설명, 작업 스케줄러 원리 및 FAQ 추가.
   - MIT / ISC / Windows OS 내장 유틸리티 연동 라이선스 고지문(`THIRD_PARTY_LICENSES.md`) 및 앱 내 전용 탭(`MainWindow.xaml`, `HelpAndLicense.tsx`) 추가.
-  - 개발자(AhBiYout), 구글 블로그(ahbivibelog), 회사 홈페이지(CISNET) 공식 정보 등록.
+  - 개발자(AhBiYout), 공식 블로그(ahbiyoutvibe), GitHub 저장소 공식 정보 등록.
 - **🎨 UI & WPF MVVM 전면 반영**:
   - `JobDesigner.tsx` 및 `NasAuthManager.tsx` 웹 컴포넌트 추가.
   - `MainWindow.xaml` 백업 프로필 설계 탭 내 NAS 자격 증명 전용 패널 배치.

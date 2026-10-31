@@ -158,12 +158,12 @@ export default function App() {
             <span className="text-slate-400">개발자: <strong className="text-slate-300 font-medium">AhBiYout</strong></span>
             <span className="text-slate-600 hidden sm:inline">•</span>
             <a 
-              href="http://www.cisnet.co.kr/" 
+              href="https://github.com/AhBiYout-all/robobackup-studio" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center gap-1 hover:underline"
             >
-              <span>회사홈페이지 (CISNET)</span>
+              <span>GitHub 저장소</span>
             </a>
             <span className="text-slate-600 hidden sm:inline">•</span>
             <a 
@@ -176,7 +176,7 @@ export default function App() {
             </a>
           </div>
           <div className="flex items-center space-x-3 shrink-0">
-            <span className="font-mono text-xs text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700/60 font-semibold">v2.17.0</span>
+            <span className="font-mono text-xs text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700/60 font-semibold">v2.17.1</span>
           </div>
         </div>
       </footer>

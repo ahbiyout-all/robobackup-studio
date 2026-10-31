@@ -1510,15 +1510,15 @@ namespace RoboBackupStudio
     code: `; ====================================================================
 ; RoboBackup Studio - Inno Setup 6 Universal Installer Script
 ; Developer: AhBiYout
-; Blog: ahbivibelog.blogspot.com
+; Blog: https://ahbiyoutvibe.blogspot.com/
 ; ====================================================================
 
 #define MyAppName "RoboBackup Studio"
-#define MyAppVersion "v2.16.0"
+#define MyAppVersion "v2.17.1"
 #define MyAppPublisher "AhBiYout"
-#define MyAppURL "http://www.cisnet.co.kr/"
+#define MyAppURL "https://ahbiyoutvibe.blogspot.com/"
 #define MyAppExeName "RoboBackupStudio.exe"
-#define MyAppOutputName "RoboBackupStudio_v2.16.0_Setup"
+#define MyAppOutputName "RoboBackupStudio_v2.17.1_Setup"
 
 [Setup]
 AppId={{8B237C9F-3F1E-4E2F-A5C0-9A2E12F3D9A1}}

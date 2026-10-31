@@ -35,7 +35,7 @@ export const HelpAndLicense: React.FC = () => {
   };
 
   const coreDllSpecMarkdown = `# RoboBackup Studio 순수 창작 5대 코어 DLL 아키텍처 및 세부 동작 원리 기술 명세서
-- 개발자: AhBiYout (공식 블로그: https://ahbiyoutvibe.blogspot.com/ | 소속: https://www.cisnet.co.kr/)
+- 개발자: AhBiYout (공식 블로그: https://ahbiyoutvibe.blogspot.com/ | GitHub: https://github.com/AhBiYout-all/robobackup-studio)
 - 네임스페이스: RoboBackupStudio.Core (.NET 8 / .NET 4.8 듀얼 런타임 지원)
 
 [1] RoboDiffEngine.cs (사전 차이 분석 & 바이트 예측 프리플라이트)
@@ -79,7 +79,7 @@ export const HelpAndLicense: React.FC = () => {
             <div className="flex items-center space-x-2">
               <h2 className="text-xl font-bold text-white">도움말 및 오픈소스 라이선스 고지</h2>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 font-mono">
-                v2.17.0
+                v2.17.1
               </span>
             </div>
             <p className="text-sm text-slate-300 mt-1">
@@ -155,15 +155,15 @@ export const HelpAndLicense: React.FC = () => {
               <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-300" />
             </a>
 
-            {/* Company Homepage */}
+            {/* Official GitHub Repository */}
             <a
-              href="https://www.cisnet.co.kr/"
+              href="https://github.com/AhBiYout-all/robobackup-studio"
               target="_blank"
               rel="noopener noreferrer"
               className="px-3.5 py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/60 hover:border-blue-500/50 text-xs font-semibold flex items-center space-x-2 transition-all group"
             >
               <span className="w-2 h-2 rounded-full bg-blue-400"></span>
-              <span>소속 홈페이지: <strong className="text-blue-300 group-hover:underline">CISNET (www.cisnet.co.kr)</strong></span>
+              <span>GitHub 공식 저장소: <strong className="text-blue-300 group-hover:underline">robobackup-studio</strong></span>
               <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-300" />
             </a>
           </div>
@@ -313,7 +313,7 @@ export const HelpAndLicense: React.FC = () => {
                   <div className="flex items-center space-x-2">
                     <h3 className="text-lg font-bold text-white">순수 창작 5대 코어 DLL 아키텍처 및 세부 동작 원리</h3>
                     <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 font-mono">
-                      v2.17.0
+                      v2.17.1
                     </span>
                   </div>
                   <p className="text-xs text-purple-300/80 mt-0.5">
@@ -567,7 +567,7 @@ export const HelpAndLicense: React.FC = () => {
                 <h3>제3자 오픈소스 소프트웨어 라이선스 고지 (Third-Party Licenses)</h3>
               </div>
               <button
-                onClick={() => handleCopy(`RoboBackup Studio (v2.17.0)\nMIT License Copyright (c) 2026 AhBiYout`, 'full_lic')}
+                onClick={() => handleCopy(`RoboBackup Studio (v2.17.1)\nMIT License Copyright (c) 2026 AhBiYout`, 'full_lic')}
                 className="px-3 py-1.5 rounded-lg bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 hover:text-white text-xs font-semibold border border-indigo-500/30 flex items-center space-x-1.5 transition-colors"
               >
                 {copiedKey === 'full_lic' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}

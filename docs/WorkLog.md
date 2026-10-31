@@ -2,9 +2,9 @@
 
 - **프로젝트 명**: RoboBackup Studio - High Performance Robocopy GUI & C# WPF Generator
 - **개발자**: AhBiYout
-- **블로그**: https://ahbivibelog.blogspot.com/
-- **회사**: CISNET (http://www.cisnet.co.kr/)
-- **최신 릴리즈 버전**: v2.12.4 (2026-09-22)
+- **블로그**: https://ahbiyoutvibe.blogspot.com/
+- **GitHub**: https://github.com/AhBiYout-all/robobackup-studio
+- **최신 릴리즈 버전**: v2.17.1 (2026-10-30)
 
 ---
 
