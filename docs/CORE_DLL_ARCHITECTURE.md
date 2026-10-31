@@ -1,6 +1,6 @@
 # RoboBackup Studio 순수 창작 6대 코어 DLL 아키텍처 및 세부 동작 원리 기술 명세서
 
-> **문서 버전**: v2.17.5  
+> **문서 버전**: v2.17.6  
 > **작성자 / 총괄 개발**: AhBiYout (블로그: [ahbiyoutvibe.blogspot.com](https://ahbiyoutvibe.blogspot.com/) | GitHub: [github.com/AhBiYout-all](https://github.com/AhBiYout-all))  
 > **네임스페이스**: `RoboBackupStudio.Core`  
 > **대상 플랫폼**: Windows 10 / 11 / Windows Server 2016~2025 (x64 / ARM64, .NET 8 / .NET Framework 4.8 Dual Runtime)

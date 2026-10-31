@@ -28,6 +28,8 @@ export default defineConfig(() => {
           '@rollup/rollup-darwin-arm64',
           'lightningcss-win32-x64-msvc',
           '../lightningcss.win32-x64-msvc.node',
+          '@tailwindcss/oxide-win32-x64-msvc',
+          '@tailwindcss/oxide',
         ],
       },
     },

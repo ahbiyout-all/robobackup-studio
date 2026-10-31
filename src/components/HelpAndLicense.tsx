@@ -79,7 +79,7 @@ export const HelpAndLicense: React.FC = () => {
             <div className="flex items-center space-x-2">
               <h2 className="text-xl font-bold text-white">도움말 및 오픈소스 라이선스 고지</h2>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 font-mono">
-                v2.17.5
+                v2.17.6
               </span>
             </div>
             <p className="text-sm text-slate-300 mt-1">

@@ -1,5 +1,17 @@
 # RoboBackup Studio 패치 & 릴리즈 노트 (Patch Notes)
 
+## 📌 [v2.17.6] - 2026-10-30
+### 🛠️ Windows CI 러너 Tailwind CSS v4 네이티브 바이너리(@tailwindcss/oxide-win32-x64-msvc) 자동 보완 및 CI 빌드 완전 정상화
+1. **Windows CI 러너 `@tailwindcss/oxide` 네이티브 바이너리 누락 오류 해결**:
+   - `windows-latest` CI 러너 환경에서 `npm run build` (`vite build`) 수행 시 발생하던 `Cannot find native binding` (`@tailwindcss/oxide/index.js`) 원천 해결.
+   - `package.json` 의 `optionalDependencies`에 `@tailwindcss/oxide-win32-x64-msvc` 추가 등록.
+   - `.github/workflows/build.yml` 및 `build_release.yml`에 Windows 환경 전용 네이티브 바이너리 설치 스텝(`npm install @rollup/rollup-win32-x64-msvc lightningcss-win32-x64-msvc @tailwindcss/oxide-win32-x64-msvc --no-save`) 반영.
+   - `vite.config.ts`의 `build.rollupOptions.external`에 `@tailwindcss/oxide-win32-x64-msvc` 항목 추가.
+2. **버전 메타데이터 일괄 동기화 (v2.17.6)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `push_github.bat`, `installer.iss`, `package.json`, `README.md`, `docs/GOOGLE_BLOGGER_COMPOSE_MODE.md`, `docs/GOOGLE_BLOGGER_HTML_MODE.html`, `src/App.tsx`, `src/components/Navbar.tsx`, `src/components/HelpAndLicense.tsx`, `src/components/AutoUpdateModal.tsx`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `docs/THIRD_PARTY_LICENSES.md`, `docs/CORE_DLL_ARCHITECTURE.md`, `docs/WorkLog.md` 일괄 동기화.
+
+---
+
 ## 📌 [v2.17.5] - 2026-10-30
 ### 🛠️ Vite 설정 고도화: vite.config.ts 내 lightningcss 모듈 수동 오버라이드 및 스텁 별칭(Alias) 적용
 1. **vite.config.ts 내 lightningcss 수동 별칭 및 오버라이드 명시**:

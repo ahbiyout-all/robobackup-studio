@@ -4,7 +4,7 @@
 - **개발자**: AhBiYout
 - **블로그**: https://ahbiyoutvibe.blogspot.com/
 - **GitHub**: https://github.com/AhBiYout-all/robobackup-studio
-- **최신 릴리즈 버전**: v2.17.5 (2026-10-30)
+- **최신 릴리즈 버전**: v2.17.6 (2026-10-30)
 
 ---
 

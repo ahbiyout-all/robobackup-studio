@@ -9,9 +9,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>robocopy.ico</ApplicationIcon>
     <StartupObject>RoboBackupStudio.Program</StartupObject>
-    <Version>2.17.5</Version>
-    <AssemblyVersion>2.17.5.0</AssemblyVersion>
-    <FileVersion>2.17.5.0</FileVersion>
+    <Version>2.17.6</Version>
+    <AssemblyVersion>2.17.6.0</AssemblyVersion>
+    <FileVersion>2.17.6.0</FileVersion>
     <AssemblyTitle>RoboBackup Studio</AssemblyTitle>
     <Product>RoboBackup Studio - High Performance Robocopy GUI</Product>
     <Copyright>Copyright © 2026 AhBiYout</Copyright>
