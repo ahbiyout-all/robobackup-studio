@@ -89,11 +89,16 @@ export const AutoCleanup: React.FC<AutoCleanupProps> = ({ currentJob }) => {
   
   // Scheduler States for Auto Cleanup
   const [cleanupTaskName, setCleanupTaskName] = useState('RoboBackupStudio_AutoCleanup');
-  const [scheduleFreq, setScheduleFreq] = useState<'DAILY' | 'WEEKLY' | 'MONTHLY'>('WEEKLY');
+  const [scheduleFreq, setScheduleFreq] = useState<'DAILY' | 'WEEKLY' | 'MONTHLY' | 'HOURLY' | 'ONSTART' | 'ONLOGON'>('WEEKLY');
+  const [scheduleDayOfWeek, setScheduleDayOfWeek] = useState<string>('MON');
+  const [scheduleDayOfMonth, setScheduleDayOfMonth] = useState<number>(1);
+  const [scheduleIntervalHours, setScheduleIntervalHours] = useState<number>(2);
   const [scheduleStartDate, setScheduleStartDate] = useState(new Date().toISOString().split('T')[0]);
   const [scheduleHour, setScheduleHour] = useState(4);
   const [scheduleMinute, setScheduleMinute] = useState(0);
   const [runWithHighest, setRunWithHighest] = useState(true);
+  const [enableAutoLogging, setEnableAutoLogging] = useState(true);
+  const [cleanupLogFilePath, setCleanupLogFilePath] = useState('C:\\RoboBackupStudio\\Logs\\AutoCleanup.log');
   const [copiedScript, setCopiedScript] = useState(false);
 
   // Master-Detail Scheduler State for Auto Cleanup (Starts empty; only user registered tasks)
@@ -305,20 +310,80 @@ export const AutoCleanup: React.FC<AutoCleanupProps> = ({ currentJob }) => {
     const timeStr = `${String(scheduleHour).padStart(2, '0')}:${String(scheduleMinute).padStart(2, '0')}`;
     const effectiveTaskName = cleanupTaskName.trim() || 'RoboBackupStudio_AutoCleanup';
     
-    let psAction = '';
-    if (cleanupType === 'days') {
-      psAction = `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Get-ChildItem -Path '${cleanupFolder}' -Recurse -File | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-${cleanupDays}) } | Remove-Item -Force"`;
-    } else if (cleanupType === 'size') {
-      psAction = `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$maxBytes=${cleanupSizeGb}GB; $files=Get-ChildItem -Path '${cleanupFolder}' -Recurse -File | Sort-Object LastWriteTime; $total=($files | Measure-Object -Property Length -Sum).Sum; if($total -gt $maxBytes){ $purge=$total-$maxBytes; $acc=0; foreach($f in $files){ if($acc -ge $purge){break}; Remove-Item $f.FullName -Force; $acc+=$f.Length } }"`;
-    } else {
-      psAction = `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$days=${cleanupDays}; $maxBytes=${cleanupSizeGb}GB; Get-ChildItem -Path '${cleanupFolder}' -Recurse -File | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-$days) } | Remove-Item -Force; $files=Get-ChildItem -Path '${cleanupFolder}' -Recurse -File | Sort-Object LastWriteTime; $total=($files | Measure-Object -Property Length -Sum).Sum; if($total -gt $maxBytes){ $purge=$total-$maxBytes; $acc=0; foreach($f in $files){ if($acc -ge $purge){break}; Remove-Item $f.FullName -Force; $acc+=$f.Length } }"`;
+    let logPipe = '';
+    if (enableAutoLogging && cleanupLogFilePath) {
+      logPipe = ` | Out-File -FilePath '${cleanupLogFilePath}' -Append -Encoding utf8`;
     }
 
-    let cmd = `schtasks /create /tn "${effectiveTaskName}" /tr "\\"${psAction}\\"" /sc ${scheduleFreq} /sd ${formattedDate} /st ${timeStr} /f`;
+    const patternFilter = filePattern && filePattern !== '*.*' ? ` -Filter '${filePattern}'` : '';
+    const recurseOpt = includeSubdirs ? ' -Recurse' : '';
+
+    let psAction = '';
+    if (cleanupType === 'days') {
+      psAction = `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Get-ChildItem -Path '${cleanupFolder}'${patternFilter}${recurseOpt} -File | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-${cleanupDays}) } | Remove-Item -Force${logPipe}"`;
+    } else if (cleanupType === 'size') {
+      psAction = `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$maxBytes=${cleanupSizeGb}GB; $files=Get-ChildItem -Path '${cleanupFolder}'${patternFilter}${recurseOpt} -File | Sort-Object LastWriteTime; $total=($files | Measure-Object -Property Length -Sum).Sum; if($total -gt $maxBytes){ $purge=$total-$maxBytes; $acc=0; foreach($f in $files){ if($acc -ge $purge){break}; Remove-Item $f.FullName -Force${logPipe}; $acc+=$f.Length } }"`;
+    } else {
+      psAction = `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$days=${cleanupDays}; $maxBytes=${cleanupSizeGb}GB; Get-ChildItem -Path '${cleanupFolder}'${patternFilter}${recurseOpt} -File | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-$days) } | Remove-Item -Force${logPipe}; $files=Get-ChildItem -Path '${cleanupFolder}'${patternFilter}${recurseOpt} -File | Sort-Object LastWriteTime; $total=($files | Measure-Object -Property Length -Sum).Sum; if($total -gt $maxBytes){ $purge=$total-$maxBytes; $acc=0; foreach($f in $files){ if($acc -ge $purge){break}; Remove-Item $f.FullName -Force${logPipe}; $acc+=$f.Length } }"`;
+    }
+
+    let scheduleArg = `/sc ${scheduleFreq}`;
+    if (scheduleFreq === 'WEEKLY') {
+      scheduleArg += ` /d ${scheduleDayOfWeek} /sd ${formattedDate} /st ${timeStr}`;
+    } else if (scheduleFreq === 'MONTHLY') {
+      scheduleArg += ` /d ${scheduleDayOfMonth} /sd ${formattedDate} /st ${timeStr}`;
+    } else if (scheduleFreq === 'HOURLY') {
+      scheduleArg += ` /mo ${scheduleIntervalHours} /st ${timeStr}`;
+    } else if (scheduleFreq === 'DAILY') {
+      scheduleArg += ` /sd ${formattedDate} /st ${timeStr}`;
+    } else if (scheduleFreq === 'ONSTART' || scheduleFreq === 'ONLOGON') {
+      // ONSTART/ONLOGON doesn't take /sd or /st
+    }
+
+    let cmd = `schtasks /create /tn "${effectiveTaskName}" /tr "\\"${psAction}\\"" ${scheduleArg} /f`;
     if (runWithHighest) {
       cmd += ' /rl HIGHEST';
     }
     return cmd;
+  };
+
+  const downloadCleanupTaskXml = () => {
+    const effectiveTaskName = cleanupTaskName.trim() || 'RoboBackupStudio_AutoCleanup';
+    const xml = `<?xml version="1.0" encoding="UTF-16"?>
+<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <RegistrationInfo>
+    <Date>${new Date().toISOString()}</Date>
+    <Author>RoboBackup Studio</Author>
+    <Description>Auto Cleanup Scheduled Task for ${cleanupFolder}</Description>
+  </RegistrationInfo>
+  <Triggers>
+    <CalendarTrigger>
+      <StartBoundary>${scheduleStartDate}T${String(scheduleHour).padStart(2, '0')}:${String(scheduleMinute).padStart(2, '0')}:00</StartBoundary>
+      <Enabled>true</Enabled>
+    </CalendarTrigger>
+  </Triggers>
+  <Principals>
+    <Principal id="Author">
+      <LogonType>InteractiveToken</LogonType>
+      <RunLevel>${runWithHighest ? 'HighestAvailable' : 'LeastPrivilege'}</RunLevel>
+    </Principal>
+  </Principals>
+  <Actions Context="Author">
+    <Exec>
+      <Command>powershell.exe</Command>
+      <Arguments>-NoProfile -ExecutionPolicy Bypass -Command "Get-ChildItem -Path '${cleanupFolder}' -Recurse -File | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-${cleanupDays}) } | Remove-Item -Force"</Arguments>
+    </Exec>
+  </Actions>
+</Task>`;
+
+    const blob = new Blob([xml], { type: 'application/xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${effectiveTaskName}.xml`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatusNotification(`'${effectiveTaskName}.xml' 스케줄러 XML 파일이 내보내졌습니다.`);
   };
 
   const downloadPowerShellScript = () => {
@@ -351,6 +416,12 @@ export const AutoCleanup: React.FC<AutoCleanupProps> = ({ currentJob }) => {
     const timeStr = `${String(scheduleHour).padStart(2, '0')}:${String(scheduleMinute).padStart(2, '0')}`;
     const nextRun = `${scheduleStartDate} ${timeStr}:00 (대기 중)`;
     
+    const freqDesc = scheduleFreq === 'DAILY' ? '매일' 
+      : scheduleFreq === 'WEEKLY' ? `매주 ${scheduleDayOfWeek}` 
+      : scheduleFreq === 'MONTHLY' ? `매월 ${scheduleDayOfMonth}일` 
+      : scheduleFreq === 'HOURLY' ? `${scheduleIntervalHours}시간 간격` 
+      : scheduleFreq === 'ONSTART' ? '시스템 시작 시' : '로그온 시';
+
     const newTask: RegisteredCleanupTaskItem = {
       id: `cleanup_${Date.now()}`,
       taskName: effectiveTaskName,
@@ -362,7 +433,7 @@ export const AutoCleanup: React.FC<AutoCleanupProps> = ({ currentJob }) => {
         ? `최대 용량 ${cleanupSizeGb}GB 초과분 오래된 파일 순차 정리`
         : `${cleanupDays}일 경과 선별 삭제 후 ${cleanupSizeGb}GB 초과분 롤링 정리 (모두 적용)`,
       frequency: scheduleFreq,
-      timeInfo: `${scheduleFreq === 'DAILY' ? '매일' : scheduleFreq === 'WEEKLY' ? '매주' : '매월'} ${timeStr}`,
+      timeInfo: `${freqDesc} ${scheduleFreq !== 'ONSTART' && scheduleFreq !== 'ONLOGON' ? timeStr : ''}`.trim(),
       status: 'Ready',
       nextRunTime: nextRun,
       lastRunTime: '신규 등록됨 (대기)',
@@ -370,6 +441,10 @@ export const AutoCleanup: React.FC<AutoCleanupProps> = ({ currentJob }) => {
       runWithHighestPrivileges: runWithHighest,
       powershellCommand: generateCleanupScript(),
       createdAt: new Date().toLocaleString(),
+      logFilePath: enableAutoLogging ? cleanupLogFilePath : undefined,
+      daysOfWeek: scheduleFreq === 'WEEKLY' ? [scheduleDayOfWeek] : undefined,
+      dayOfMonth: scheduleFreq === 'MONTHLY' ? scheduleDayOfMonth : undefined,
+      intervalHours: scheduleFreq === 'HOURLY' ? scheduleIntervalHours : undefined,
     };
 
     setRegisteredCleanupTasks(prev => {
@@ -379,7 +454,7 @@ export const AutoCleanup: React.FC<AutoCleanupProps> = ({ currentJob }) => {
     setSelectedCleanupTaskId(newTask.id);
 
     setStatusNotification(`자동정리 작업 '${effectiveTaskName}'이(가) Windows 작업 스케줄러 목록에 등록되었습니다.`);
-    alert(`[자동정리 작업 스케줄러 등록 완료]\n\n작업 이름: ${effectiveTaskName}\n주기: ${scheduleFreq} (${timeStr})\n대상 폴더: ${cleanupFolder}\n\n등록 현황 목록에서 상세 정보를 확인하거나 즉시 실행할 수 있습니다.`);
+    alert(`[자동정리 작업 스케줄러 등록 완료]\n\n작업 이름: ${effectiveTaskName}\n주기: ${freqDesc}\n대상 폴더: ${cleanupFolder}\n\n등록 현황 목록에서 상세 정보를 확인하거나 즉시 실행할 수 있습니다.`);
   };
 
   const handleDeleteCleanupTask = (id: string, e?: React.MouseEvent) => {
@@ -670,6 +745,14 @@ export const AutoCleanup: React.FC<AutoCleanupProps> = ({ currentJob }) => {
               </div>
               <div className="flex items-center space-x-2">
                 <button
+                  onClick={downloadCleanupTaskXml}
+                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-medium flex items-center space-x-1 border border-slate-700 transition-colors"
+                  title="작업 스케줄러 XML 파일(.xml) 내보내기"
+                >
+                  <FileCheck className="w-3 h-3 text-amber-400" />
+                  <span>.xml 내보내기</span>
+                </button>
+                <button
                   onClick={downloadPowerShellScript}
                   className="px-2.5 py-1 rounded-lg bg-indigo-900/60 hover:bg-indigo-800 text-indigo-200 text-xs font-medium flex items-center space-x-1 border border-indigo-700/60 transition-colors"
                   title="PowerShell 정리 스크립트 파일(.ps1) 다운로드"
@@ -702,54 +785,139 @@ export const AutoCleanup: React.FC<AutoCleanupProps> = ({ currentJob }) => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {/* Frequency */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-400">실행 주기</label>
+                <label className="text-xs font-semibold text-slate-400">실행 트리거 주기</label>
                 <select
                   value={scheduleFreq}
                   onChange={(e) => setScheduleFreq(e.target.value as any)}
                   className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs font-semibold text-slate-200 focus:border-blue-500 focus:outline-none"
                 >
                   <option value="DAILY">📅 매일 실행 (Daily)</option>
-                  <option value="WEEKLY">🗓️ 매주 실행 (Weekly)</option>
-                  <option value="MONTHLY">📆 매월 실행 (Monthly)</option>
+                  <option value="WEEKLY">🗓️ 매주 특정 요일 (Weekly)</option>
+                  <option value="MONTHLY">📆 매월 지정 일자 (Monthly)</option>
+                  <option value="HOURLY">⏱️ 매시간 간격 반복 (Hourly)</option>
+                  <option value="ONSTART">⚡ 시스템 시작 시 (At Startup)</option>
+                  <option value="ONLOGON">🔑 사용자 로그온 시 (At Logon)</option>
                 </select>
               </div>
 
-              {/* Start Date */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-400">시작 날짜</label>
-                <input
-                  type="date"
-                  value={scheduleStartDate}
-                  onChange={(e) => setScheduleStartDate(e.target.value)}
-                  className="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs font-semibold text-slate-200 focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-
-              {/* Start Time */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-400">시작 시간</label>
-                <div className="flex items-center space-x-1">
+              {/* Sub-Frequency Details (Weekly Day / Monthly Day / Hourly Interval) */}
+              {scheduleFreq === 'WEEKLY' && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-400">실행 요일</label>
                   <select
-                    value={scheduleHour}
-                    onChange={(e) => setScheduleHour(parseInt(e.target.value))}
-                    className="flex-1 px-2 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs font-semibold text-slate-200 focus:border-blue-500 focus:outline-none"
+                    value={scheduleDayOfWeek}
+                    onChange={(e) => setScheduleDayOfWeek(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs font-semibold text-amber-300 focus:border-amber-500 focus:outline-none"
                   >
-                    {Array.from({ length: 24 }).map((_, i) => (
-                      <option key={i} value={i}>{String(i).padStart(2, '0')}시</option>
-                    ))}
+                    <option value="MON">월요일 (MON)</option>
+                    <option value="TUE">화요일 (TUE)</option>
+                    <option value="WED">수요일 (WED)</option>
+                    <option value="THU">목요일 (THU)</option>
+                    <option value="FRI">금요일 (FRI)</option>
+                    <option value="SAT">토요일 (SAT)</option>
+                    <option value="SUN">일요일 (SUN)</option>
                   </select>
-                  <span className="text-slate-500 font-bold">:</span>
+                </div>
+              )}
+
+              {scheduleFreq === 'MONTHLY' && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-400">실행 일자 (매월)</label>
                   <select
-                    value={scheduleMinute}
-                    onChange={(e) => setScheduleMinute(parseInt(e.target.value))}
-                    className="flex-1 px-2 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs font-semibold text-slate-200 focus:border-blue-500 focus:outline-none"
+                    value={scheduleDayOfMonth}
+                    onChange={(e) => setScheduleDayOfMonth(parseInt(e.target.value))}
+                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs font-semibold text-amber-300 focus:border-amber-500 focus:outline-none"
                   >
-                    {[0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55].map((m) => (
-                      <option key={m} value={m}>{String(m).padStart(2, '0')}분</option>
+                    {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                      <option key={d} value={d}>{d}일</option>
                     ))}
                   </select>
                 </div>
-              </div>
+              )}
+
+              {scheduleFreq === 'HOURLY' && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-400">반복 간격 (시간)</label>
+                  <select
+                    value={scheduleIntervalHours}
+                    onChange={(e) => setScheduleIntervalHours(parseInt(e.target.value))}
+                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs font-semibold text-amber-300 focus:border-amber-500 focus:outline-none"
+                  >
+                    <option value={1}>1시간 간격</option>
+                    <option value={2}>2시간 간격 (기본)</option>
+                    <option value={4}>4시간 간격</option>
+                    <option value={6}>6시간 간격</option>
+                    <option value={12}>12시간 간격</option>
+                  </select>
+                </div>
+              )}
+
+              {/* Start Date */}
+              {scheduleFreq !== 'ONSTART' && scheduleFreq !== 'ONLOGON' && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-400">시작 날짜</label>
+                  <input
+                    type="date"
+                    value={scheduleStartDate}
+                    onChange={(e) => setScheduleStartDate(e.target.value)}
+                    className="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs font-semibold text-slate-200 focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+              )}
+
+              {/* Start Time */}
+              {scheduleFreq !== 'ONSTART' && scheduleFreq !== 'ONLOGON' && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-400">시작 시간</label>
+                  <div className="flex items-center space-x-1">
+                    <select
+                      value={scheduleHour}
+                      onChange={(e) => setScheduleHour(parseInt(e.target.value))}
+                      className="flex-1 px-2 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs font-semibold text-slate-200 focus:border-blue-500 focus:outline-none"
+                    >
+                      {Array.from({ length: 24 }).map((_, i) => (
+                        <option key={i} value={i}>{String(i).padStart(2, '0')}시</option>
+                      ))}
+                    </select>
+                    <span className="text-slate-500 font-bold">:</span>
+                    <select
+                      value={scheduleMinute}
+                      onChange={(e) => setScheduleMinute(parseInt(e.target.value))}
+                      className="flex-1 px-2 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs font-semibold text-slate-200 focus:border-blue-500 focus:outline-none"
+                    >
+                      {[0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55].map((m) => (
+                        <option key={m} value={m}>{String(m).padStart(2, '0')}분</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Auto Logging Option Box */}
+            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+              <label className="flex items-center justify-between text-xs text-slate-300 cursor-pointer">
+                <span className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={enableAutoLogging}
+                    onChange={(e) => setEnableAutoLogging(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 rounded bg-slate-900 border-slate-800"
+                  />
+                  <span>자동정리 집행 내역 전용 로그 파일 기록 (Out-File Append)</span>
+                </span>
+                <span className="text-[10px] text-emerald-400 font-mono">PowerShell Logging</span>
+              </label>
+
+              {enableAutoLogging && (
+                <input
+                  type="text"
+                  value={cleanupLogFilePath}
+                  onChange={(e) => setCleanupLogFilePath(e.target.value)}
+                  placeholder="예: C:\RoboBackupStudio\Logs\AutoCleanup.log"
+                  className="w-full px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs font-mono text-emerald-300 focus:outline-none"
+                />
+              )}
             </div>
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">

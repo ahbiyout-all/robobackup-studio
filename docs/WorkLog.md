@@ -4,11 +4,31 @@
 - **개발자**: AhBiYout
 - **블로그**: https://ahbiyoutvibe.blogspot.com/
 - **GitHub**: https://github.com/AhBiYout-all/robobackup-studio
-- **최신 릴리즈 버전**: v2.17.6 (2026-10-30)
+- **최신 릴리즈 버전**: v2.17.8 (2026-10-30)
 
 ---
 
 ## 📌 주요 릴리즈 및 개발 작업 히스토리
+
+### [2026-10-30] - [v2.17.8] 작업 스케줄러 실시간 오류 감지 시스템 및 알림 엔진 고도화
+- **작업 스케줄러 실시간 오류 감지 및 알림 엔진 탑재**:
+  - `schtasks.exe /query /v` 쿼리 결과를 정밀 파싱하여 '마지막 실행 결과'가 성공(`0`)이 아닌 경우 즉시 감지.
+  - UI 상단 로즈 테마 경고 배너 및 C# `MessageBox` 시스템 경고를 통한 실시간 알림 시스템 구축.
+- **TaskScheduler UI 고도화**:
+  - 오류 발생 시 작업 리스트 카드에 `🚨 ERROR` 배지 및 시각적 강조 효과 적용.
+  - 오류 일괄 무시 및 새로고침 로직 개선.
+- **C# WPF MVVM 및 18개 프로젝트 파일 버전 v2.17.8 정합성 동기화**:
+  - `AGENTS.md` & `GEMINI.md` 지침에 따라 React 웹 UI와 Windows 데스크탑 앱 비즈니스 로직 100% 완전 동기화.
+
+
+### [2026-10-30] - [v2.17.7] Windows 작업 스케줄러 자동정리 예약 등록 기능 고도화 및 듀얼 동기화
+- **자동정리 스케줄러 트리거 옵션 대폭 확장 (`src/components/AutoCleanup.tsx`, `ViewModels/MainViewModel.cs`)**:
+  - 매일(DAILY), 매주(WEEKLY - 요일 선택), 매월(MONTHLY - 일자 선택), 시간 간격(HOURLY - N시간마다), 부팅 시(ONSTART), 로그인 시(ONLOGON) 전체 트리거 주기 지원.
+- **PowerShell 자동정리 스크립트 및 XML 내보내기/다운로드 기능 탑재**:
+  - `downloadCleanupTaskXml` 함수로 작업 스케줄러 내보내기 XML 파일 생성 지원.
+  - 관리자 권한(`/RL HIGHEST`) 및 로그 파일 자동 기재(`Out-File -Append`) 지원.
+- **C# WPF MVVM 듀얼 아키텍처 및 18개 프로젝트 파일 메타데이터 v2.17.7 동기화**:
+  - `AGENTS.md` & `GEMINI.md` 지침에 따라 React 웹 컴포넌트와 Windows 데스크탑 C# WPF 비즈니스 로직 100% 완전 동기화.
 
 ### [2026-10-13] - [v2.13.0] 6번째 순수 창작 코어 DLL (`RoboBandwidthThrottler`) 추가 및 기술 명세서 전면 갱신
 - **6대 순수 창작 코어 DLL 모듈 완성 (`RoboBandwidthThrottler.cs`)**:

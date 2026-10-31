@@ -202,13 +202,18 @@ namespace RoboBackupStudio.ViewModels
         private bool _isTaskRegistered = false;
         private string _taskStatusDetails = "백업 스케줄 상태 확인 중...";
 
-        // Auto Cleanup Scheduler Properties (New v1.3.0 / Master-Detail v2.6.2)
+        // Auto Cleanup Scheduler Properties (New v1.3.0 / Master-Detail v2.6.2 / Enhanced v2.17.7)
         private string _cleanupTaskName = "RoboBackupStudio_AutoCleanup";
         private string _cleanupScheduleFrequency = "weekly";
+        private string _cleanupScheduleWeeklyDay = "MON";
+        private int _cleanupScheduleMonthlyDay = 1;
+        private int _cleanupScheduleHourlyInterval = 2;
         private DateTime _cleanupScheduleStartDate = DateTime.Today;
         private int _cleanupScheduleHour = 4;
         private int _cleanupScheduleMinute = 0;
         private bool _cleanupRunWithHighestPrivileges = true;
+        private string _cleanupLogFilePath = @"C:\RoboBackupStudio\Logs\AutoCleanup.log";
+        private bool _cleanupEnableAutoLogging = true;
         private bool _isCleanupTaskRegistered = false;
         private string _cleanupTaskStatusDetails = "자동정리 스케줄 상태 확인 중...";
 
@@ -1279,6 +1284,24 @@ namespace RoboBackupStudio.ViewModels
             set { _cleanupScheduleFrequency = value; OnPropertyChanged(); }
         }
 
+        public string CleanupScheduleWeeklyDay
+        {
+            get => _cleanupScheduleWeeklyDay;
+            set { _cleanupScheduleWeeklyDay = value; OnPropertyChanged(); }
+        }
+
+        public int CleanupScheduleMonthlyDay
+        {
+            get => _cleanupScheduleMonthlyDay;
+            set { _cleanupScheduleMonthlyDay = Math.Clamp(value, 1, 31); OnPropertyChanged(); }
+        }
+
+        public int CleanupScheduleHourlyInterval
+        {
+            get => _cleanupScheduleHourlyInterval;
+            set { _cleanupScheduleHourlyInterval = Math.Clamp(value, 1, 24); OnPropertyChanged(); }
+        }
+
         public DateTime CleanupScheduleStartDate
         {
             get => _cleanupScheduleStartDate;
@@ -1301,6 +1324,18 @@ namespace RoboBackupStudio.ViewModels
         {
             get => _cleanupRunWithHighestPrivileges;
             set { _cleanupRunWithHighestPrivileges = value; OnPropertyChanged(); }
+        }
+
+        public string CleanupLogFilePath
+        {
+            get => _cleanupLogFilePath;
+            set { _cleanupLogFilePath = value; OnPropertyChanged(); }
+        }
+
+        public bool CleanupEnableAutoLogging
+        {
+            get => _cleanupEnableAutoLogging;
+            set { _cleanupEnableAutoLogging = value; OnPropertyChanged(); }
         }
 
         public bool IsCleanupTaskRegistered
@@ -5441,21 +5476,49 @@ namespace RoboBackupStudio.ViewModels
                     string startDateStr = CleanupScheduleStartDate.ToString("yyyy/MM/dd");
                     string timeStr = $"{CleanupScheduleHour:D2}:{CleanupScheduleMinute:D2}";
                     
+                    string logPipe = "";
+                    if (CleanupEnableAutoLogging && !string.IsNullOrWhiteSpace(CleanupLogFilePath))
+                    {
+                        logPipe = $" | Out-File -FilePath '{CleanupLogFilePath}' -Append -Encoding utf8";
+                    }
+
+                    string patternFilter = (!string.IsNullOrWhiteSpace(CleanupFilePattern) && CleanupFilePattern != "*.*") ? $" -Filter '{CleanupFilePattern}'" : "";
+                    string recurseOpt = CleanupIncludeSubdirs ? " -Recurse" : "";
+
                     string psCommand = "";
                     if (CleanupType == "days")
                     {
-                        psCommand = $"powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \\\"Get-ChildItem -Path '{CleanupFolderPath}' -Recurse -File | Where-Object {{ $_.LastWriteTime -lt (Get-Date).AddDays(-{CleanupDays}) }} | Remove-Item -Force\\\"";
+                        psCommand = $"powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \\\"Get-ChildItem -Path '{CleanupFolderPath}'{patternFilter}{recurseOpt} -File | Where-Object {{ $_.LastWriteTime -lt (Get-Date).AddDays(-{CleanupDays}) }} | Remove-Item -Force{logPipe}\\\"";
                     }
                     else if (CleanupType == "size")
                     {
-                        psCommand = $"powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \\\"$maxBytes={(long)(CleanupMaxGb * 1024 * 1024 * 1024)}; $files=Get-ChildItem -Path '{CleanupFolderPath}' -Recurse -File | Sort-Object LastWriteTime; $total=($files | Measure-Object -Property Length -Sum).Sum; if($total -gt $maxBytes){{ $purge=$total-$maxBytes; $acc=0; foreach($f in $files){{ if($acc -ge $purge){{break}}; Remove-Item $f.FullName -Force; $acc+=$f.Length }} }}\\\"";
+                        psCommand = $"powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \\\"$maxBytes={(long)(CleanupMaxGb * 1024 * 1024 * 1024)}; $files=Get-ChildItem -Path '{CleanupFolderPath}'{patternFilter}{recurseOpt} -File | Sort-Object LastWriteTime; $total=($files | Measure-Object -Property Length -Sum).Sum; if($total -gt $maxBytes){{ $purge=$total-$maxBytes; $acc=0; foreach($f in $files){{ if($acc -ge $purge){{break}}; Remove-Item $f.FullName -Force{logPipe}; $acc+=$f.Length }} }}\\\"";
                     }
                     else
                     {
-                        psCommand = $"powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \\\"$days={CleanupDays}; $maxBytes={(long)(CleanupMaxGb * 1024 * 1024 * 1024)}; Get-ChildItem -Path '{CleanupFolderPath}' -Recurse -File | Where-Object {{ $_.LastWriteTime -lt (Get-Date).AddDays(-$days) }} | Remove-Item -Force; $files=Get-ChildItem -Path '{CleanupFolderPath}' -Recurse -File | Sort-Object LastWriteTime; $total=($files | Measure-Object -Property Length -Sum).Sum; if($total -gt $maxBytes){{ $purge=$total-$maxBytes; $acc=0; foreach($f in $files){{ if($acc -ge $purge){{break}}; Remove-Item $f.FullName -Force; $acc+=$f.Length }} }}\\\"";
+                        psCommand = $"powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \\\"$days={CleanupDays}; $maxBytes={(long)(CleanupMaxGb * 1024 * 1024 * 1024)}; Get-ChildItem -Path '{CleanupFolderPath}'{patternFilter}{recurseOpt} -File | Where-Object {{ $_.LastWriteTime -lt (Get-Date).AddDays(-$days) }} | Remove-Item -Force{logPipe}; $files=Get-ChildItem -Path '{CleanupFolderPath}'{patternFilter}{recurseOpt} -File | Sort-Object LastWriteTime; $total=($files | Measure-Object -Property Length -Sum).Sum; if($total -gt $maxBytes){{ $purge=$total-$maxBytes; $acc=0; foreach($f in $files){{ if($acc -ge $purge){{break}}; Remove-Item $f.FullName -Force{logPipe}; $acc+=$f.Length }} }}\\\"";
                     }
 
-                    string arguments = $"/create /tn \"{taskName}\" /tr \"{psCommand}\" /sc {CleanupScheduleFrequency.ToUpper()} /sd {startDateStr} /st {timeStr} /f";
+                    string freqUpper = CleanupScheduleFrequency.ToUpper();
+                    string scheduleArg = $"/sc {freqUpper}";
+                    if (freqUpper == "WEEKLY")
+                    {
+                        scheduleArg += $" /d {CleanupScheduleWeeklyDay} /sd {startDateStr} /st {timeStr}";
+                    }
+                    else if (freqUpper == "MONTHLY")
+                    {
+                        scheduleArg += $" /d {CleanupScheduleMonthlyDay} /sd {startDateStr} /st {timeStr}";
+                    }
+                    else if (freqUpper == "HOURLY")
+                    {
+                        scheduleArg += $" /mo {CleanupScheduleHourlyInterval} /st {timeStr}";
+                    }
+                    else if (freqUpper == "DAILY")
+                    {
+                        scheduleArg += $" /sd {startDateStr} /st {timeStr}";
+                    }
+
+                    string arguments = $"/create /tn \"{taskName}\" /tr \"{psCommand}\" {scheduleArg} /f";
                     if (CleanupRunWithHighestPrivileges)
                     {
                         arguments += " /rl HIGHEST";
@@ -5474,8 +5537,8 @@ namespace RoboBackupStudio.ViewModels
 
                     Application.Current?.Dispatcher?.Invoke(() =>
                     {
-                        MessageBox.Show($"작업 스케줄러(schtasks.exe)에 자동정리 작업이 등록되었습니다!\n\n작업 이름: {taskName}\n주기: {CleanupScheduleFrequency}\n시작 날짜: {startDateStr}\n시간: {timeStr}\n대상 폴더: {CleanupFolderPath}", "자동정리 스케줄 등록 완료", MessageBoxButton.OK, MessageBoxImage.Information);
-                        Logs.Add($"[{DateTime.Now:HH:mm:ss}] [CLEANUP SCHEDULER] 자동정리 스케줄 {taskName} ({startDateStr} {timeStr}) 등록 요청.");
+                        MessageBox.Show($"작업 스케줄러(schtasks.exe)에 자동정리 작업이 성공적으로 등록되었습니다!\n\n작업 이름: {taskName}\n주기: {freqUpper}\n시작 날짜: {startDateStr}\n시간: {timeStr}\n대상 폴더: {CleanupFolderPath}", "자동정리 스케줄 등록 완료", MessageBoxButton.OK, MessageBoxImage.Information);
+                        Logs.Add($"[{DateTime.Now:HH:mm:ss}] [CLEANUP SCHEDULER] 자동정리 스케줄 {taskName} ({freqUpper} {startDateStr} {timeStr}) 등록 요청 완료.");
                         CheckCleanupTaskStatus();
                     });
                 }

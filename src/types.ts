@@ -184,6 +184,7 @@ export interface RegisteredTaskItem {
   nextRunTime: string;
   lastRunTime: string;
   lastResult: string;
+  hasError?: boolean;
   runWithHighestPrivileges: boolean;
   commandSummary: string;
   description: string;
@@ -196,7 +197,7 @@ export interface RegisteredCleanupTaskItem {
   displayName: string;
   targetFolder: string;
   ruleDescription: string;
-  frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY';
+  frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'HOURLY' | 'ONSTART' | 'ONLOGON';
   timeInfo: string;
   status: 'Ready' | 'Running' | 'Disabled';
   nextRunTime: string;
@@ -205,6 +206,10 @@ export interface RegisteredCleanupTaskItem {
   runWithHighestPrivileges: boolean;
   powershellCommand: string;
   createdAt: string;
+  logFilePath?: string;
+  daysOfWeek?: string[];
+  dayOfMonth?: number;
+  intervalHours?: number;
 }
 
 

@@ -1,5 +1,36 @@
 # RoboBackup Studio 패치 & 릴리즈 노트 (Patch Notes)
 
+## 📌 [v2.17.8] - 2026-10-30
+### 🛡️ 작업 스케줄러 실시간 오류 감지 시스템 및 알림 엔진 고도화
+1. **Windows 작업 스케줄러 실시간 오류 감지 및 알림**:
+   - `schtasks.exe /query /v`를 통한 작업 실행 결과 정밀 분석 엔진 탑재.
+   - 마지막 실행 결과(Last Result)가 `0`(성공)이 아닌 경우(예: 0x1, 0x8, 0x10 등) 즉시 UI 상단에 로즈 테마 경고 배너 및 알림 전송.
+   - 비정상 종료 시 사용자에게 명시적인 오류 상황을 알리고 로그 확인을 유도하는 '실시간 오류 알림 시스템' 구축.
+2. **TaskScheduler UI 시각적 강화**:
+   - 오류가 발생한 작업 카드에 `🚨 ERROR` 배지 및 로즈 테마 보더 적용으로 가독성 증대.
+   - 모든 오류 알림 일괄 무시 및 상태 새로고침 기능 개선.
+3. **C# WPF MVVM 및 C# 생성기 100% 완전 동기화 (v2.17.8)**:
+   - `AGENTS.md` 지침에 따라 실제 Windows 데스크탑 앱에서의 schtasks 파싱 및 알림 로직 100% 완전 구현.
+   - `CheckScheduledTaskStatus` C# 코드 내 정규식 기반 결과 파싱 및 `MessageBox` 알림 로직 동기화.
+
+---
+
+## 📌 [v2.17.7] - 2026-10-30
+### 🚀 Windows 작업 스케줄러 자동정리 예약 등록 기능 고도화 및 100% C# WPF 듀얼 동기화 Complete
+1. **Windows 작업 스케줄러 자동정리 예약 기능 고도화**:
+   - 트리거 주기 옵션 확장: `DAILY`(매일), `WEEKLY`(매주 요일 지정), `MONTHLY`(매월 일자 지정), `HOURLY`(매시간 간격), `ONSTART`(시스템 시작 시), `ONLOGON`(로그온 시).
+   - 정밀 타겟 조건 및 필터 지원: 보존 경과 일수(`cleanupDays`), 최대 디스크 용량 한도(`cleanupSizeGb`), 파일 확장자 패턴 필터(`filePattern`), 하위 폴더 재귀 탐색(`includeSubdirs`).
+   - 무인 집행 로그 파일 기록 옵션: PowerShell `| Out-File -Append` 자동 로그 기록 지원 (`cleanupLogFilePath`).
+   - 스케줄러 XML 내보내기/다운로드, PowerShell `.ps1` 다운로드, CLI 명령어 실시간 생성 및 복사 기능.
+   - Master-Detail 구조 등록 현황 인스펙터: 등록된 자동정리 스케줄 목록 조회, 세부 규칙 검수, 수동 즉시 실행(`schtasks /run`) 및 작업 삭제(`schtasks /delete`).
+2. **데스크탑 앱(C# WPF MVVM) 및 C# 생성기 100% 완전 동기화**:
+   - `ViewModels/MainViewModel.cs` 내 자동정리 스케줄 생성 파라미터(`CleanupScheduleWeeklyDay`, `CleanupScheduleMonthlyDay`, `CleanupScheduleHourlyInterval`, `CleanupLogFilePath`, `CleanupEnableAutoLogging`) 및 `RegisterCleanupTaskAsync` C# `schtasks.exe` 프로세스 로직 구현.
+   - `src/utils/robocopy.ts` C# WPF 자동 생성 템플릿 코드 동기화.
+3. **버전 메타데이터 일괄 동기화 (v2.17.7)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `push_github.bat`, `installer.iss`, `package.json`, `README.md`, `docs/GOOGLE_BLOGGER_COMPOSE_MODE.md`, `docs/GOOGLE_BLOGGER_HTML_MODE.html`, `src/components/Navbar.tsx`, `src/components/HelpAndLicense.tsx`, `src/components/AutoUpdateModal.tsx`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `docs/THIRD_PARTY_LICENSES.md`, `docs/CORE_DLL_ARCHITECTURE.md`, `docs/WorkLog.md` 일괄 동기화.
+
+---
+
 ## 📌 [v2.17.6] - 2026-10-30
 ### 🛠️ Windows CI 러너 Tailwind CSS v4 네이티브 바이너리(@tailwindcss/oxide-win32-x64-msvc) 자동 보완 및 CI 빌드 완전 정상화
 1. **Windows CI 러너 `@tailwindcss/oxide` 네이티브 바이너리 누락 오류 해결**:

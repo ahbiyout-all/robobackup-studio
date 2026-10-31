@@ -254,20 +254,40 @@ if %RC_EXIT% LEQ 7 (
   // Run Selected Task Immediately
   const handleRunTaskNow = (task: RegisteredTaskItem) => {
     setStatusNotification(`작업 스케줄러 '${task.taskName}' 즉시 실행(/run) 명령을 전달했습니다. 백그라운드 프로세스로 정상 수행됩니다.`);
+    
+    // Simulate runtime result (v2.17.8)
+    const isSuccess = Math.random() > 0.15; // 85% success rate for simulation
+
     setRegisteredTasks(prev => prev.map(t => {
       if (t.id === task.id) {
         return {
           ...t,
           status: 'Running',
           lastRunTime: new Date().toLocaleTimeString(),
-          lastResult: '0 (방금 수동 실행됨 - 백업 정상 완료)',
+          lastResult: '실행 중...',
+          hasError: false
         };
       }
       return t;
     }));
 
     setTimeout(() => {
-      setRegisteredTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: 'Ready' } : t));
+      setRegisteredTasks(prev => prev.map(t => {
+        if (t.id === task.id) {
+          return { 
+            ...t, 
+            status: 'Ready',
+            lastResult: isSuccess ? '0 (성공 - 백업 정상 완료)' : '1 (오류 - 원본 폴더 접근 불가 또는 네트워크 끊김)',
+            hasError: !isSuccess
+          };
+        }
+        return t;
+      }));
+      
+      if (!isSuccess) {
+        // Notification for failure
+        setStatusNotification(`❌ 오류 발생: '${task.taskName}' 작업이 비정상 종료되었습니다. 상세 로그를 확인하십시오.`);
+      }
     }, 4000);
   };
 
@@ -668,12 +688,36 @@ if %RC_EXIT% LEQ 7 (
 
         {/* Status Notification Banner */}
         {statusNotification && (
-          <div className="p-3 rounded-xl bg-blue-950/60 border border-blue-800/80 text-xs text-blue-200 flex items-center justify-between">
+          <div className="p-3 rounded-xl bg-blue-950/60 border border-blue-800/80 text-xs text-blue-200 flex items-center justify-between animate-fadeIn">
             <span className="flex items-center space-x-2">
               <CheckCircle className="w-4 h-4 text-blue-400" />
               <span>{statusNotification}</span>
             </span>
             <button onClick={() => setStatusNotification(null)} className="text-slate-400 hover:text-white">✕</button>
+          </div>
+        )}
+
+        {/* Real-time Task Error Alert Banner (v2.17.8) */}
+        {registeredTasks.some(t => t.hasError) && (
+          <div className="p-4 rounded-xl bg-rose-950/60 border border-rose-500/50 text-rose-100 flex flex-col md:flex-row items-center justify-between gap-4 animate-pulse">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 rounded-lg bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="font-bold text-sm">⚠️ 스케줄 백업 작업 오류 감지</p>
+                <p className="text-xs text-rose-300/80">일부 예약된 백업 작업이 비정상 종료되었거나 시작되지 못했습니다. 로그를 확인하세요.</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => {
+                setRegisteredTasks(prev => prev.map(t => ({ ...t, hasError: false })));
+                setStatusNotification('모든 오류 알림을 일시적으로 무시 처리했습니다.');
+              }}
+              className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-colors whitespace-nowrap"
+            >
+              알림 모두 지우기
+            </button>
           </div>
         )}
 
@@ -1122,23 +1166,25 @@ if %RC_EXIT% LEQ 7 (
                       onClick={() => setSelectedTaskId(task.id)}
                       className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                         isSelected
-                          ? 'bg-slate-800/90 border-emerald-500 ring-1 ring-emerald-500 shadow-md'
-                          : 'bg-slate-950/60 border-slate-800/80 hover:bg-slate-900 hover:border-slate-700'
+                          ? (task.hasError ? 'bg-rose-950/40 border-rose-500 ring-1 ring-rose-500 shadow-md' : 'bg-slate-800/90 border-emerald-500 ring-1 ring-emerald-500 shadow-md')
+                          : (task.hasError ? 'bg-rose-950/20 border-rose-900/50 hover:bg-rose-900/40 hover:border-rose-700' : 'bg-slate-950/60 border-slate-800/80 hover:bg-slate-900 hover:border-slate-700')
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2 mb-1.5">
                         <div className="flex items-center space-x-2">
-                          <span className={`w-2 h-2 rounded-full shrink-0 ${task.status === 'Running' ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'}`} />
-                          <span className="text-xs font-bold text-slate-100 truncate font-mono">
+                          <span className={`w-2 h-2 rounded-full shrink-0 ${
+                            task.hasError ? 'bg-rose-500' : (task.status === 'Running' ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400')
+                          }`} />
+                          <span className={`text-xs font-bold truncate font-mono ${task.hasError ? 'text-rose-300' : 'text-slate-100'}`}>
                             {task.taskName}
                           </span>
                         </div>
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${
-                          task.status === 'Running' 
-                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' 
-                            : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                          task.hasError 
+                            ? 'bg-rose-600 text-white shadow-sm'
+                            : (task.status === 'Running' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30')
                         }`}>
-                          {task.status === 'Running' ? '실행 중' : '준비 완료'}
+                          {task.hasError ? '🚨 ERROR' : (task.status === 'Running' ? '실행 중' : '준비 완료')}
                         </span>
                       </div>
 

@@ -647,7 +647,7 @@ export const CSHARP_MVVM_TEMPLATES: CsharpSnippet[] = [
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:RoboBackupStudio.ViewModels"
         mc:Ignorable="d"
-        Title="RoboBackup Studio v2.17.0 - High Performance Robocopy Studio" Height="880" Width="1160"
+        Title="RoboBackup Studio v2.17.8 - High Performance Robocopy Studio" Height="880" Width="1160"
         Background="#0b0f19" Foreground="#f8fafc">
 
     <Window.DataContext>
@@ -715,7 +715,7 @@ export const CSHARP_MVVM_TEMPLATES: CsharpSnippet[] = [
                             <TextBlock Text="RoboBackup" Foreground="#ffffff" FontSize="20" FontWeight="Bold"/>
                             <TextBlock Text="Studio" Foreground="#60a5fa" FontSize="20" FontWeight="Bold" Margin="4,0,0,0"/>
                             <Border Background="#10b981" CornerRadius="10" Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="v2.17.0" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock Text="v2.17.8" Foreground="White" FontSize="11" FontWeight="Bold"/>
                             </Border>
                         </StackPanel>
                         <TextBlock Text="Windows High-Speed Robocopy GUI &amp; C# WPF Generator" Foreground="#94a3b8" FontSize="11"/>
@@ -1059,6 +1059,26 @@ namespace RoboBackupStudio.ViewModels
                 {
                     IsTaskRegistered = true;
                     TaskStatusDetails = output.Trim();
+                    
+                    // Parse Last Result for Error Detection (v2.17.8)
+                    if (output.Contains("마지막 결과:") || output.Contains("Last Result:"))
+                    {
+                        var lines = output.Split(new[] { "\\r\\n", "\\n" }, StringSplitOptions.None);
+                        foreach (var line in lines)
+                        {
+                            if (line.Contains("마지막 결과:") || line.Contains("Last Result:"))
+                            {
+                                string result = line.Split(':').Last().Trim();
+                                if (result != "0" && result != "0x0" && !result.Contains("(0)"))
+                                {
+                                    StatusText = "⚠️ 스케줄 오류 감지!";
+                                    // Notify user of task failure
+                                    System.Windows.Forms.MessageBox.Show($"[알림] 스케줄 작업 '{taskName}'이(가) 비정상 종료되었습니다.\\n마지막 결과 코드: {result}", "스케줄러 경고", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+                                }
+                                break;
+                            }
+                        }
+                    }
                 }
                 else
                 {
