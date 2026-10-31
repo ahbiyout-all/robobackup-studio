@@ -1,6 +1,6 @@
 # 📜 Third-Party Open Source Software Licenses & Legal Notices
 
-**RoboBackup Studio (v2.17.2)**
+**RoboBackup Studio (v2.17.3)**
 - **Lead Developer**: AhBiYout
 - **Tech Blog**: https://ahbiyoutvibe.blogspot.com/
 - **GitHub Repository**: https://github.com/AhBiYout-all/robobackup-studio

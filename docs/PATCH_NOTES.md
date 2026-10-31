@@ -1,5 +1,15 @@
 # RoboBackup Studio 패치 & 릴리즈 노트 (Patch Notes)
 
+## 📌 [v2.17.3] - 2026-10-30
+### 🛠️ Vite 설정 고도화: vite.config.ts 내 rollupOptions 외부 모듈 예외 처리 명시
+1. **vite.config.ts 내 build.rollupOptions 추가**:
+   - `build.rollupOptions.external` 블록을 구성하여 `@rollup/rollup-win32-x64-msvc`, `@rollup/rollup-win32-arm64-msvc` 등 OS별 네이티브 Rollup 바이너리 의존성 번들링 예외 처리를 명시 적용.
+   - 다양한 크로스 플랫폼 및 CI 빌드 환경에서 동적 바이너리 로딩 모듈 누락 에러 원천 방지 및 빌드 파이프라인 무결성 확보.
+2. **버전 메타데이터 일괄 동기화 (v2.17.3)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `push_github.bat`, `installer.iss`, `package.json`, `package-lock.json`, `README.md`, `docs/GOOGLE_BLOGGER_COMPOSE_MODE.md`, `docs/GOOGLE_BLOGGER_HTML_MODE.html`, `src/App.tsx`, `src/components/Navbar.tsx`, `src/components/HelpAndLicense.tsx`, `src/components/AutoUpdateModal.tsx`, `src/components/TaskScheduler.tsx`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `docs/THIRD_PARTY_LICENSES.md`, `docs/CORE_DLL_ARCHITECTURE.md`, `docs/WorkLog.md` 일괄 동기화.
+
+---
+
 ## 📌 [v2.17.2] - 2026-10-30
 ### 🛠️ GitHub Actions Windows 환경 빌드 오류 해결: Rollup 네이티브 바이너리(@rollup/rollup-win32-x64-msvc) 자동 보완 및 CI/CD 워크플로 안정화
 1. **Windows 환경 Vite/Rollup 바이너리 누락 오류 해결**:

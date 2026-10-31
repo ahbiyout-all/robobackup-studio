@@ -6,7 +6,7 @@
 ; ====================================================================
 
 #define MyAppName "RoboBackup Studio"
-#define MyAppVersion "v2.17.2"
+#define MyAppVersion "v2.17.3"
 #define MyAppPublisher "AhBiYout"
 #define MyAppURL "https://ahbiyoutvibe.blogspot.com/"
 #define MyAppExeName "RoboBackupStudio.exe"
