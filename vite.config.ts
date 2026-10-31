@@ -9,9 +9,15 @@ export default defineConfig(() => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
+        'lightningcss': path.resolve(__dirname, 'src/utils/lightningcss-stub.js'),
+        '../lightningcss.win32-x64-msvc.node': path.resolve(__dirname, 'src/utils/lightningcss-stub.js'),
       },
     },
+    css: {
+      transformer: 'postcss' as const,
+    },
     build: {
+      cssMinify: 'esbuild' as const,
       rollupOptions: {
         external: [
           '@rollup/rollup-win32-x64-msvc',
@@ -20,6 +26,8 @@ export default defineConfig(() => {
           '@rollup/rollup-linux-x64-gnu',
           '@rollup/rollup-darwin-x64',
           '@rollup/rollup-darwin-arm64',
+          'lightningcss-win32-x64-msvc',
+          '../lightningcss.win32-x64-msvc.node',
         ],
       },
     },

@@ -1,5 +1,26 @@
 # RoboBackup Studio 패치 & 릴리즈 노트 (Patch Notes)
 
+## 📌 [v2.17.5] - 2026-10-30
+### 🛠️ Vite 설정 고도화: vite.config.ts 내 lightningcss 모듈 수동 오버라이드 및 스텁 별칭(Alias) 적용
+1. **vite.config.ts 내 lightningcss 수동 별칭 및 오버라이드 명시**:
+   - `resolve.alias` 블록에 `lightningcss` 및 `../lightningcss.win32-x64-msvc.node` 항목을 `src/utils/lightningcss-stub.js` 오버라이드 별칭으로 추가.
+   - `css.transformer: 'postcss'` 및 `build.cssMinify: 'esbuild'` 설정을 지정하여 Vite 및 `@tailwindcss/vite` 구동 시 환경별 OS 전용 네이티브 바이너리 동적 로딩 시도 에러(`Cannot find module '../lightningcss.win32-x64-msvc.node'`)를 원천 차단.
+2. **버전 메타데이터 일괄 동기화 (v2.17.5)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `push_github.bat`, `installer.iss`, `package.json`, `README.md`, `docs/GOOGLE_BLOGGER_COMPOSE_MODE.md`, `docs/GOOGLE_BLOGGER_HTML_MODE.html`, `src/App.tsx`, `src/components/Navbar.tsx`, `src/components/HelpAndLicense.tsx`, `src/components/AutoUpdateModal.tsx`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `docs/THIRD_PARTY_LICENSES.md`, `docs/CORE_DLL_ARCHITECTURE.md`, `docs/WorkLog.md` 일괄 동기화.
+
+---
+
+## 📌 [v2.17.4] - 2026-10-30
+### 🛠️ GitHub Actions Windows 환경 CSS 엔진 네이티브 바이너리(lightningcss-win32-x64-msvc) 자동 보완 및 CI 빌드 완전 정상화
+1. **Windows CI 러너 lightningcss 네이티브 바이너리 누락 오류 해결**:
+   - Tailwind CSS v4(`@tailwindcss/vite`) 구동 시 Windows 환경에서 `lightningcss.win32-x64-msvc.node` 바이너리가 누락되어 발생하던 `Cannot find module '../lightningcss.win32-x64-msvc.node'` 원천 해결.
+   - `package.json` 의 `optionalDependencies`에 `lightningcss-win32-x64-msvc` 추가 등록.
+   - `.github/workflows/build.yml` 및 `build_release.yml`에 Windows 환경 네이티브 바이너리 자동 보완 설치 명령어(`npm install @rollup/rollup-win32-x64-msvc lightningcss-win32-x64-msvc --no-save`) 반영.
+2. **버전 메타데이터 일괄 동기화 (v2.17.4)**:
+   - `docs/PATCH_NOTES.md`, `RoboBackupStudio.csproj`, `build.bat`, `push_github.bat`, `installer.iss`, `package.json`, `package-lock.json`, `README.md`, `docs/GOOGLE_BLOGGER_COMPOSE_MODE.md`, `docs/GOOGLE_BLOGGER_HTML_MODE.html`, `src/App.tsx`, `src/components/Navbar.tsx`, `src/components/HelpAndLicense.tsx`, `src/components/AutoUpdateModal.tsx`, `src/components/TaskScheduler.tsx`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `docs/THIRD_PARTY_LICENSES.md`, `docs/CORE_DLL_ARCHITECTURE.md`, `docs/WorkLog.md` 일괄 동기화.
+
+---
+
 ## 📌 [v2.17.3] - 2026-10-30
 ### 🛠️ Vite 설정 고도화: vite.config.ts 내 rollupOptions 외부 모듈 예외 처리 명시
 1. **vite.config.ts 내 build.rollupOptions 추가**:

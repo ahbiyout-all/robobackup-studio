@@ -17,7 +17,7 @@ interface GitHubReleaseInfo {
 }
 
 export const AutoUpdateModal: React.FC = () => {
-  const currentVersion = 'v2.17.3';
+  const currentVersion = 'v2.17.5';
   const [isOpen, setIsOpen] = useState(false);
   const [checking, setChecking] = useState(false);
   const [latestRelease, setLatestRelease] = useState<GitHubReleaseInfo | null>(null);
