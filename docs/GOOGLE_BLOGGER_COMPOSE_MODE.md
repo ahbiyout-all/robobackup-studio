@@ -1,4 +1,4 @@
-# [v2.17.9] RoboBackup Studio - Windows 최강 성능 Robocopy GUI & C# WPF 자동 생성 도구
+# [v2.18.1] RoboBackup Studio - Windows 최강 성능 Robocopy GUI & C# WPF 자동 생성 도구
 
 ## 🚀 고성능 Robocopy 엔진과 모던 UI의 만남
 RoboBackup Studio는 Windows 내장 최강 복사 엔진인 **Robocopy**를 기반으로 한 하이 퍼포먼스 백업 관리 솔루션입니다. 복잡한 명령줄 대신 직관적인 GUI를 통해 서버급 백업 인프라를 구축하고, 클릭 한 번으로 실제 작동하는 **C# WPF MVVM 소스 코드**까지 생성해주는 독보적인 개발 도구입니다.
@@ -16,7 +16,7 @@ RoboBackup Studio는 Windows 내장 최강 복사 엔진인 **Robocopy**를 기�
 
 ---
 
-## 📢 최신 업데이트 내용 (v2.17.9)
+## 📢 최신 업데이트 내용 (v2.18.1)
 - **문서 체계 전면 최신화**: 실시간 오류 알림 및 최신 스케줄러 기능 명세 반영
 - **시스템 안정성 강화**: 18개 핵심 파일의 버전 정합성 검수 및 일괄 동기화 완료
 - **C# 템플릿 고도화**: 소스 코드 생성기 내 오류 감지 로직 및 UI 안정화 버전 탑재
@@ -37,8 +37,8 @@ RoboBackup Studio는 Windows 내장 최강 복사 엔진인 **Robocopy**를 기�
 ---
 
 ## 📋 버전 및 시스템 정보
-- **최신 버전**: v2.17.9 Stable
-- **출시 일자**: 2026-10-30
+- **최신 버전**: v2.18.1 Stable
+- **출시 일자**: 2026-11-01
 - **권장 사양**: Windows 10/11, Windows Server 2016 이상 (x64)
 - **필수 환경**: .NET 10.0 (인스톨러에 포함되어 자동 설치)
 

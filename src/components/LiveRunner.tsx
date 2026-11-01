@@ -816,9 +816,54 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
      시간 :   ${summaryReport.timesTotal.padStart(10)} ${summaryReport.timesCopied.padStart(10)}                         ${summaryReport.timesFailed.padStart(10)} ${summaryReport.timesExtras.padStart(10)}
      속도 :   ${summaryReport.speedBytesPerSec}
      속도 :   ${summaryReport.speedMegaBytesPerMin}
+===============================================================================
+[RoboBackup Studio v2.18.1]
+원본: ${currentJob.sourcePath}
+대상: ${currentJob.targetPath}
+플래그: ${command}
 ===============================================================================`;
     navigator.clipboard.writeText(reportText);
     alert('최종 백업 통계 리포트가 클립보드에 복사되었습니다.');
+  };
+
+  const downloadFullReport = () => {
+    if (!summaryReport) return;
+    const reportText = `===============================================================================
+📊 ROBOCOPY 최종 백업 통계 리포트 - ${summaryReport.exitCodeTitle} (ExitCode: ${summaryReport.exitCode})
+   상세 진단: ${summaryReport.exitCodeDescription}
+   종료 일시: ${summaryReport.endedTime}
+-------------------------------------------------------------------------------
+             전체       복사됨      건너 뜀       불일치         실패         추가
+   디렉터리 : ${summaryReport.dirsTotal.padStart(10)} ${summaryReport.dirsCopied.padStart(10)} ${summaryReport.dirsSkipped.padStart(10)} ${summaryReport.dirsMismatch.padStart(10)} ${summaryReport.dirsFailed.padStart(10)} ${summaryReport.dirsExtras.padStart(10)}
+     파일 :   ${summaryReport.filesTotal.padStart(10)} ${summaryReport.filesCopied.padStart(10)} ${summaryReport.filesSkipped.padStart(10)} ${summaryReport.filesMismatch.padStart(10)} ${summaryReport.filesFailed.padStart(10)} ${summaryReport.filesExtras.padStart(10)}
+   바이트 :   ${summaryReport.bytesTotal.padStart(10)} ${summaryReport.bytesCopied.padStart(10)} ${summaryReport.bytesSkipped.padStart(10)} ${summaryReport.bytesMismatch.padStart(10)} ${summaryReport.bytesFailed.padStart(10)} ${summaryReport.bytesExtras.padStart(10)}
+     시간 :   ${summaryReport.timesTotal.padStart(10)} ${summaryReport.timesCopied.padStart(10)}                         ${summaryReport.timesFailed.padStart(10)} ${summaryReport.timesExtras.padStart(10)}
+     속도 :   ${summaryReport.speedBytesPerSec}
+     속도 :   ${summaryReport.speedMegaBytesPerMin}
+===============================================================================
+[애플리케이션 정보]
+제품명: RoboBackup Studio v2.18.1
+개발자: AhBiYout (ahbiyoutvibe.blogspot.com)
+
+[백업 작업 상세]
+원본 경로: ${currentJob.sourcePath}
+대상 경로: ${currentJob.targetPath}
+실행 명령어: ${command}
+
+[작업 결과]
+최종 상태: ${summaryReport.exitCodeTitle}
+종료 코드: ${summaryReport.exitCode}
+완료 시각: ${summaryReport.endedTime}
+===============================================================================
+본 리포트는 RoboBackup Studio에 의해 자동 생성되었습니다.`;
+
+    const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `RoboBackup_Report_${new Date().toISOString().replace(/[:.]/g, '-')}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const openSummaryHud = () => {
@@ -1186,6 +1231,14 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
                 >
                   <Copy className="w-3.5 h-3.5" />
                   <span>리포트 복사</span>
+                </button>
+                <button
+                  onClick={downloadFullReport}
+                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 hover:text-white text-xs font-medium transition-colors border border-slate-700/60 flex items-center space-x-1.5"
+                  title="상세 백업 결과 리포트를 .txt 파일로 다운로드"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>리포트 다운로드 (.txt)</span>
                 </button>
                 <button
                   onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}

@@ -25,7 +25,7 @@ using RoboBackupStudio.Core;
 namespace RoboBackupStudio.ViewModels
 {
     /// <summary>
-    /// RoboBackup Studio MainViewModel (v2.17.6 - High Performance Robocopy GUI & C# WPF Suite)
+    /// RoboBackup Studio MainViewModel (v2.18.1 - High Performance Robocopy GUI & C# WPF Suite)
     /// Developer: AhBiYout (ahbiyoutvibe.blogspot.com)
     /// </summary>
     public class MainViewModel : ViewModelBase
@@ -401,6 +401,7 @@ namespace RoboBackupStudio.ViewModels
             ToggleSummaryReportCommand = new RelayCommand(_ => IsSummaryExpanded = !IsSummaryExpanded);
             CloseSummaryReportCommand = new RelayCommand(_ => HasSummaryReport = false);
             CopySummaryReportCommand = new RelayCommand(_ => CopySummaryReportToClipboard());
+            DownloadReportCommand = new RelayCommand(_ => DownloadSummaryReportToFile());
             OpenSummaryHudCommand = new RelayCommand(_ => OpenSummaryHud());
             CopyCommandTextCommand = new RelayCommand(_ => CopyCommandToClipboard());
             ApplyPresetCommand = new RelayCommand(param => ApplyPreset(param?.ToString() ?? ""));
@@ -2855,6 +2856,7 @@ namespace RoboBackupStudio.ViewModels
         public ICommand ToggleSummaryReportCommand { get; }
         public ICommand CloseSummaryReportCommand { get; }
         public ICommand CopySummaryReportCommand { get; }
+        public ICommand DownloadReportCommand { get; }
         public ICommand OpenSummaryHudCommand { get; }
         public ICommand CopyCommandTextCommand { get; }
         public ICommand ApplyPresetCommand { get; }
@@ -4232,6 +4234,49 @@ namespace RoboBackupStudio.ViewModels
             catch (Exception ex)
             {
                 MessageBox.Show($"클립보드 복사 실패: {ex.Message}", "오류", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void DownloadSummaryReportToFile()
+        {
+            if (SummaryReport == null) return;
+
+            try
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine(SummaryReport.GetFormattedReportText());
+                sb.AppendLine("[애플리케이션 정보]");
+                sb.AppendLine($"제품명: RoboBackup Studio {CurrentAppVersion}");
+                sb.AppendLine("개발자: AhBiYout (ahbiyoutvibe.blogspot.com)");
+                sb.AppendLine();
+                sb.AppendLine("[백업 작업 상세]");
+                sb.AppendLine($"원본 경로: {SourcePath}");
+                sb.AppendLine($"대상 경로: {DestinationPath}");
+                sb.AppendLine($"실행 명령어: {RobocopyCommand}");
+                sb.AppendLine();
+                sb.AppendLine("[작업 결과]");
+                sb.AppendLine($"최종 상태: {SummaryReport.ExitCodeTitle}");
+                sb.AppendLine($"종료 코드: {SummaryReport.ExitCode}");
+                sb.AppendLine($"완료 시각: {SummaryReport.EndedTime}");
+                sb.AppendLine("===============================================================================");
+                sb.AppendLine("본 리포트는 RoboBackup Studio에 의해 자동 생성되었습니다.");
+
+                var sfd = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "텍스트 파일 (*.txt)|*.txt|모든 파일 (*.*)|*.*",
+                    FileName = $"RoboBackup_Report_{DateTime.Now:yyyyMMdd_HHmmss}.txt",
+                    Title = "백업 상세 리포트 저장"
+                };
+
+                if (sfd.ShowDialog() == true)
+                {
+                    File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
+                    MessageBox.Show("상세 백업 리포트가 성공적으로 저장되었습니다.", "저장 완료", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"리포트 저장 중 오류가 발생했습니다: {ex.Message}", "저장 실패", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
