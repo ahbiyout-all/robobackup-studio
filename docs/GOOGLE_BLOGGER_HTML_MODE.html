@@ -1,55 +1,258 @@
-<!--
-================================================================================
-  RoboBackup Studio v2.17.9 - 구글 블로거(Blogger / Blogspot) [HTML 편집 모드] 전용 코드
-  
-  [사용 방법]
-  1. 구글 블로거(Blogger) 관리자 페이지에서 [새 글 작성]을 클릭합니다.
-  2. 에디터 좌측 상단의 연필 모양 아이콘을 클릭하여 [< > HTML 보기] 모드로 전환합니다.
-  3. 이 파일의 전체 내용을 복사하여 붙여넣고 [게시] 또는 [미리보기]를 클릭합니다.
-  4. 본 템플릿은 인라인 CSS로 완벽히 격리되어 블로거 기본 스킨의 영향을 받지 않고
-     모바일과 PC 모두에서 미려하고 현대적인 카드로 깔끔하게 렌더링됩니다.
-================================================================================
--->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .rb-container {
+            font-family: 'Segoe UI', AppleSDGothicNeo-Regular, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 850px;
+            margin: 0 auto;
+            border: 1px solid #e1e4e8;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+        .rb-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #fff;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .rb-version-badge {
+            background-color: #3b82f6;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        .rb-header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            letter-spacing: -1px;
+        }
+        .rb-header p {
+            opacity: 0.8;
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+        .rb-content {
+            padding: 30px;
+        }
+        .rb-section-title {
+            border-left: 5px solid #3b82f6;
+            padding-left: 15px;
+            margin: 40px 0 20px;
+            font-size: 1.5em;
+            color: #0f172a;
+        }
+        .rb-feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 600px) {
+            .rb-feature-grid { grid-template-columns: 1fr; }
+        }
+        .rb-feature-card {
+            background-color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .rb-feature-card strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #2563eb;
+        }
+        .rb-update-box {
+            background-color: #eff6ff;
+            border: 1px dashed #3b82f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .rb-image-placeholder {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 20px 0;
+            background-color: #0f172a;
+            display: block;
+        }
+        .rb-cta-group {
+            text-align: center;
+            margin: 40px 0;
+        }
+        .rb-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s;
+            margin: 5px;
+        }
+        .rb-btn-primary {
+            background-color: #2563eb;
+            color: #fff;
+        }
+        .rb-btn-secondary {
+            background-color: #475569;
+            color: #fff;
+        }
+        .rb-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .rb-info-table th, .rb-info-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+        .rb-info-table th { background-color: #f8fafc; width: 30%; }
+        .rb-history-list {
+            list-style: none;
+            padding: 0;
+        }
+        .rb-history-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: flex-start;
+        }
+        .rb-history-tag {
+            background-color: #e2e8f0;
+            font-size: 0.8em;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 12px;
+            white-space: nowrap;
+            margin-top: 3px;
+        }
+        .rb-tags {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #64748b;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
 
-<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', Helvetica, Arial, sans-serif; line-height: 1.7; color: #2d3748; max-width: 860px; margin: 0 auto; padding: 12px;">
-
-  <!-- Hero Header Card -->
-  <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #ffffff; border-radius: 16px; padding: 36px 28px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2); margin-bottom: 32px; border: 1px solid #334155;">
-    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;">
-      <span style="background-color: #3b82f6; color: #ffffff; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.5px;">v2.17.9 공식 배포</span>
-      <span style="background-color: #e11d48; color: #ffffff; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">실시간 오류 알림 탑재</span>
+<div class="rb-container">
+    <!-- Header -->
+    <div class="rb-header">
+        <span class="rb-version-badge">v2.17.9 STABLE</span>
+        <h1>RoboBackup Studio</h1>
+        <p>Windows 최강 성능 Robocopy GUI & C# WPF 자동 생성 솔루션</p>
     </div>
-    <h1 style="font-size: 32px; font-weight: 800; margin: 0 0 12px 0; line-height: 1.2; letter-spacing: -0.025em;">RoboBackup Studio</h1>
-    <p style="font-size: 18px; color: #94a3b8; margin: 0; font-weight: 500;">고성능 Robocopy GUI & 스케줄러 오류 감지 엔진</p>
-  </div>
 
-  <!-- Feature Grid -->
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 32px;">
-    
-    <!-- Feature 1: Error Detection -->
-    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-      <div style="font-size: 24px; margin-bottom: 12px;">🛡️</div>
-      <h3 style="font-size: 18px; font-weight: 700; margin: 0 0 8px 0; color: #0f172a;">실시간 오류 감지 시스템</h3>
-      <p style="font-size: 14px; color: #64748b; margin: 0;">스케줄러 실행 결과를 초 단위로 분석하여 비정상 종료 시 즉시 경고 알림을 전송합니다.</p>
+    <div class="rb-content">
+        <!-- Body Intro -->
+        <p>복잡한 Robocopy 명령어를 단 한 번의 클릭으로! 전문가급 백업 인프라를 구축하고 실제 작동하는 C# WPF 소스 코드까지 얻을 수 있는 유일한 도구, <strong>RoboBackup Studio</strong>를 소개합니다.</p>
+        
+        <div class="rb-feature-grid">
+            <div class="rb-feature-card">
+                <strong>🚀 독보적 퍼포먼스</strong>
+                Windows 네이티브 Robocopy 엔진을 사용하여 멀티스레드 기반의 가장 빠른 복사 속도를 보장합니다.
+            </div>
+            <div class="rb-feature-card">
+                <strong>🛠️ C# 소스 생성기</strong>
+                설정한 모든 옵션과 UI 로직을 실제 Visual Studio에서 빌드 가능한 C# WPF MVVM 코드로 내보냅니다.
+            </div>
+            <div class="rb-feature-card">
+                <strong>🛡️ 무인 자동화 시스템</strong>
+                Windows 작업 스케줄러와 연동하여 백그라운드 무인 백업 및 오래된 파일 자동 정리를 수행합니다.
+            </div>
+            <div class="rb-feature-card">
+                <strong>🔔 실시간 지능형 알림</strong>
+                트레이 백그라운드 구동 지원 및 작업 실패 시 즉시 원격/로컬 알림을 통해 데이터 안전을 지킵니다.
+            </div>
+        </div>
+
+        <!-- Recent Updates -->
+        <h2 class="rb-section-title">📢 최신 업데이트 (v2.17.9)</h2>
+        <div class="rb-update-box">
+            <ul style="margin: 0; padding-left: 20px;">
+                <li><strong>문서 체계 전면 동기화:</strong> 최신 스케줄러 및 오류 알림 기능 기술 문서 반영</li>
+                <li><strong>시스템 안정성 강화:</strong> 18개 핵심 설정 파일 버전 일괄 정합성 검수 완료</li>
+                <li><strong>C# 템플릿 최신화:</strong> 소스 생성기 내 실시간 오류 감지 로직 안정화 버전 반영</li>
+            </ul>
+        </div>
+
+        <!-- App Image -->
+        <h2 class="rb-section-title">📸 실행 화면</h2>
+        <img src="https://raw.githubusercontent.com/AhBiYout-all/robobackup-studio/main/assets/logo.png" alt="RoboBackup Studio UI" class="rb-image-placeholder">
+
+        <!-- Download -->
+        <h2 class="rb-section-title">📥 공식 다운로드</h2>
+        <div class="rb-cta-group">
+            <a href="https://github.com/AhBiYout-all/robobackup-studio/releases/latest" class="rb-btn rb-btn-primary">GitHub 공식 다운로드</a>
+            <a href="https://ahbiyoutvibe.blogspot.com/" class="rb-btn rb-btn-secondary">공식 블로그 방문</a>
+        </div>
+
+        <!-- Version Info -->
+        <h2 class="rb-section-title">📊 버전 정보</h2>
+        <table class="rb-info-table">
+            <tr><th>제품명</th><td>RoboBackup Studio</td></tr>
+            <tr><th>현재 버전</th><td>v2.17.9 Stable</td></tr>
+            <tr><th>출시일</th><td>2026-10-30</td></tr>
+            <tr><th>개발자</th><td>AhBiYout</td></tr>
+        </table>
+
+        <!-- System Requirements -->
+        <h2 class="rb-section-title">💻 시스템 요구 사항</h2>
+        <ul style="padding-left: 20px;">
+            <li>운영체제: Windows 10, 11 (64비트 전용) / Windows Server 2016 이상</li>
+            <li>런타임: .NET 10.0 (설치 시 자동 구성)</li>
+            <li>권한: 관리자 권한 (schtasks 및 Robocopy 권한 확보용)</li>
+        </ul>
+
+        <!-- Producer/Official Channels -->
+        <h2 class="rb-section-title">🔗 공식 채널</h2>
+        <p>문의사항이나 기술 지원은 아래 채널을 이용해 주세요.</p>
+        <ul style="padding-left: 20px;">
+            <li><strong>Official Blog:</strong> <a href="https://ahbiyoutvibe.blogspot.com/">ahbiyoutvibe.blogspot.com</a></li>
+            <li><strong>GitHub:</strong> <a href="https://github.com/AhBiYout-all/robobackup-studio">AhBiYout-all/robobackup-studio</a></li>
+        </ul>
+
+        <!-- Full Update History -->
+        <h2 class="rb-section-title">📜 전체 업데이트 기록 (주요 기능)</h2>
+        <div class="rb-history-list">
+            <div class="rb-history-item"><span class="rb-history-tag">v2.17.8</span> 실시간 작업 스케줄러 오류 감지 및 로즈 테마 알림 시스템</div>
+            <div class="rb-history-item"><span class="rb-history-tag">v2.17.7</span> 자동정리 스케줄러 고도화 (DAILY, WEEKLY, MONTHLY 등 트리거 확장)</div>
+            <div class="rb-history-item"><span class="rb-history-tag">v2.17.0</span> 시스템 트레이 백그라운드 구동 및 풍선 알림 탑재</div>
+            <div class="rb-history-item"><span class="rb-history-tag">v2.16.9</span> 실시간 자동 업데이트 팝업 및 업데이트 센터 구축</div>
+            <div class="rb-history-item"><span class="rb-history-tag">v2.15.0</span> 엔터프라이즈급 재귀 디렉터리 크롤러(RoboDirectoryCrawler) 탑재</div>
+            <div class="rb-history-item"><span class="rb-history-tag">v2.13.0</span> 실시간 전송 속도 및 ETA(예상 남은 시간) 계산 HUD</div>
+            <div class="rb-history-item"><span class="rb-history-tag">v2.12.0</span> 초보자를 위한 5단계 이지 백업 마법사(Easy Wizard)</div>
+            <div class="rb-history-item"><span class="rb-history-tag">v2.11.0</span> 엘리트 멀티 테마 시스템 (다크/아이보리/그레이/베이지)</div>
+            <div class="rb-history-item"><span class="rb-history-tag">v2.10.0</span> VSS (Volume Shadow Copy) 잠긴 파일 스냅샷 백업 지원</div>
+            <div class="rb-history-item"><span class="rb-history-tag">v2.7.0</span> 5대 핵심 DLL 스위트 (Diff, VSS, SyncWatch, Vault, TimeMachine)</div>
+            <div class="rb-history-item"><span class="rb-history-tag">v2.0.0</span> Dual Mode 지원 (Portable GUI vs Windows Service 정식 모드)</div>
+            <div class="rb-history-item"><span class="rb-history-tag">v1.7.0</span> 접이식 고급 옵션 구조화 및 프리셋 UI 대개편</div>
+            <div class="rb-history-item"><span class="rb-history-tag">v1.4.0</span> NAS/네트워크 공유 경로 자격 증명(로그인 인증) 모듈</div>
+            <div class="rb-history-item"><span class="rb-history-tag">v1.3.0</span> 오래된 파일 자동 정리 전용 작업 스케줄러 추가</div>
+            <div class="rb-history-item"><span class="rb-history-tag">v1.0.0</span> RoboBackup Studio 최초 출시 (Core 엔진 및 C# 생성기)</div>
+        </div>
+
+        <!-- Tags -->
+        <div class="rb-tags">
+            <strong>라벨(태그):</strong> RoboBackup, RobocopyGUI, WindowsBackup, BackupSoftware, CsharpWPF, OpenSource, 백업프로그램, 윈도우백업, 로보카피, 무료백업, 데이터복사, AhBiYout, 로보백업스튜디오, SaaS, Utility, Automation, ITAdmin, TechTools
+        </div>
     </div>
-
-    <!-- Feature 2: Wizard -->
-    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-      <div style="font-size: 24px; margin-bottom: 12px;">🧙‍♂️</div>
-      <h3 style="font-size: 18px; font-weight: 700; margin: 0 0 8px 0; color: #0f172a;">5단계 백업 마법사</h3>
-      <p style="font-size: 14px; color: #64748b; margin: 0;">복잡한 Robocopy 옵션 몰라도 OK! 마법사가 안내하는 대로 따라가면 최적의 백업이 완료됩니다.</p>
-    </div>
-
-  </div>
-
-  <!-- Download Section -->
-  <div style="background: #f8fafc; border-radius: 16px; padding: 32px; text-align: center; border: 1px dashed #cbd5e1;">
-    <h2 style="font-size: 20px; font-weight: 700; margin: 0 0 16px 0; color: #0f172a;">지금 바로 무료로 사용해 보세요</h2>
-    <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
-      <a href="https://github.com/AhBiYout-all/robobackup-studio" style="background-color: #1e293b; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 15px;">GitHub에서 보기</a>
-      <a href="https://ahbiyoutvibe.blogspot.com/" style="background-color: #ffffff; color: #1e293b; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 15px; border: 1px solid #e2e8f0;">개발자 블로그 방문</a>
-    </div>
-    <p style="font-size: 12px; color: #94a3b8; margin-top: 20px;">* Windows 10/11 및 .NET 8 환경에 최적화되어 있습니다.</p>
-  </div>
-
 </div>
+
+</body>
+</html>
