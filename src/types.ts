@@ -152,6 +152,35 @@ export interface BackupJob {
   realFiles?: ScannedFileInfo[];
   scannedAt?: string;
   failedCount?: number;
+  telemetryHistory?: TelemetryDataPoint[];
+  runHistory?: BackupRunHistoryItem[];
+}
+
+export interface TelemetryDataPoint {
+  id?: string;
+  timestamp: string; // e.g. "14:02:15" or "10s"
+  elapsedSeconds: number;
+  speedMbps: number; // Speed in Mega-bits per second (Mbps)
+  speedMBs: number;  // Speed in Mega-bytes per second (MB/s)
+  copiedFiles: number; // Cumulative files processed
+  totalFiles: number;
+  copiedBytes: number;
+  activeThreads?: number;
+}
+
+export interface BackupRunHistoryItem {
+  id: string;
+  runDate: string;
+  jobName: string;
+  durationSeconds: number;
+  totalFiles: number;
+  copiedFiles: number;
+  totalBytes: number;
+  copiedBytes: number;
+  avgSpeedMbps: number;
+  peakSpeedMbps: number;
+  status: 'success' | 'failed' | 'partial';
+  telemetry: TelemetryDataPoint[];
 }
 
 export interface PresetProfile {

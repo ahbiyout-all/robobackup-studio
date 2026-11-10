@@ -32,7 +32,7 @@ import {
   Clock,
   Timer
 } from 'lucide-react';
-import { BackupJob, RobocopyLogEntry, LogLevel, ScannedFileInfo } from '../types';
+import { BackupJob, RobocopyLogEntry, LogLevel, ScannedFileInfo, TelemetryDataPoint, BackupRunHistoryItem } from '../types';
 import { buildRobocopyCommand, evaluateFileExclusions } from '../utils/robocopy';
 
 /**
@@ -216,6 +216,7 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
   const sequenceNumRef = useRef<number>(0);
   const copiedDirsRef = useRef<number>(0);
   const visitedDirsRef = useRef<Set<string>>(new Set());
+  const telemetryHistoryRef = useRef<TelemetryDataPoint[]>([]);
 
   const command = buildRobocopyCommand(currentJob.sourcePath, currentJob.targetPath, currentJob.flags);
 
@@ -393,6 +394,39 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
         setEstimatedRemainingText('0초 (동기화 완료)');
         setEstimatedRemainingSeconds(0);
 
+        const finalSpeedMbps = Math.round(speedMbPerSec * 8);
+        const peakSpeedMbps = telemetryHistoryRef.current.length > 0 
+          ? Math.max(...telemetryHistoryRef.current.map(p => p.speedMbps), finalSpeedMbps)
+          : finalSpeedMbps;
+
+        // Ensure final telemetry point exists
+        const finalSec = Math.max(1, Math.round(elapsedSec));
+        telemetryHistoryRef.current.push({
+          timestamp: `${finalSec}초`,
+          elapsedSeconds: finalSec,
+          speedMbps: finalSpeedMbps,
+          speedMBs: speedMbPerSec,
+          copiedFiles: effectiveTotalFiles,
+          totalFiles: effectiveTotalFiles,
+          copiedBytes: effectiveTotalBytes,
+          activeThreads: currentJob.flags.threads || 16,
+        });
+
+        const newHistoryItem: BackupRunHistoryItem = {
+          id: `run-${Date.now()}`,
+          runDate: new Date().toLocaleString(),
+          jobName: currentJob.name || '중요 문서 고속 미러 백업',
+          durationSeconds: finalSec,
+          totalFiles: effectiveTotalFiles,
+          copiedFiles: effectiveTotalFiles,
+          totalBytes: effectiveTotalBytes,
+          copiedBytes: effectiveTotalBytes,
+          avgSpeedMbps: finalSpeedMbps,
+          peakSpeedMbps,
+          status: 'success',
+          telemetry: [...telemetryHistoryRef.current],
+        };
+
         setCurrentJob((prev) => ({
           ...prev,
           status: 'completed',
@@ -408,6 +442,8 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
           lastRunStatus: 'success',
           lastRun: new Date().toLocaleString(),
           logEntries: [...prev.logEntries, summaryHeader],
+          telemetryHistory: [...telemetryHistoryRef.current],
+          runHistory: [newHistoryItem, ...(prev.runHistory || [])],
         }));
         return;
       }
@@ -470,8 +506,23 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
       setEstimatedRemainingText(eta.formatted);
       setEstimatedRemainingSeconds(eta.seconds);
 
-      if (!autoScroll) {
-        setUnreadNewLogs((prev) => prev + newEntries.length);
+      // Record periodic telemetry point
+      const speedMbps = Math.round(currentSpeed * 8);
+      const elapsedRound = Math.max(0, Math.round(elapsedSec));
+      if (
+        telemetryHistoryRef.current.length === 0 ||
+        telemetryHistoryRef.current[telemetryHistoryRef.current.length - 1].elapsedSeconds !== elapsedRound
+      ) {
+        telemetryHistoryRef.current.push({
+          timestamp: `${elapsedRound}초`,
+          elapsedSeconds: elapsedRound,
+          speedMbps,
+          speedMBs: currentSpeed,
+          copiedFiles: fileIndexRef.current,
+          totalFiles: effectiveTotalFiles,
+          copiedBytes: accumulatedBytesRef.current,
+          activeThreads: currentJob.flags.threads || 16,
+        });
       }
 
       setCurrentJob((prev) => ({
@@ -486,6 +537,7 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
         estimatedRemainingSeconds: eta.seconds,
         estimatedRemainingTimeFormatted: eta.formatted,
         logEntries: [...prev.logEntries, ...newEntries],
+        telemetryHistory: [...telemetryHistoryRef.current],
       }));
     }, 200);
   };
@@ -614,6 +666,19 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
     setEstimatedRemainingText('계산 중...');
     setEstimatedRemainingSeconds(0);
 
+    telemetryHistoryRef.current = [
+      {
+        timestamp: '0초',
+        elapsedSeconds: 0,
+        speedMbps: 0,
+        speedMBs: 0,
+        copiedFiles: 0,
+        totalFiles: effectiveTotalFiles,
+        copiedBytes: 0,
+        activeThreads: currentJob.flags.threads || 16,
+      },
+    ];
+
     setCurrentJob((prev) => ({
       ...prev,
       status: 'running',
@@ -630,6 +695,7 @@ export const LiveRunner: React.FC<LiveRunnerProps> = ({ currentJob, setCurrentJo
       estimatedRemainingTimeFormatted: '계산 중...',
       failedCount: 0,
       logEntries: initialLogs,
+      telemetryHistory: [...telemetryHistoryRef.current],
     }));
 
     startIntervalLoop();

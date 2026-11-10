@@ -30,13 +30,13 @@ Windows **Robocopy** 전용 GUI 백업 관리자 및 **C# WPF (MVVM)** 프로젝
    - Win32 P/Invoke, VSS 볼륨 스냅샷, 적응형 디바운스 큐, DPAPI 제로-로그인 보안 볼트, NTFS 하드링크 90% 절약 타임머신 동작 원리 총망라
 
 7. [패치 및 릴리즈 노트](./PATCH_NOTES.md)
-   - 프로젝트 버전별 업데이트 내역 (v1.0.0 ~ v2.18.1) 및 기능 변경 이력
+   - 프로젝트 버전별 업데이트 내역 (v1.0.0 ~ v2.19.0) 및 기능 변경 이력
 
 8. [오픈소스 라이선스 고지](./THIRD_PARTY_LICENSES.md)
    - MIT, Lucide Icons, OS 내장 유틸리티 및 개발자 정보
 
 9. **영문 자동 빌드 스크립트 (`build.bat`)**
-   - `docs/PATCH_NOTES.md` 내 최신 버전 태그(예: `v2.18.1`)를 파싱하여 `RoboBackupStudio_v2.18.1.exe` 및 Inno Setup 설치 파일 자동 컴파일 및 패키징
+   - `docs/PATCH_NOTES.md` 내 최신 버전 태그(예: `v2.19.0`)를 파싱하여 `RoboBackupStudio_v2.19.0.exe` 및 Inno Setup 설치 파일 자동 컴파일 및 패키징
 
 10. [구글 블로거 포스팅 가이드 - 작성 모드 (서식 있는 텍스트)](./GOOGLE_BLOGGER_COMPOSE_MODE.md)
     - 구글 블로거(Blogger / Blogspot) 시각적 편집기(작성 모드)에 바로 복사하여 붙여넣을 수 있는 마크다운 및 서식 문서

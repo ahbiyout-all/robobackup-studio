@@ -5,10 +5,12 @@ import { LiveRunner } from './components/LiveRunner';
 import { TaskScheduler } from './components/TaskScheduler';
 import { AutoCleanup } from './components/AutoCleanup';
 import { CoreDllStudio } from './components/CoreDllStudio';
+import { PerformanceAnalytics } from './components/PerformanceAnalytics';
 import { HelpAndLicense } from './components/HelpAndLicense';
 import { EasyBackupWizardModal } from './components/EasyBackupWizardModal';
 import { BackupJob } from './types';
 import { DEFAULT_FLAGS } from './utils/robocopy';
+import { getDefaultRunHistory } from './utils/telemetryHelper';
 import { THEMES, ThemeId } from './themes';
 
 export default function App() {
@@ -76,6 +78,7 @@ export default function App() {
     currentSpeedMbps: 0,
     progressPercent: 0,
     logEntries: [],
+    runHistory: getDefaultRunHistory(),
   });
 
   const handleStartJobFromDesigner = () => {
@@ -115,6 +118,13 @@ export default function App() {
 
         {activeTab === 'runner' && (
           <LiveRunner
+            currentJob={currentJob}
+            setCurrentJob={setCurrentJob}
+          />
+        )}
+
+        {activeTab === 'analytics' && (
+          <PerformanceAnalytics
             currentJob={currentJob}
             setCurrentJob={setCurrentJob}
           />
@@ -176,7 +186,7 @@ export default function App() {
             </a>
           </div>
           <div className="flex items-center space-x-3 shrink-0">
-            <span className="font-mono text-xs text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700/60 font-semibold">v2.18.1</span>
+            <span className="font-mono text-xs text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700/60 font-semibold">v2.19.0</span>
           </div>
         </div>
       </footer>

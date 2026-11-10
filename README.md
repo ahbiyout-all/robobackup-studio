@@ -1,4 +1,4 @@
-# 🚀 RoboBackup Studio (v2.18.1)
+# 🚀 RoboBackup Studio (v2.19.0)
 
 > **High-Performance Robocopy GUI, Real-time Monitor, Scheduler & C# WPF MVVM Generator**  
 > **개발자**: AhBiYout | **공식 블로그**: [ahbiyoutvibe.blogspot.com](https://ahbiyoutvibe.blogspot.com/) | **GitHub**: [github.com/AhBiYout-all](https://github.com/AhBiYout-all)
@@ -25,19 +25,21 @@ RoboBackup Studio 오픈소스 프로젝트는 개인 및 기업 사용자를 �
 
 1. **⚡ 초고속 Robocopy 멀티스레드 병렬 백업 엔진**:
    - `/MIR` (1:1 미러링), `/E` (하위 폴더 복사), `/MT:16` (16병렬 스레드), `/ZB` (권한 우회 백업) 완벽 제어.
-2. **🌳 엔터프라이즈급 재귀 디렉터리 크롤러 (`RoboDirectoryCrawler`)**:
+2. **📈 Recharts 기반 실시간 성능 분석 센터 (Performance Analytics)**:
+   - 전송 속도(Mbps / MB/s) 및 처리 파일 수 시계열 추이 실시간 시각화, 과거 실행 이력 비교, 6대 KPI 분석, CSV/JSON 텔레메트리 내보내기.
+3. **🌳 엔터프라이즈급 재귀 디렉터리 크롤러 (`RoboDirectoryCrawler`)**:
    - BFS 비동기 큐 기반으로 윈도우 깊은 트리, 권한 보호 폴더(`System Volume Information`, `$RECYCLE.BIN`), 정션(Junction) 예외 없이 정밀 사전 집계.
-3. **🔄 GitHub Releases 실시간 라이브 자동 업데이트 센터**:
+4. **🔄 GitHub Releases 실시간 라이브 자동 업데이트 센터**:
    - GitHub API 연동으로 새 릴리스 인스톨러(`Setup.exe`) 출시 시 푸시 알림 및 원클릭 자동 업데이트.
-4. **🧙‍♂️ 초보자 안심 백업 마법사 (5단계 가이드)**:
+5. **🧙‍♂️ 초보자 안심 백업 마법사 (5단계 가이드)**:
    - USB/외장하드, NAS, 1:1 미러링, 누적 보관 등 목적별 최적 옵션 자동 세팅.
-5. **🧩 순수 C# 5대 네이티브 코어 모듈 (Core DLL Suite)**:
+6. **🧩 순수 C# 5대 네이티브 코어 모듈 (Core DLL Suite)**:
    - **RoboDiffEngine**: 1초 만에 소스-타깃 차이 사전 스캔.
    - **RoboVssProvider**: VSS 볼륨 섀도 복사본 스냅샷으로 열려 있는 파일 백업.
    - **RoboSyncWatch**: FileSystemWatcher 기반 파일 변경 실시간 자동 동기화.
    - **RoboVault**: Windows DPAPI 기반 NAS/네트워크 암호화 자격 증명 관리.
    - **RoboTimeMachine**: 타임머신 스냅샷 복원 포인트 관리.
-6. **📅 Windows 작업 스케줄러 & 서비스 무인 자동화**:
+7. **📅 Windows 작업 스케줄러 & 서비스 무인 자동화**:
    - 매일/매주 자동 백업 및 지정 기간/용량 초과 오래된 파일 자동 정기 삭제.
 
 ---

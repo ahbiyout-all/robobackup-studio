@@ -7,7 +7,8 @@ import {
   Scale, 
   Palette,
   Layers,
-  Sparkles
+  Sparkles,
+  TrendingUp
 } from 'lucide-react';
 import { ThemeId, THEMES, THEME_LIST } from '../themes';
 import appLogo from '../assets/robocopy.png';
@@ -33,6 +34,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const navItems = [
     { id: 'designer', label: '백업 작업 설정', icon: FolderSync },
     { id: 'runner', label: '실시간 실행 & 로그', icon: Terminal },
+    { id: 'analytics', label: '성능 분석', icon: TrendingUp },
     { id: 'scheduler', label: '예약 백업 관리', icon: Calendar },
     { id: 'cleanup', label: '오래된 파일 자동정리', icon: Trash2 },
     { id: 'core_dlls', label: '코어 DLL 스튜디오', icon: Layers },
@@ -57,7 +59,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="flex items-center space-x-2">
                 <span className="font-bold text-lg tracking-tight text-white">RoboBackup</span>
                 <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-semibold border border-blue-500/30">Studio</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/30 font-mono">v2.18.1</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/30 font-mono">v2.19.0</span>
               </div>
               <p className="text-xs text-slate-400 hidden sm:block">초고속 파일 백업 &amp; 동기화 관리 시스템</p>
             </div>

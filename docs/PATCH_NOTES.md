@@ -1,5 +1,28 @@
 # RoboBackup Studio 패치 & 릴리즈 노트 (Patch Notes)
 
+## 📌 [v2.19.0] - 2026-11-01
+### 📈 Recharts 기반 실시간 성능 분석(Performance Analytics) 센터 신규 탑재 & C# WPF 100% 듀얼 동기화
+1. **Recharts 시계열 차트 시각화 엔진 통합**:
+   - 백업 작업 실행 중 실시간 전송 속도(Mbps / MB/s) 및 처리된 누적 파일 수의 시계열 추이를 Recharts `ComposedChart`, `AreaChart`, `BarChart`로 직관적 시각화.
+   - 4가지 전문 뷰 모드 지원:
+     * **종합 대시보드 (Combined Dashboard)**: 듀얼 Y축(좌측 Mbps 영역 차트, 우측 처리 파일 수 라인 차트) 동시 추적.
+     * **전송 속도 집중 (Speed Mbps)**: 평균 및 최고 속도 ReferenceLine 기준선 오버레이와 전송 대역폭 분석.
+     * **처리 파일 추이 (Files Processed)**: 파일 카운트 누적 증가율 시각화.
+     * **과거 실행 이력 비교 (Historical Runs)**: 과거 백업 세션 간 평균 속도, 피크 속도, 처리 파일 수 비교 막대 차트.
+2. **작업 상태(Job State) 텔레메트리 히스토리 영구 보관**:
+   - `currentJob.telemetryHistory` 및 `currentJob.runHistory`에 실시간 실행 텔레메트리 포인트와 과거 백업 세션 기록 자동 보존.
+   - 라이브 실행기(`LiveRunner`)와 연동되어 실행 틱마다 초 단위 전송 속도, 복사 파일 수, 전송 바이트, 활성 스레드 카운트 자동 기록.
+3. **6대 핵심 성능 메트릭 KPI 카드 & 기가비트 대역폭 게이지**:
+   - 최고 전송 속도(Peak Speed), 평균 속도(Average Speed), 복사 완료 파일 수, 총 전송 용량, 소요 시간, 다중 스레드(MT16) 선로 대역폭 점유율(1000 Mbps 기준) 실시간 산출.
+   - 원시 텔레메트리 데이터 CSV 및 JSON 파일 즉시 내보내기/다운로드 기능 탑재.
+4. **🚨 C# WPF MVVM 데스크탑 100% 완전 동기화 (Desktop-First Dual Sync)**:
+   - `MainWindow.xaml`: `TabItem Header="📈 성능 분석 (Analytics)"` 신규 탭 추가, 6대 KPI 카드, 기가비트 대역폭 프로그레스바, 과거 실행 목록 및 시계열 텔레메트리 `DataGrid` 완벽 구현.
+   - `ViewModels/MainViewModel.cs`: `BackupTelemetryPoint`, `BackupRunHistoryItemModel` 모델 구축, 벤치마크 생성 및 CSV/JSON 내보내기 커맨드(`GenerateSampleTelemetryCommand`, `ExportTelemetryCsvCommand`, `ExportTelemetryJsonCommand`) 100% 동기화.
+5. **버전 메타데이터 일괄 동기화 (v2.19.0)**:
+   - `RoboBackupStudio.csproj`, `build.bat`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `package.json`, `App.tsx`, `Navbar.tsx`, `AutoUpdateModal.tsx`, `HelpAndLicense.tsx` 일괄 갱신.
+
+---
+
 ## 📌 [v2.18.1] - 2026-11-01
 ### 📊 백업 상세 리포트(.txt) 생성 및 다운로드 기능 탑재
 1. **텍스트 기반 상세 리포트 생성 엔진 구축**:

@@ -153,7 +153,7 @@
 <div class="rb-container">
     <!-- Header -->
     <div class="rb-header">
-        <span class="rb-version-badge">v2.18.1 STABLE</span>
+        <span class="rb-version-badge">v2.19.0 STABLE</span>
         <h1>RoboBackup Studio</h1>
         <p>Windows 최강 성능 Robocopy GUI & C# WPF 자동 생성 솔루션</p>
     </div>
@@ -168,6 +168,10 @@
                 Windows 네이티브 Robocopy 엔진을 사용하여 멀티스레드 기반의 가장 빠른 복사 속도를 보장합니다.
             </div>
             <div class="rb-feature-card">
+                <strong>📈 성능 분석 센터 (Recharts)</strong>
+                전송 속도(Mbps) 및 처리 파일 수의 시계열 추이를 차트로 정밀 시각화하고 과거 세션을 비교합니다.
+            </div>
+            <div class="rb-feature-card">
                 <strong>🛠️ C# 소스 생성기</strong>
                 설정한 모든 옵션과 UI 로직을 실제 Visual Studio에서 빌드 가능한 C# WPF MVVM 코드로 내보냅니다.
             </div>
@@ -179,15 +183,20 @@
                 <strong>🔔 실시간 지능형 알림</strong>
                 트레이 백그라운드 구동 지원 및 작업 실패 시 즉시 원격/로컬 알림을 통해 데이터 안전을 지킵니다.
             </div>
+            <div class="rb-feature-card">
+                <strong>📑 텔레메트리 리포트</strong>
+                백업 상세 분석 텍스트 리포트(.txt) 및 CSV/JSON 텔레메트리 데이터를 원클릭으로 다운로드합니다.
+            </div>
         </div>
 
         <!-- Recent Updates -->
-        <h2 class="rb-section-title">📢 최신 업데이트 (v2.18.1)</h2>
+        <h2 class="rb-section-title">📢 최신 업데이트 (v2.19.0)</h2>
         <div class="rb-update-box">
             <ul style="margin: 0; padding-left: 20px;">
-                <li><strong>문서 체계 전면 동기화:</strong> 최신 스케줄러 및 오류 알림 기능 기술 문서 반영</li>
-                <li><strong>시스템 안정성 강화:</strong> 18개 핵심 설정 파일 버전 일괄 정합성 검수 완료</li>
-                <li><strong>C# 템플릿 최신화:</strong> 소스 생성기 내 실시간 오류 감지 로직 안정화 버전 반영</li>
+                <li><strong>Recharts 성능 분석 센터 신설:</strong> 실시간 전송 속도(Mbps / MB/s) 및 누적 처리 파일 수의 시계열 차트 시각화</li>
+                <li><strong>과거 백업 실행 이력 비교:</strong> 과거 백업 세션 간 평균 속도, 피크 속도, 처리 파일 수 비교 차트 및 텔레메트리 보존</li>
+                <li><strong>텔레메트리 데이터 CSV/JSON 내보내기:</strong> 원시 성능 측정 데이터를 엑셀 및 JSON 파일로 즉시 다운로드</li>
+                <li><strong>C# WPF 데스크탑 100% 동기화:</strong> MainWindow.xaml 및 MainViewModel.cs에 성능 분석 탭과 DataGrid 완벽 구현</li>
             </ul>
         </div>
 
@@ -206,7 +215,7 @@
         <h2 class="rb-section-title">📊 버전 정보</h2>
         <table class="rb-info-table">
             <tr><th>제품명</th><td>RoboBackup Studio</td></tr>
-            <tr><th>현재 버전</th><td>v2.18.1 Stable</td></tr>
+            <tr><th>현재 버전</th><td>v2.19.0 Stable</td></tr>
             <tr><th>출시일</th><td>2026-11-01</td></tr>
             <tr><th>개발자</th><td>AhBiYout</td></tr>
         </table>
@@ -215,7 +224,7 @@
         <h2 class="rb-section-title">💻 시스템 요구 사항</h2>
         <ul style="padding-left: 20px;">
             <li>운영체제: Windows 10, 11 (64비트 전용) / Windows Server 2016 이상</li>
-            <li>런타임: .NET 10.0 (설치 시 자동 구성)</li>
+            <li>런타임: .NET 8.0 / .NET 10.0 (설치 시 자동 구성)</li>
             <li>권한: 관리자 권한 (schtasks 및 Robocopy 권한 확보용)</li>
         </ul>
 
@@ -230,6 +239,8 @@
         <!-- Full Update History -->
         <h2 class="rb-section-title">📜 전체 업데이트 기록 (주요 기능)</h2>
         <div class="rb-history-list">
+            <div class="rb-history-item"><span class="rb-history-tag">v2.19.0</span> Recharts 기반 실시간 성능 분석(Performance Analytics) 센터 신설 및 텔레메트리 히스토리 보관</div>
+            <div class="rb-history-item"><span class="rb-history-tag">v2.18.1</span> 백업 상세 분석 텍스트 리포트(.txt) 자동 생성 및 다운로드 기능 탑재</div>
             <div class="rb-history-item"><span class="rb-history-tag">v2.17.8</span> 실시간 작업 스케줄러 오류 감지 및 로즈 테마 알림 시스템</div>
             <div class="rb-history-item"><span class="rb-history-tag">v2.17.7</span> 자동정리 스케줄러 고도화 (DAILY, WEEKLY, MONTHLY 등 트리거 확장)</div>
             <div class="rb-history-item"><span class="rb-history-tag">v2.17.0</span> 시스템 트레이 백그라운드 구동 및 풍선 알림 탑재</div>

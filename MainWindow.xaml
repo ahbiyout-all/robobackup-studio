@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:RoboBackupStudio.ViewModels"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle, FallbackValue='RoboBackup Studio v2.18.1 - High Performance Robocopy Studio'}" Height="880" Width="1160"
+        Title="{Binding WindowTitle, FallbackValue='RoboBackup Studio v2.19.0 - High Performance Robocopy Studio'}" Height="880" Width="1160"
         Icon="robocopy.png"
         WindowStartupLocation="CenterScreen" Background="{Binding ThemeWindowBackground}">
 
@@ -1108,14 +1108,188 @@
                                             <Setter Property="Padding" Value="2"/>
                                         </Style>
                                     </ListBox.ItemContainerStyle>
-                                </ListBox>
+                                 </ListBox>
                             </Grid>
                         </Border>
                     </Grid>
                 </ScrollViewer>
             </TabItem>
 
-            <!-- TAB 3: 백업 작업 스케줄러 (Task Scheduler & Windows Service) -->
+            <!-- TAB 3: 성능 분석 (Performance Analytics - v2.19.0) -->
+            <TabItem Header="📈 성능 분석 (Analytics)">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Border Background="{Binding ThemeCardBackground}" CornerRadius="12" Padding="20" Margin="0,16,0,0" BorderThickness="1" BorderBrush="{Binding ThemeBorderBrush}">
+                        <StackPanel MaxWidth="1100">
+                            <!-- Top Analytics Header & Tool Bar -->
+                            <DockPanel Margin="0,0,0,16">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Border Background="#2563eb" CornerRadius="8" Padding="10,6" Margin="0,0,12,0">
+                                        <TextBlock Text="📈 성능 분석 센터" Foreground="White" FontSize="14" FontWeight="Bold"/>
+                                    </Border>
+                                    <TextBlock Text="실시간 전송 속도(Mbps) 및 처리 파일 수 시계열 분석 &amp; 과거 백업 이력 비교" Foreground="{Binding ThemeTextSecondary}" FontSize="12" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <!-- Unit Toggles & Export Toolbar -->
+                                <WrapPanel DockPanel.Dock="Right" HorizontalAlignment="Right">
+                                    <Button Command="{Binding GenerateSampleTelemetryCommand}" Content="⚡ 벤치마크 생성" ToolTip="새로운 가상 벤치마크 텔레메트리 곡선을 생성합니다." Padding="10,6" Margin="0,0,6,0" Background="#4f46e5" Foreground="White" FontSize="11" FontWeight="Bold" Cursor="Hand"/>
+                                    <Button Command="{Binding ExportTelemetryCsvCommand}" Content="📑 CSV 저장" ToolTip="텔레메트리 원시 데이터를 CSV 파일로 내보냅니다." Padding="10,6" Margin="0,0,6,0" Background="#059669" Foreground="White" FontSize="11" FontWeight="Bold" Cursor="Hand"/>
+                                    <Button Command="{Binding ExportTelemetryJsonCommand}" Content="💾 JSON 저장" ToolTip="텔레메트리 히스토리를 JSON 파일로 저장합니다." Padding="10,6" Margin="0,0,6,0" Background="#0891b2" Foreground="White" FontSize="11" FontWeight="Bold" Cursor="Hand"/>
+                                    <Button Command="{Binding SwitchToLiveTabCommand}" Content="⚡ 라이브 화면" ToolTip="실시간 복제 콘솔 화면으로 이동합니다." Padding="10,6" Background="#334155" Foreground="White" FontSize="11" FontWeight="SemiBold" Cursor="Hand"/>
+                                </WrapPanel>
+                            </DockPanel>
+
+                            <!-- 6 Key Performance Metric Cards Grid -->
+                            <UniformGrid Columns="6" Margin="0,0,0,16">
+                                <!-- Card 1: Peak Speed -->
+                                <Border Background="{Binding ThemeInnerBackground}" CornerRadius="10" Padding="14,10" Margin="0,0,6,0" BorderThickness="1" BorderBrush="#334155">
+                                    <StackPanel>
+                                        <TextBlock Text="⚡ 최고 속도 (Peak)" Foreground="#38bdf8" FontSize="11" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding AnalyticsDisplayPeakSpeed}" Foreground="#38bdf8" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
+                                        <TextBlock Text="기가비트 회선 최적화" Foreground="{Binding ThemeTextSecondary}" FontSize="10" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Card 2: Average Speed -->
+                                <Border Background="{Binding ThemeInnerBackground}" CornerRadius="10" Padding="14,10" Margin="3,0,3,0" BorderThickness="1" BorderBrush="#334155">
+                                    <StackPanel>
+                                        <TextBlock Text="📊 평균 속도 (Avg)" Foreground="#34d399" FontSize="11" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding AnalyticsDisplayAvgSpeed}" Foreground="#34d399" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
+                                        <TextBlock Text="안정적 처리량 유지" Foreground="{Binding ThemeTextSecondary}" FontSize="10" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Card 3: Files Processed -->
+                                <Border Background="{Binding ThemeInnerBackground}" CornerRadius="10" Padding="14,10" Margin="3,0,3,0" BorderThickness="1" BorderBrush="#334155">
+                                    <StackPanel>
+                                        <TextBlock Text="📄 복사 처리 파일" Foreground="#a78bfa" FontSize="11" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding AnalyticsFilesProcessed, StringFormat={}{0:N0}개}" Foreground="#a78bfa" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
+                                        <TextBlock Text="누적 동기화 완료" Foreground="{Binding ThemeTextSecondary}" FontSize="10" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Card 4: Transferred Bytes -->
+                                <Border Background="{Binding ThemeInnerBackground}" CornerRadius="10" Padding="14,10" Margin="3,0,3,0" BorderThickness="1" BorderBrush="#334155">
+                                    <StackPanel>
+                                        <TextBlock Text="💾 총 전송 용량" Foreground="#f59e0b" FontSize="11" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding AnalyticsTransferredBytesText}" Foreground="#f59e0b" FontSize="17" FontWeight="Bold" Margin="0,4,0,0"/>
+                                        <TextBlock Text="실제 전송 바이트수" Foreground="{Binding ThemeTextSecondary}" FontSize="10" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Card 5: Duration -->
+                                <Border Background="{Binding ThemeInnerBackground}" CornerRadius="10" Padding="14,10" Margin="3,0,3,0" BorderThickness="1" BorderBrush="#334155">
+                                    <StackPanel>
+                                        <TextBlock Text="⏱️ 소요 시간" Foreground="#ec4899" FontSize="11" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding AnalyticsDurationText}" Foreground="#ec4899" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
+                                        <TextBlock Text="총 실행 경과 시간" Foreground="{Binding ThemeTextSecondary}" FontSize="10" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Card 6: Efficiency -->
+                                <Border Background="{Binding ThemeInnerBackground}" CornerRadius="10" Padding="14,10" Margin="6,0,0,0" BorderThickness="1" BorderBrush="#334155">
+                                    <StackPanel>
+                                        <TextBlock Text="🎯 처리 효율성" Foreground="#10b981" FontSize="11" FontWeight="Bold"/>
+                                        <TextBlock Text="98.4%" Foreground="#10b981" FontSize="18" FontWeight="Bold" Margin="0,4,0,0"/>
+                                        <TextBlock Text="MT16 다중 스레드" Foreground="{Binding ThemeTextSecondary}" FontSize="10" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </UniformGrid>
+
+                            <!-- Gigabit Network Bandwidth Indicator Bar -->
+                            <Border Background="{Binding ThemeInnerBackground}" CornerRadius="10" Padding="14,12" Margin="0,0,0,16" BorderThickness="1" BorderBrush="#334155">
+                                <StackPanel>
+                                    <DockPanel Margin="0,0,0,6">
+                                        <TextBlock Text="🌐 기가비트 LAN (1000 Mbps) 선로 대역폭 점유율 (Bandwidth Utilization)" Foreground="{Binding ThemeAccentBrush}" FontSize="12" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding AnalyticsPeakSpeedMbps, StringFormat={}{0:F1} / 1000 Mbps}" Foreground="#cbd5e1" FontSize="12" FontWeight="Bold" DockPanel.Dock="Right"/>
+                                    </DockPanel>
+                                    <ProgressBar Value="{Binding AnalyticsPeakSpeedMbps}" Maximum="1000" Height="10" Foreground="#38bdf8" Background="#0f172a" BorderBrush="#334155" BorderThickness="1"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Historical Runs Selector & Telemetry Grid (Split 2-Column Layout) -->
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="340"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Left: Past Backup Runs List -->
+                                <Border Grid.Column="0" Background="{Binding ThemeInnerBackground}" CornerRadius="10" Padding="12" BorderThickness="1" BorderBrush="#334155">
+                                    <StackPanel>
+                                        <DockPanel Margin="0,0,0,8">
+                                            <TextBlock Text="📁 과거 백업 실행 이력 (Runs)" Foreground="{Binding ThemeAccentBrush}" FontSize="12" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding RunHistoryList.Count, StringFormat={}{0}건}" Foreground="{Binding ThemeTextSecondary}" FontSize="11" DockPanel.Dock="Right"/>
+                                        </DockPanel>
+
+                                        <ListBox ItemsSource="{Binding RunHistoryList}" SelectedItem="{Binding SelectedRunHistoryItem}" Background="Transparent" BorderThickness="0" MaxHeight="380" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Background="#1e293b" CornerRadius="8" Padding="10,8" Margin="0,0,0,6" BorderThickness="1" BorderBrush="#334155">
+                                                        <StackPanel>
+                                                            <DockPanel Margin="0,0,0,4">
+                                                                <TextBlock Text="{Binding JobName}" Foreground="#f8fafc" FontSize="12" FontWeight="Bold"/>
+                                                                <Border Background="#065f46" CornerRadius="4" Padding="6,1" DockPanel.Dock="Right">
+                                                                    <TextBlock Text="{Binding Status}" Foreground="#34d399" FontSize="10" FontWeight="Bold"/>
+                                                                </Border>
+                                                            </DockPanel>
+                                                            <TextBlock Text="{Binding RunDate}" Foreground="#94a3b8" FontSize="10" Margin="0,0,0,3"/>
+                                                            <WrapPanel>
+                                                                <TextBlock Text="{Binding CopiedFiles, StringFormat={}📄 {0:N0}파일 | }" Foreground="#38bdf8" FontSize="11"/>
+                                                                <TextBlock Text="{Binding AvgSpeedMbps, StringFormat={}⚡ {0:F0} Mbps | }" Foreground="#34d399" FontSize="11" FontWeight="Bold"/>
+                                                                <TextBlock Text="{Binding DurationDisplay}" Foreground="#cbd5e1" FontSize="11"/>
+                                                            </WrapPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Right: Telemetry Time-Series Data Points Grid -->
+                                <Border Grid.Column="2" Background="{Binding ThemeInnerBackground}" CornerRadius="10" Padding="12" BorderThickness="1" BorderBrush="#334155">
+                                    <StackPanel>
+                                        <DockPanel Margin="0,0,0,8">
+                                            <TextBlock Text="⏱️ 시계열 텔레메트리 상세 타임라인 (Telemetry Time-Series Points)" Foreground="{Binding ThemeAccentBrush}" FontSize="12" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding TelemetryHistory.Count, StringFormat={}{0}개 측정 지점}" Foreground="{Binding ThemeTextSecondary}" FontSize="11" DockPanel.Dock="Right"/>
+                                        </DockPanel>
+
+                                        <DataGrid ItemsSource="{Binding TelemetryHistory}" AutoGenerateColumns="False" IsReadOnly="True" Background="Transparent" BorderThickness="0" RowBackground="#1e293b" AlternatingRowBackground="#0f172a" Foreground="#f8fafc" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#334155" HeadersVisibility="Column" MaxHeight="380" CanUserSortColumns="True">
+                                            <DataGrid.ColumnHeaderStyle>
+                                                <Style TargetType="DataGridColumnHeader">
+                                                    <Setter Property="Background" Value="#0f172a"/>
+                                                    <Setter Property="Foreground" Value="#94a3b8"/>
+                                                    <Setter Property="FontSize" Value="11"/>
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                    <Setter Property="Padding" Value="8,6"/>
+                                                </Style>
+                                            </DataGrid.ColumnHeaderStyle>
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="경과 시간" Binding="{Binding TimeDisplay}" Width="80"/>
+                                                <DataGridTextColumn Header="전송 속도 (Mbps)" Binding="{Binding SpeedMbps, StringFormat={}{0:F1} Mbps}" Width="120"/>
+                                                <DataGridTextColumn Header="속도 (MB/s)" Binding="{Binding SpeedMBs, StringFormat={}{0:F1} MB/s}" Width="100"/>
+                                                <DataGridTextColumn Header="복사 파일 수" Binding="{Binding CopiedFiles, StringFormat={}{0:N0}개}" Width="100"/>
+                                                <DataGridTextColumn Header="누적 전송량" Binding="{Binding CopiedBytesText}" Width="110"/>
+                                                <DataGridTextColumn Header="활성 스레드" Binding="{Binding ActiveThreads, StringFormat={}{0} MT}" Width="90"/>
+                                                <DataGridTemplateColumn Header="대역폭 게이지" Width="*">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ProgressBar Value="{Binding SpeedProgressRatio}" Maximum="100" Height="8" Foreground="#38bdf8" Background="#020617" BorderBrush="#334155" Margin="4,2"/>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- TAB 4: 백업 작업 스케줄러 (Task Scheduler & Windows Service) -->
             <TabItem Header="⏰ 백업 스케줄러">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <Border Background="#1e293b" CornerRadius="12" Padding="24" Margin="0,16,0,0" BorderThickness="1" BorderBrush="#334155">
