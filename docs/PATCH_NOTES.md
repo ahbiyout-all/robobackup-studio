@@ -1,5 +1,15 @@
 # RoboBackup Studio 패치 & 릴리즈 노트 (Patch Notes)
 
+## 📌 [v2.19.1] - 2026-11-09
+### 🛠️ WPF 런타임 프로그레스바 TwoWay 바인딩 예외 긴급 패치 & 듀얼 동기화 고도화
+1. **WPF `RangeBase.Value` 바인딩 예외 수정**:
+   - 성능 분석 탭(Performance Analytics) 내 기가비트 대역폭 점유율 ProgressBar 및 텔레메트리 DataGrid 게이지 바에서 사용된 `AnalyticsPeakSpeedMbps`와 `SpeedProgressRatio` 속성이 읽기 전용(Getter-only)임에도 WPF 기본 `TwoWay` 바인딩으로 동작하여 발생하던 앱 시작/로드 실패 예외(`System.Windows.Controls.Primitives.RangeBase.Value` 설정 예외) 해결.
+   - 해당 ProgressBar 바인딩에 `, Mode=OneWay`를 명시하여 읽기 전용 속성과 완벽 호환되도록 안정성 확보.
+2. **버전 메타데이터 일괄 동기화 (v2.19.1)**:
+   - `RoboBackupStudio.csproj`, `build.bat`, `MainWindow.xaml`, `ViewModels/MainViewModel.cs`, `src/utils/robocopy.ts`, `package.json`, `App.tsx`, `Navbar.tsx`, `AutoUpdateModal.tsx`, `HelpAndLicense.tsx` 전체 버전 일괄 갱신.
+
+---
+
 ## 📌 [v2.19.0] - 2026-11-01
 ### 📈 Recharts 기반 실시간 성능 분석(Performance Analytics) 센터 신규 탑재 & C# WPF 100% 듀얼 동기화
 1. **Recharts 시계열 차트 시각화 엔진 통합**:

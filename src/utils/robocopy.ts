@@ -1534,11 +1534,11 @@ namespace RoboBackupStudio
 ; ====================================================================
 
 #define MyAppName "RoboBackup Studio"
-#define MyAppVersion "v2.19.0"
+#define MyAppVersion "v2.19.1"
 #define MyAppPublisher "AhBiYout"
 #define MyAppURL "https://ahbiyoutvibe.blogspot.com/"
 #define MyAppExeName "RoboBackupStudio.exe"
-#define MyAppOutputName "RoboBackupStudio_v2.19.0_Setup"
+#define MyAppOutputName "RoboBackupStudio_v2.19.1_Setup"
 
 [Setup]
 AppId={{8B237C9F-3F1E-4E2F-A5C0-9A2E12F3D9A1}}
@@ -1607,7 +1607,7 @@ cd /d "%~dp0"
 REM 1. Set Project Name and Default Version
 set "APP_NAME=RoboBackupStudio"
 set "PATCH_FILE=docs\\PATCH_NOTES.md"
-set "VERSION=v2.19.0"
+set "VERSION=v2.19.1"
 
 if exist "%PATCH_FILE%" (
     echo [*] Reading latest patch version from %PATCH_FILE%...

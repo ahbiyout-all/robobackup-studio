@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:RoboBackupStudio.ViewModels"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle, FallbackValue='RoboBackup Studio v2.19.0 - High Performance Robocopy Studio'}" Height="880" Width="1160"
+        Title="{Binding WindowTitle, FallbackValue='RoboBackup Studio v2.19.1 - High Performance Robocopy Studio'}" Height="880" Width="1160"
         Icon="robocopy.png"
         WindowStartupLocation="CenterScreen" Background="{Binding ThemeWindowBackground}">
 
@@ -1202,7 +1202,7 @@
                                         <TextBlock Text="🌐 기가비트 LAN (1000 Mbps) 선로 대역폭 점유율 (Bandwidth Utilization)" Foreground="{Binding ThemeAccentBrush}" FontSize="12" FontWeight="Bold"/>
                                         <TextBlock Text="{Binding AnalyticsPeakSpeedMbps, StringFormat={}{0:F1} / 1000 Mbps}" Foreground="#cbd5e1" FontSize="12" FontWeight="Bold" DockPanel.Dock="Right"/>
                                     </DockPanel>
-                                    <ProgressBar Value="{Binding AnalyticsPeakSpeedMbps}" Maximum="1000" Height="10" Foreground="#38bdf8" Background="#0f172a" BorderBrush="#334155" BorderThickness="1"/>
+                                    <ProgressBar Value="{Binding AnalyticsPeakSpeedMbps, Mode=OneWay}" Maximum="1000" Height="10" Foreground="#38bdf8" Background="#0f172a" BorderBrush="#334155" BorderThickness="1"/>
                                 </StackPanel>
                             </Border>
 
@@ -1275,7 +1275,7 @@
                                                 <DataGridTemplateColumn Header="대역폭 게이지" Width="*">
                                                     <DataGridTemplateColumn.CellTemplate>
                                                         <DataTemplate>
-                                                            <ProgressBar Value="{Binding SpeedProgressRatio}" Maximum="100" Height="8" Foreground="#38bdf8" Background="#020617" BorderBrush="#334155" Margin="4,2"/>
+                                                            <ProgressBar Value="{Binding SpeedProgressRatio, Mode=OneWay}" Maximum="100" Height="8" Foreground="#38bdf8" Background="#020617" BorderBrush="#334155" Margin="4,2"/>
                                                         </DataTemplate>
                                                     </DataGridTemplateColumn.CellTemplate>
                                                 </DataGridTemplateColumn>

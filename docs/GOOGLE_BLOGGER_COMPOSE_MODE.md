@@ -1,4 +1,4 @@
-# [v2.19.0] RoboBackup Studio - Windows 최강 성능 Robocopy GUI & C# WPF 자동 생성 도구
+# [v2.19.1] RoboBackup Studio - Windows 최강 성능 Robocopy GUI & C# WPF 자동 생성 도구
 
 ## 🚀 고성능 Robocopy 엔진과 모던 UI의 만남
 RoboBackup Studio는 Windows 내장 최강 복사 엔진인 **Robocopy**를 기반으로 한 하이 퍼포먼스 백업 관리 솔루션입니다. 복잡한 명령줄 대신 직관적인 GUI를 통해 서버급 백업 인프라를 구축하고, 클릭 한 번으로 실제 작동하는 **C# WPF MVVM 소스 코드**까지 생성해주는 독보적인 개발 도구입니다.
@@ -17,11 +17,11 @@ RoboBackup Studio는 Windows 내장 최강 복사 엔진인 **Robocopy**를 기�
 
 ---
 
-## 📢 최신 업데이트 내용 (v2.19.0)
+## 📢 최신 업데이트 내용 (v2.19.1)
+- **WPF 런타임 프로그레스바 바인딩 예외 긴급 패치**: 읽기 전용 텔레메트리 속성(`AnalyticsPeakSpeedMbps`, `SpeedProgressRatio`) 바인딩 시 발생하던 `RangeBase.Value` 예외를 `Mode=OneWay`로 완벽 해결
 - **Recharts 기반 성능 분석 센터 신설**: 실시간 전송 속도(Mbps / MB/s) 및 누적 처리 파일 수의 시계열 차트 시각화
 - **과거 백업 실행 이력 비교**: 과거 백업 세션 간 평균 속도, 피크 속도, 처리 파일 수 비교 차트 및 텔레메트리 히스토리 보존
 - **텔레메트리 데이터 CSV/JSON 내보내기**: 백업 성능 원시 지표를 엑셀 및 개발용 JSON으로 즉시 저장
-- **C# WPF 데스크탑 100% 동기화**: `MainWindow.xaml` 및 `MainViewModel.cs`에 성능 분석 탭과 데이터그리드 완벽 구현
 
 ---
 
@@ -39,8 +39,8 @@ RoboBackup Studio는 Windows 내장 최강 복사 엔진인 **Robocopy**를 기�
 ---
 
 ## 📋 버전 및 시스템 정보
-- **최신 버전**: v2.19.0 Stable
-- **출시 일자**: 2026-11-01
+- **최신 버전**: v2.19.1 Stable
+- **출시 일자**: 2026-11-09
 - **권장 사양**: Windows 10/11, Windows Server 2016 이상 (x64)
 - **필수 환경**: .NET 8.0 / .NET 10.0 (인스톨러에 포함되어 자동 설치)
 
@@ -54,6 +54,7 @@ RoboBackup Studio는 Windows 내장 최강 복사 엔진인 **Robocopy**를 기�
 ---
 
 ## 📜 전체 업데이트 히스토리 (기능 개선 중심)
+- **[v2.19.1]** WPF 런타임 프로그레스바 바인딩 예외(RangeBase.Value) 긴급 패치 및 듀얼 동기화 안정화
 - **[v2.19.0]** Recharts 기반 실시간 성능 분석(Performance Analytics) 센터 신설 및 텔레메트리 히스토리 보관
 - **[v2.18.1]** 백업 상세 분석 텍스트 리포트(.txt) 자동 생성 및 다운로드 기능 탑재
 - **[v2.17.8]** 실시간 작업 스케줄러 오류 감지 및 로즈 테마 알림 시스템 탑재
